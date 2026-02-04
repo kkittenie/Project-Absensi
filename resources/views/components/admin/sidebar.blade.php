@@ -19,14 +19,22 @@
             <li class="sidebar-header">Management</li>
 
             @role('superadmin')
-                <li class="sidebar-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                    <a class="sidebar-link" href="{{ route('admin.user.index') }}">
-                        <i class="align-middle" data-feather="users"></i>
-                        <span class="align-middle">Users</span>
-                    </a>
-                </li>
+            <li class="sidebar-item {{ request()->routeIs('admin.user.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.user.index') }}">
+                    <i class="align-middle" data-feather="users"></i>
+                    <span class="align-middle">Daftar Pengguna</span>
+                </a>
+            </li>
             @endrole
-            
+
+            @role('superadmin')
+            <li class="sidebar-item {{ request()->routeIs('admin.guru.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.guru.index') }}">
+                    <i class="align-middle" data-feather="user"></i>
+                    <span class="align-middle">Daftar Guru</span>
+                </a>
+            </li>
+            @endrole
         </ul>
     </div>
 </nav>

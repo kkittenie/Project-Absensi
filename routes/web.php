@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\GuruController;
 use Illuminate\Support\Facades\Route;
 
 //Landing Page
@@ -42,9 +43,9 @@ Route::middleware(['auth', 'active'])->group(function () {
                 ->name('profile.')
                 ->controller(ProfileController::class)
                 ->group(function () {
-                    Route::get('/', 'index')->name('index');
-                    Route::put('/', 'update')->name('update');
-                });
+                Route::get('/', 'index')->name('index');
+                Route::put('/', 'update')->name('update');
+            });
 
             //Users
             Route::prefix('users')
@@ -52,13 +53,32 @@ Route::middleware(['auth', 'active'])->group(function () {
                 ->middleware('role:superadmin')
                 ->controller(UserController::class)
                 ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/create', 'store')->name('store');
+                Route::get('/edit/{uuid}', 'edit')->name('edit');
+                Route::put('/edit/{uuid}', 'update')->name('update');
+                Route::put('/activate/{uuid}', 'activate')->name('activate');
+                Route::put('/deactivate/{uuid}', 'deactivate')->name('deactivate');
+                Route::delete('/{uuid}', 'remove')->name('remove');
+            });
+
+            Route::prefix('gurus')
+                ->name('guru.')
+                ->middleware('role:superadmin')
+                ->controller(GuruController::class)
+                ->group(function () {
+
                     Route::get('/', 'index')->name('index');
                     Route::get('/create', 'create')->name('create');
                     Route::post('/create', 'store')->name('store');
+
                     Route::get('/edit/{uuid}', 'edit')->name('edit');
                     Route::put('/edit/{uuid}', 'update')->name('update');
+
                     Route::put('/activate/{uuid}', 'activate')->name('activate');
                     Route::put('/deactivate/{uuid}', 'deactivate')->name('deactivate');
+
                     Route::delete('/{uuid}', 'remove')->name('remove');
                 });
         });
