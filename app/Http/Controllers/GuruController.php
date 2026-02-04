@@ -75,6 +75,7 @@ class GuruController extends Controller
             'photo' => 'nullable|image|max:2048',
         ]);
 
+
         $data = $request->all();
 
         if ($request->hasFile('photo')) {
@@ -85,7 +86,6 @@ class GuruController extends Controller
 
         return redirect()->route('admin.guru.index');
     }
-
 
     public function remove($uuid)
     {
