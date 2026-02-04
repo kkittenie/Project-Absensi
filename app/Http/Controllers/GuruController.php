@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Guru;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+
 
 class GuruController extends Controller
 {
@@ -62,6 +64,17 @@ class GuruController extends Controller
     {
         $guru = Guru::where('uuid', $uuid)->firstOrFail();
 
+        $request->validate([
+            'nama_guru' => 'required',
+            'mata_pelajaran' => 'required',
+            'nip' => [
+                'required',
+                Rule::unique('gurus', 'nip')->ignore($guru->id),
+            ],
+            'nomor_telepon' => 'required',
+            'photo' => 'nullable|image|max:2048',
+        ]);
+
         $data = $request->all();
 
         if ($request->hasFile('photo')) {
@@ -72,6 +85,7 @@ class GuruController extends Controller
 
         return redirect()->route('admin.guru.index');
     }
+
 
     public function remove($uuid)
     {
