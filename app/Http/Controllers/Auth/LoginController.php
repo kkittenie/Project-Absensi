@@ -20,10 +20,8 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required',
-            'max:255',
-            'password' => 'required',
-            'max:255',
+            'username' => 'required|max:255',
+            'password' => 'required|max:255',
         ], [
             'username.required' => 'Username harus diisi!',
             'username.max' => 'Username maksimal 255 karakter!',
@@ -53,7 +51,12 @@ class LoginController extends Controller
         $remember = $request->boolean('remember');
         Auth::login($user, $remember);
 
-        return redirect()->route('admin.dashboard')
+        if ($user->hasRole('superadmin') || $user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard')
+                ->withSuccess("Selamat datang, {$user->name}!");
+        }
+
+        return redirect()->route('landing.index')
             ->withSuccess("Selamat datang, {$user->name}!");
     }
 

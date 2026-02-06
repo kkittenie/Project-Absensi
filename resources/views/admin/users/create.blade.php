@@ -89,6 +89,9 @@
                             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>
                                 Admin
                             </option>
+                            <option value="admin" {{ old('role') == 'user' ? 'selected' : '' }}>
+                                User
+                            </option>
                         </select>
 
                         @error('role')

@@ -15,14 +15,24 @@
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        @if (auth()->check())
-            <a href="{{ route('admin.dashboard') }}" class="btn-getstarted">
-                Dashboard
-            </a>
+        @if(auth()->check())
+            @if(auth()->user()->hasAnyRole(['admin','superadmin']))
+                <a href="{{ route('admin.dashboard') }}" class="btn-getstarted">
+                    Dashboard
+                </a>
+            @else
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn-getstarted">
+                        Logout
+                    </button>
+                </form>
+            @endif
         @else
             <a href="{{ route('login') }}" class="btn-getstarted">
                 Login
             </a>
         @endif
+
     </div>
 </header>

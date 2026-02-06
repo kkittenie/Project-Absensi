@@ -37,7 +37,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:superadmin,admin',
+            'role' => 'required|in:superadmin,admin,user',
             'is_active' => 'required|boolean',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
@@ -64,16 +64,17 @@ class UserController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
             'is_active' => $request->is_active,
             'photo' => $photoPath,
         ]);
 
-        $user->assignRole($request->role);
+        $user->syncRoles([$request->role]);
 
-        return redirect()
-            ->route('admin.user.index')
-            ->withSuccess('User berhasil ditambahkan.');
+        if ($user->hasRole('superadmin') || $user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('landing.index');
     }
 
     public function edit(string $uuid)

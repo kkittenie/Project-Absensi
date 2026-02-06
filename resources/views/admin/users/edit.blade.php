@@ -87,6 +87,9 @@
                             <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>
                                 Admin
                             </option>
+                            <option value="admin" {{ $user->role == 'user' ? 'selected' : '' }}>
+                                User
+                            </option>
                         </select>
                     </div>
 

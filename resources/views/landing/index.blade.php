@@ -12,7 +12,7 @@
                     <h1>Selamat Datang di Sistem Informasi Kehadiran</h1>
                     <p>SMP PGRI Sumber</p>
                     <div class="d-flex">
-                        <a href="#" class="btn-get-started">Form Absensi</a>
+                        <a href="{{ route('absensi.form') }}" class="btn-get-started">Form Absensi</a>
                         <a href="#" class="btn-get-started">Pengajuan Izin</a>
                         <a href="#" class="btn-get-started">Status Izin</a>
                     </div>
