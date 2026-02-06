@@ -84,7 +84,7 @@
                                     </td>
 
                                     <td>{{ $user->name }}</td>
-                                    <td>{{ $user->username }}</td>png
+                                    <td>{{ $user->username }}</td>
 
                                     <td>
                                         <span class="badge bg-secondary">

@@ -17,7 +17,7 @@ class GuruController extends Controller
         if ($status === 'inactive') {
             $gurus = Guru::where('is_active', false)->get();
         } else {
-            $gurus = Guru::where('is_active', true)->get();
+            $gurus = Guru::where('is_active', true)->whereNull('deleted_at')->get();
         }
 
         return view('guru.index', compact('gurus', 'status'));
