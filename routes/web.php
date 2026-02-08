@@ -39,8 +39,6 @@ Route::post('/logout', [LoginController::class, 'logout'])
 */
 
 Route::middleware(['auth','active'])->group(function () {
-
-    // kalau user buka /dashboard → balik ke landing
     Route::get('/dashboard', function () {
         if(auth()->user()->hasRole('user')){
             return redirect()->route('landing.index');
@@ -49,7 +47,6 @@ Route::middleware(['auth','active'])->group(function () {
         return redirect()->route('admin.dashboard');
     });
 
-    // Form absensi (USER)
     Route::get('/absensi', function () {
         return view('absensi.index');
     })->name('absensi.form');

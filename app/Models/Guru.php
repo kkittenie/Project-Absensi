@@ -11,6 +11,7 @@ class Guru extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'uuid',
         'nama_guru',
         'mata_pelajaran',
@@ -23,4 +24,10 @@ class Guru extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    // RELASI KE USER
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

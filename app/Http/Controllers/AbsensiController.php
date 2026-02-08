@@ -22,50 +22,45 @@ class AbsensiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'photo' => 'required',
+            'photo_base64' => 'required',
             'latitude' => 'required',
             'longitude' => 'required',
         ]);
 
-        // Ambil guru yang terkait dengan user
         $guru = auth()->user()->guru;
 
         if (!$guru) {
-            return back()->with('error', 'Akun ini belum terhubung dengan data guru.');
-        }
-
-        // Cegah absen lebih dari sekali per hari
-        $sudahAbsen = Absensi::where('guru_id', $guru->id)
-            ->whereDate('waktu_absen', now())
-            ->exists();
-
-        if ($sudahAbsen) {
-            return back()->with('error', 'Kamu sudah absen hari ini.');
+            return back()->with('error', 'Akun belum terhubung dengan guru.');
         }
 
         // ================= FOTO =================
-        $imageData = $request->photo;
-        $imageData = str_replace('data:image/png;base64,', '', $imageData);
-        $imageData = str_replace(' ', '+', $imageData);
+        $base64Image = $request->photo_base64;
 
-        $imageName = 'absensi/' . Str::uuid() . '.png';
+        $base64Image = preg_replace(
+            '#^data:image/\w+;base64,#i',
+            '',
+            $base64Image
+        );
 
-        // Simpan di storage/public/absensi
-        Storage::disk('public')->put($imageName, base64_decode($imageData));
+        $fileName = 'absensi/' . Str::uuid() . '.png';
 
-        // ================= SIMPAN ABSENSI =================
-        $absensi = Absensi::create([
+        Storage::disk('public')->put(
+            $fileName,
+            base64_decode($base64Image)
+        );
+
+        // ================= DATABASE =================
+        Absensi::create([
             'uuid' => Str::uuid(),
             'guru_id' => $guru->id,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'photo' => $imageName,
+            'photo' => $fileName, // ⬅️ PATH RELATIF
             'status' => 'hadir',
             'waktu_absen' => now(),
         ]);
 
-        // ================= RETURN =================
-        return back()->with('success', 'Absensi berhasil ✅');
+        return back()->with('success', '✅ Absensi berhasil!');
     }
 }
 
