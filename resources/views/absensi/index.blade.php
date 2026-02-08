@@ -1,7 +1,10 @@
 @extends('layouts.landing')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @section('content')
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- SWEET ALERT SESSION --}}
     @if(session('success'))
         <script>
             Swal.fire({
@@ -10,7 +13,7 @@
                 text: '{{ session('success') }}',
                 timer: 2500,
                 showConfirmButton: false
-            })
+            });
         </script>
     @endif
 
@@ -20,39 +23,39 @@
                 icon: 'error',
                 title: 'Gagal',
                 text: '{{ session('error') }}'
-            })
+            });
         </script>
     @endif
 
-    <div class="container py-5">
+    <section class="section dark-background" style="padding-top:120px">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-4 text-center">
 
-        <div class="row justify-content-center">
-            <div class="col-md-4 text-center">
+                    <h3 class="mb-3">📸 Form Absensi</h3>
 
-                <h3 class="mb-3">📸 Form Absensi</h3>
+                    <div class="card shadow p-3">
 
-                <div class="card shadow-sm p-3">
+                        <video id="video" class="w-100 rounded mirror" autoplay></video>
+                        <canvas id="canvas" hidden></canvas>
 
-                    <video id="video" class="w-100 rounded mirror" autoplay></video>
-                    <canvas id="canvas" width="320" height="240" hidden></canvas>
+                        <button type="button" id="snap" class="btn btn-primary w-100 mt-3">
+                            Absen Sekarang
+                        </button>
 
-                    <button type="button" id="snap" class="btn btn-primary w-100 mt-2">
-                        Absen Sekarang
-                    </button>
+                    </div>
+
+                    <form id="absenForm" method="POST" action="{{ route('absensi.store') }}">
+                        @csrf
+                        <input type="hidden" name="photo_base64" id="photo">
+                        <input type="hidden" name="latitude" id="latitude">
+                        <input type="hidden" name="longitude" id="longitude">
+                    </form>
 
                 </div>
-
-                <form id="absenForm" method="POST" action="{{ route('absensi.store') }}">
-                    @csrf
-                    <input type="hidden" name="photo_base64" id="photo">
-                    <input type="hidden" name="latitude" id="latitude">
-                    <input type="hidden" name="longitude" id="longitude">
-                </form>
-
             </div>
         </div>
-
-    </div>
+    </section>
 
     <style>
         .mirror {
@@ -61,6 +64,12 @@
     </style>
 
     <script>
+        const SCHOOL_LAT = -6.7063;
+        const SCHOOL_LNG = 108.5570;
+        const MAX_RADIUS = 200; // meter
+        const ABSEN_MULAI = "06:00";
+        const ABSEN_SELESAI = "21:00";
+
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const snap = document.getElementById('snap');
@@ -68,78 +77,108 @@
         const latitude = document.getElementById('latitude');
         const longitude = document.getElementById('longitude');
 
-        // Kamera
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            })
+            .then(stream => video.srcObject = stream)
             .catch(err => {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Kamera Error',
+                    title: 'Kamera tidak bisa diakses',
                     text: err.message
                 });
             });
 
-        // Lokasi
-        navigator.geolocation.getCurrentPosition(
-            function (pos) {
-                latitude.value = pos.coords.latitude;
-                longitude.value = pos.coords.longitude;
-            },
-            function () {
-                fetch('https://ipapi.co/json/')
-                    .then(res => res.json())
-                    .then(data => {
-                        latitude.value = data.latitude || '-6.200000';
-                        longitude.value = data.longitude || '106.816666';
-                    })
-                    .catch(() => {
-                        latitude.value = '-6.200000';
-                        longitude.value = '106.816666';
-                    });
-            }
-        );
+        function cekJamAbsen() {
+            const jam = new Date().toTimeString().slice(0, 5);
+            return jam >= ABSEN_MULAI && jam <= ABSEN_SELESAI;
+        }
 
-        snap.addEventListener("click", function () {
+        function hitungJarak(lat1, lon1, lat2, lon2) {
+            const R = 6371000;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos(lat1 * Math.PI / 180) *
+                Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) ** 2;
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
 
-            if (video.videoWidth === 0) {
+        snap.addEventListener('click', () => {
+
+            if (!cekJamAbsen()) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Kamera belum siap',
-                    text: 'Tunggu beberapa detik ya'
+                    title: 'Di luar jam absensi',
+                    text: `${ABSEN_MULAI} - ${ABSEN_SELESAI}`
                 });
                 return;
             }
 
-            if (!latitude.value || !longitude.value) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lokasi belum tersedia',
-                    text: 'Mohon izinkan lokasi'
-                });
-                return;
-            }
+            snap.disabled = true;
+            snap.innerText = 'Mengambil lokasi...';
 
-            Swal.fire({
-                title: 'Memproses Absensi',
-                text: 'Mohon tunggu...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
+            navigator.geolocation.getCurrentPosition(
+                function (pos) {
+
+                    latitude.value = pos.coords.latitude;
+                    longitude.value = pos.coords.longitude;
+
+                    const jarak = hitungJarak(
+                        latitude.value,
+                        longitude.value,
+                        SCHOOL_LAT,
+                        SCHOOL_LNG
+                    );
+
+                    if (jarak > MAX_RADIUS) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Di luar area sekolah',
+                            text: `Jarak ${Math.round(jarak)} meter`
+                        });
+                        resetBtn();
+                        return;
+                    }
+
+                    // Capture foto
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0);
+                    photoInput.value = canvas.toDataURL('image/png');
+
+                    Swal.fire({
+                        title: 'Yakin ingin absen?',
+                        imageUrl: photoInput.value,
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Absen'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            document.getElementById('absenForm').submit();
+                        } else {
+                            resetBtn();
+                        }
+                    });
+                },
+                function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lokasi tidak diizinkan',
+                        text: 'Aktifkan GPS & izinkan lokasi'
+                    });
+                    resetBtn();
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000
                 }
-            });
-
-            const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0);
-
-            photoInput.value = canvas.toDataURL('image/png');
-
-            setTimeout(() => {
-                document.getElementById('absenForm').submit();
-            }, 500);
+            );
         });
+
+        function resetBtn() {
+            snap.disabled = false;
+            snap.innerText = 'Absen Sekarang';
+        }
     </script>
+
 @endsection
