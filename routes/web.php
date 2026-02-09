@@ -3,13 +3,14 @@
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\IzinController;
+use App\Http\Controllers\PerizinanController;
 use Illuminate\Support\Facades\Route;
 
-//Landing Page
+//Landing
 Route::get('/', function () {
     return view('landing.index');
 })->name('landing.index');
-
 
 //Auth
 Route::middleware('guest')->group(function () {
@@ -21,12 +22,14 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-//Admin Page
+//Authenticated
 Route::middleware(['auth', 'active'])->group(function () {
+
     Route::get('/dashboard', function () {
         return redirect()->route('admin.dashboard');
     })->name('dashboard.index');
 
+    //Admin Area
     Route::prefix('admin')
         ->name('admin.')
         ->middleware('role:superadmin|admin')
@@ -37,7 +40,7 @@ Route::middleware(['auth', 'active'])->group(function () {
                 return view('admin.dashboard');
             })->name('dashboard');
 
-            //Profile
+            // Profile
             Route::prefix('profile')
                 ->name('profile.')
                 ->controller(ProfileController::class)
@@ -46,7 +49,7 @@ Route::middleware(['auth', 'active'])->group(function () {
                     Route::put('/', 'update')->name('update');
                 });
 
-            //Users
+            // Users
             Route::prefix('users')
                 ->name('user.')
                 ->middleware('role:superadmin')
@@ -61,5 +64,21 @@ Route::middleware(['auth', 'active'])->group(function () {
                     Route::put('/deactivate/{uuid}', 'deactivate')->name('deactivate');
                     Route::delete('/{uuid}', 'remove')->name('remove');
                 });
+
+            //Perizinan Guru (ADMIN)
+            Route::prefix('perizinan')
+                ->name('perizinan.')
+                ->controller(PerizinanController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('/surat/{izin}', 'surat')->name('surat');
+                    Route::put('/{izin}/approve', 'approve')->name('approve');
+                    Route::put('/{izin}/reject', 'reject')->name('reject');
+                });
         });
+
+    //Izin Guru (Guru)
+    Route::get('/izin', [IzinController::class, 'index'])->name('izin.index');
+    Route::get('/izin/create', [IzinController::class, 'create'])->name('izin.create');
+    Route::post('/izin', [IzinController::class, 'store'])->name('izin.store');
 });
