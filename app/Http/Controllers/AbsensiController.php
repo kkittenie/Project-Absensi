@@ -30,8 +30,17 @@ class AbsensiController extends Controller
         $guru = auth()->user()->guru;
 
         if (!$guru) {
-            return back()->with('error', 'Akun belum terhubung dengan guru.');
+            return back()->with('error', 'Akun belum terhubung dengan data guru');
         }
+
+        $sudahAbsen = Absensi::where('guru_id', $guru->id)
+            ->whereDate('waktu_absen', now()->toDateString())
+            ->exists();
+
+        if ($sudahAbsen) {
+            return back()->with('error', 'Kamu sudah absen hari ini ❌');
+        }
+
 
         // ================= FOTO =================
         $base64Image = $request->photo_base64;
@@ -55,7 +64,7 @@ class AbsensiController extends Controller
             'guru_id' => $guru->id,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'photo' => $fileName, // ⬅️ PATH RELATIF
+            'photo' => $fileName, 
             'status' => 'hadir',
             'waktu_absen' => now(),
         ]);

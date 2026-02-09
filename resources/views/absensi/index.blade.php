@@ -64,8 +64,8 @@
     </style>
 
     <script>
-        const SCHOOL_LAT = -6.7063;
-        const SCHOOL_LNG = 108.5570;
+        const SCHOOL_LAT = -6.7340;
+        const SCHOOL_LNG = 108.5367;
         const MAX_RADIUS = 200; // meter
         const ABSEN_MULAI = "06:00";
         const ABSEN_SELESAI = "21:00";
