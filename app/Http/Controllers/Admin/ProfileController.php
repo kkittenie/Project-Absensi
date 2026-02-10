@@ -18,7 +18,8 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('web')->user();
+        auth()->user();
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -56,6 +57,6 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->route('admin.dashboard')->withSuccess('Profile berhasil diperbarui.');
+        return redirect()->route('admin.profile.index')->withSuccess('Profile berhasil diperbarui.');
     }
 }

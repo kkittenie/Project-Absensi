@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-body">
 
-                <form action="{{ route('admin.user.update', $user->uuid) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.users.update', $user->uuid) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -87,7 +87,7 @@
                             <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>
                                 Admin
                             </option>
-                            <option value="admin" {{ $user->role == 'user' ? 'selected' : '' }}>
+                            <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>
                                 User
                             </option>
                         </select>
@@ -104,7 +104,7 @@
 
                     {{-- Action --}}
                     <div class="d-flex justify-content-end">
-                        <a href="{{ route('admin.user.index') }}" class="btn btn-secondary me-2">
+                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">
                             Batal
                         </a>
                         <button class="btn btn-primary">

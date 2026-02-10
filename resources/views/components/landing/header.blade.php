@@ -3,7 +3,7 @@
 
         <a href="{{ route('landing.index') }}" class="logo d-flex align-items-center me-auto">
             <img src="{{ asset('assets/landing/img/logo.png') }}" alt="Logo">
-            <h1 class="sitename">SiHadir</h1>
+            <h1 class="sitename">SiHadir Guru</h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
@@ -15,19 +15,20 @@
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        @if(auth()->check())
-            @if(auth()->user()->hasAnyRole(['admin','superadmin']))
-                <a href="{{ route('admin.dashboard') }}" class="btn-getstarted">
-                    Dashboard
-                </a>
-            @else
-                <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn-getstarted">
-                        Logout
-                    </button>
-                </form>
-            @endif
+        {{-- Cek login untuk admin --}}
+        @if(auth('web')->check() && auth('web')->user()->hasAnyRole(['admin','superadmin']))
+            <a href="{{ route('admin.dashboard') }}" class="btn-getstarted">
+                Dashboard
+            </a>
+        {{-- Cek login untuk guru --}}
+        @elseif(auth('guru')->check())
+            <form action="{{ route('guru.logout') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn-getstarted">
+                    Logout
+                </button>
+            </form>
+        {{-- Kalau belum login --}}
         @else
             <a href="{{ route('login') }}" class="btn-getstarted">
                 Login

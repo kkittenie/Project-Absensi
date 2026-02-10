@@ -1,123 +1,145 @@
 <?php
 
-use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\GuruController;
-use App\Http\Controllers\AbsensiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
 | Landing
 |--------------------------------------------------------------------------
 */
-
 Route::get('/', function () {
     return view('landing.index');
 })->name('landing.index');
 
-/*
-|--------------------------------------------------------------------------
-| Auth
-|--------------------------------------------------------------------------
-*/
-
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'index'])->name('login');
-    Route::post('/login', [LoginController::class, 'store'])->name('login.process');
-});
-
-Route::post('/logout', [LoginController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| User (Landing + Absensi)
+| ADMIN
 |--------------------------------------------------------------------------
 */
-
-Route::middleware(['auth','active'])->group(function () {
-    Route::get('/dashboard', function () {
-        if(auth()->user()->hasRole('user')){
-            return redirect()->route('landing.index');
-        }
-
-        return redirect()->route('admin.dashboard');
-    });
-
-    Route::get('/absensi', function () {
-        return view('absensi.index');
-    })->name('absensi.form');
-
-    Route::post('/absensi', [AbsensiController::class, 'store'])
-        ->name('absensi.store');
-});
-
-/*
-|--------------------------------------------------------------------------
-| Admin Area
-|--------------------------------------------------------------------------
-*/
-
 Route::prefix('admin')
+    ->middleware(['auth', 'role:admin|superadmin'])
     ->name('admin.')
-    ->middleware(['auth','active','role:superadmin|admin'])
     ->group(function () {
 
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
 
-    // Profile
-    Route::prefix('profile')
-        ->name('profile.')
-        ->controller(ProfileController::class)
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::put('/', 'update')->name('update');
-        });
+        Route::get('/profile', function () {
+            return view('admin.profile.index');
+        })->name('profile.index');
 
-    // Users (SUPERADMIN ONLY)
-    Route::prefix('users')
-        ->name('user.')
-        ->middleware('role:superadmin')
-        ->controller(UserController::class)
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/create', 'store')->name('store');
-            Route::get('/edit/{uuid}', 'edit')->name('edit');
-            Route::put('/edit/{uuid}', 'update')->name('update');
-            Route::put('/activate/{uuid}', 'activate')->name('activate');
-            Route::put('/deactivate/{uuid}', 'deactivate')->name('deactivate');
-            Route::delete('/{uuid}', 'remove')->name('remove');
-        });
+        Route::get('/users', [UserController::class, 'index'])
+            ->name('users.index');
 
-    // Guru (SUPERADMIN)
-    Route::prefix('gurus')
-        ->name('guru.')
-        ->middleware('role:superadmin')
-        ->controller(GuruController::class)
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/create', 'store')->name('store');
-            Route::get('/edit/{uuid}', 'edit')->name('edit');
-            Route::put('/edit/{uuid}', 'update')->name('update');
-            Route::put('/activate/{uuid}', 'activate')->name('activate');
-            Route::put('/deactivate/{uuid}', 'deactivate')->name('deactivate');
-            Route::delete('/{uuid}', 'remove')->name('remove');
-        });
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
 
-    // Absensi ADMIN
-    Route::prefix('absensis')
-        ->name('absensi.')
-        ->controller(AbsensiController::class)
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/{uuid}', 'show')->name('show');
-        });
+        Route::get('/guru', [GuruController::class, 'index'])
+            ->name('guru.index');
+
+        Route::get('/guru/create', [GuruController::class, 'create'])
+            ->name('guru.create');
+
+        Route::post('/guru', [GuruController::class, 'store'])
+            ->name('guru.store');
+
+        Route::get('/guru/{guru}/edit', [GuruController::class, 'edit'])
+            ->name('guru.edit');
+
+        Route::put('/guru/{guru}', [GuruController::class, 'update'])
+            ->name('guru.update');
+
+        Route::put('/guru/{guru}/activate', [GuruController::class, 'activate'])
+            ->name('guru.activate');
+
+        Route::put('/guru/{guru}/deactivate', [GuruController::class, 'deactivate'])
+            ->name('guru.deactivate');
+
+        Route::delete('/guru/{guru}', [GuruController::class, 'destroy'])
+            ->name('guru.destroy');
+
+        Route::get('/users', [UserController::class, 'index'])
+            ->name('users.index');
+
+        Route::get('/users/create', [UserController::class, 'create'])
+            ->name('users.create');
+
+        Route::get('/users/{uuid}/edit', [UserController::class, 'edit'])
+            ->name('users.edit');
+
+        Route::put('/users/{uuid}', [UserController::class, 'update'])
+            ->name('users.update');
+
+        Route::put('/users/{uuid}/deactivate', [UserController::class, 'deactivate'])
+            ->name('users.deactivate');
+
+        Route::put('/users/{uuid}/activate', [UserController::class, 'activate'])
+            ->name('users.activate');
+
+        Route::delete('/users/{uuid}', [UserController::class, 'remove'])
+            ->name('users.remove');
+
+        Route::get('/profile', [ProfileController::class, 'index'])
+            ->name('profile.index');
+
+        Route::put('/profile', [ProfileController::class, 'edit'])
+            ->name('profile.edit');
+    });
+
+
+
+/*
+|--------------------------------------------------------------------------
+| GURU
+|--------------------------------------------------------------------------
+*/
+Route::prefix('guru')
+    ->middleware('auth:guru')
+    ->name('guru.')
+    ->group(function () {
+
+        Route::get('/dashboard', function () {
+            return view('guru.dashboard');
+        })->name('dashboard');
+
+        Route::get('/absensi', [AbsensiController::class, 'index'])
+            ->name('absensi.index');
+
+        Route::get('/absensi/create', [AbsensiController::class, 'create'])
+            ->name('absensi.create');
+
+        Route::post('/absensi', [AbsensiController::class, 'store'])
+            ->name('absensi.store');
+
+        Route::post('/logout', [LoginController::class, 'logout'])
+            ->name('logout');
+    });
+
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+
+Route::middleware(['auth:guru'])
+    ->group(function () {
+        Route::get('/absensi', [AbsensiController::class, 'index'])
+            ->name('absensi.index');
+
+        Route::get('/absensi', [AbsensiController::class, 'index'])
+            ->name('absensi.index');
+
+        Route::post('/absensi', [AbsensiController::class, 'store'])
+            ->name('absensi.store');
+
+    });
+
+require __DIR__ . '/auth.php';

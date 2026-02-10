@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Guru;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,24 +13,30 @@ use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
+    // Tampilkan halaman login
     public function index()
     {
         return view('auth.login');
     }
 
+    // Proses login
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|max:255',
+            'nip' => 'required|max:255',
             'password' => 'required|max:255',
         ], [
-            'username.required' => 'Username harus diisi!',
-            'username.max' => 'Username maksimal 255 karakter!',
+            'nip.required' => 'NIP harus diisi!',
+            'nip.max' => 'NIP maksimal 255 karakter!',
             'password.required' => 'Password harus diisi!',
             'password.max' => 'Password maksimal 255 karakter!',
         ]);
 
-        $key = Str::lower($request->username) . '|' . $request->ip();
+        $nip = $request->nip;
+        $password = $request->password;
+        $remember = $request->boolean('remember');
+
+        $key = Str::lower($nip) . '|' . $request->ip();
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
@@ -38,31 +45,38 @@ class LoginController extends Controller
 
         RateLimiter::hit($key, 60);
 
-        $user = User::where('username', $request->username)
-            ->where('is_active', true)
-            ->first();
+        $user = User::where('nip', $nip)->where('is_active', true)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return back()->withErrors('Username atau password salah!');
-        }
+        if ($user && Hash::check($password, $user->password)) {
+            Auth::guard('web')->login($user, $remember);
 
-        RateLimiter::clear($key);
-
-        $remember = $request->boolean('remember');
-        Auth::login($user, $remember);
-
-        if ($user->hasRole('superadmin') || $user->hasRole('admin')) {
             return redirect()->route('admin.dashboard')
-                ->withSuccess("Selamat datang, {$user->name}!");
+                ->withSuccess("Selamat datang, {$user->name}");
         }
 
-        return redirect()->route('landing.index')
-            ->withSuccess("Selamat datang, {$user->name}!");
+        $guru = Guru::where('nip', $nip)->where('is_active', true)->first();
+
+        if ($guru && Hash::check($password, $guru->password)) {
+            Auth::guard('guru')->login($guru, $remember);
+
+            return redirect()->route('absensi.index')
+                ->withSuccess("Selamat datang, {$guru->nama_guru}");
+        }
+        return back()->withErrors([
+            'nip' => 'NIP atau password salah, atau akun tidak aktif.',
+        ]);
     }
 
+    // Logout
     public function logout(Request $request)
     {
-        Auth::logout();
+        // Logout pakai guard yang sesuai
+        if (Auth::guard('guru')->check()) {
+            Auth::guard('guru')->logout();
+        } else {
+            Auth::logout();
+        }
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

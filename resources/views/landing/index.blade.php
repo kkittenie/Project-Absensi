@@ -1,6 +1,6 @@
 @extends('layouts.landing')
 
-@section('title', 'Beranda | SiHadir')
+@section('title', 'Beranda | SiHadir Guru')
 
 @section('content')
 
@@ -9,10 +9,10 @@
         <div class="container">
             <div class="row gy-4">
                 <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="zoom-out">
-                    <h1>Selamat Datang di Sistem Informasi Kehadiran</h1>
+                    <h1>Selamat Datang di Sistem Informasi Kehadiran Guru</h1>
                     <p>SMP PGRI Sumber</p>
                     <div class="d-flex">
-                        <a href="{{ route('absensi.form') }}" class="btn-get-started">Form Absensi</a>
+                        <a href="{{ route('guru.absensi.create') }}" class="btn-get-started">Form Absensi</a>
                         <a href="#" class="btn-get-started">Pengajuan Izin</a>
                         <a href="#" class="btn-get-started">Status Izin</a>
                     </div>
@@ -34,20 +34,20 @@
             <div class="row gy-4">
                 <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
                     <p>
-                        SiHadir adalah platform absensi sekolah berbasis digital yang dirancang untuk mempermudah proses
-                        pencatatan kehadiran siswa dan guru secara cepat, akurat, dan efisien. Sistem ini hadir sebagai
+                        SiHadir Guru adalah platform absensi sekolah berbasis digital yang dirancang untuk mempermudah proses
+                        pencatatan kehadiran guru secara cepat, akurat, dan efisien. Sistem ini hadir sebagai
                         solusi modern untuk menggantikan metode absensi manual, sehingga data kehadiran dapat dikelola
                         dengan lebih rapi dan transparan.
                     </p>
                     <ul>
-                        <li><i class="bi bi-check2-circle"></i> <span>Absensi Terpusat untuk Siswa & Guru</span></li>
+                        <li><i class="bi bi-check2-circle"></i> <span>Absensi Terpusat untuk Guru</span></li>
                         <li><i class="bi bi-check2-circle"></i> <span>Data Otomatis & Mudah Direkap</span></li>
                         <li><i class="bi bi-check2-circle"></i> <span>Monitoring Kehadiran Real-Time</span></li>
                     </ul>
                 </div>
                 <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                    <p>Website ini membantu guru dan pihak sekolah dalam memantau kehadiran siswa secara real-time,
-                        sekaligus memberikan kemudahan bagi siswa dalam melakukan absensi harian. Dengan tampilan yang
+                    <p>Website ini membantu guru dan pihak sekolah dalam memantau kehadiran guru secara real-time,
+                        sekaligus memberikan kemudahan bagi guru dalam melakukan absensi harian. Dengan tampilan yang
                         sederhana dan fitur yang mudah digunakan, kami berkomitmen untuk mendukung digitalisasi pendidikan.
                     </p>
                 </div>
@@ -63,8 +63,7 @@
                     <div class="content px-xl-5" data-aos="fade-up" data-aos-delay="100">
                         <h3><span>Cara Menggunakan Website </span><strong>SiHadir</strong></h3>
                         <p>
-                            Website ini memiliki tiga sistem utama untuk memudahkan absensi dan pengelolaan perizinan siswa
-                            maupun guru.
+                            Website ini memiliki tiga sistem utama untuk memudahkan absensi dan pengelolaan perizinan guru.
                         </p>
                     </div>
                     <div class="faq-container px-xl-5" data-aos="fade-up" data-aos-delay="200">
@@ -109,7 +108,7 @@
             <div class="row" data-aos="zoom-in" data-aos-delay="100">
                 <div class="col-xl-9 text-center text-xl-start">
                     <h3>Siap Beralih ke Absensi Digital?</h3>
-                    <p>Website ini disediakan untuk membantu pihak sekolah dalam mencatat kehadiran siswa dan guru secara
+                    <p>Website ini disediakan untuk membantu pihak sekolah dalam mencatat kehadiran guru secara
                         digital melalui kamera, serta mengelola perizinan secara online. Dengan sistem ini, proses absensi
                         menjadi lebih tertib, data tersimpan dengan baik, dan monitoring kehadiran dapat dilakukan dengan
                         mudah.</p>

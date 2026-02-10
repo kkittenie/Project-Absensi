@@ -92,7 +92,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|in:superadmin,admin',
+            'role' => 'required|in:superadmin,admin,user',
             'is_active' => 'required|boolean',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
@@ -131,7 +131,7 @@ class UserController extends Controller
         $user->syncRoles([$request->role]);
 
         return redirect()
-            ->route('admin.user.index')
+            ->route('admin.users.index')
             ->withSuccess('User berhasil diperbarui.');
     }
 
@@ -152,7 +152,7 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()
-            ->route('admin.user.index')
+            ->route('admin.users.index')
             ->withSuccess('User berhasil dihapus.');
     }
 

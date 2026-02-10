@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-body">
 
-                <form action="{{ route('admin.user.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     {{-- Nama --}}
@@ -89,7 +89,7 @@
                             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>
                                 Admin
                             </option>
-                            <option value="admin" {{ old('role') == 'user' ? 'selected' : '' }}>
+                            <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>
                                 User
                             </option>
                         </select>
@@ -110,7 +110,7 @@
 
                     {{-- Action --}}
                     <div class="d-flex justify-content-end">
-                        <a href="{{ route('admin.user.index') }}" class="btn btn-secondary me-2">
+                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">
                             Batal
                         </a>
                         <button class="btn btn-primary">

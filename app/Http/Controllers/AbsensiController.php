@@ -12,11 +12,14 @@ use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
 {
+    public function index()
+    {
+        return view('absensi.index');
+    }
     public function create()
     {
         $gurus = Guru::where('is_active', true)->get();
-
-        return view('absensi.create', compact('gurus'));
+        return view('absensi.index', compact('gurus'));
     }
 
     public function store(Request $request)
@@ -27,7 +30,7 @@ class AbsensiController extends Controller
             'longitude' => 'required',
         ]);
 
-        $guru = auth()->user()->guru;
+        $guru = auth('guru')->user();
 
         if (!$guru) {
             return back()->with('error', 'Akun belum terhubung dengan data guru');
@@ -64,7 +67,7 @@ class AbsensiController extends Controller
             'guru_id' => $guru->id,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'photo' => $fileName, 
+            'photo' => $fileName,
             'status' => 'hadir',
             'waktu_absen' => now(),
         ]);

@@ -35,13 +35,13 @@
                                     </x-alert>
                                 @endif
 
-                                <form method="POST" action="{{ route('login.process') }}">
+                                <form method="POST" action="{{ route('login') }}">
                                     @csrf
 
                                     <div class="mb-3">
-                                        <label class="form-label">Username</label>
-                                        <input class="form-control form-control-lg" type="text" name="username"
-                                            value="{{ old('username') }}" placeholder="Masukan Username">
+                                        <label class="form-label">NIP</label>
+                                        <input class="form-control form-control-lg" type="text" name="nip"
+                                            value="{{ old('nip') }}" placeholder="Masukan NIP" required autofocus>
                                     </div>
 
                                     <div class="mb-3">

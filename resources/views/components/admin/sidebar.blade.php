@@ -19,8 +19,8 @@
             <li class="sidebar-header">Management</li>
 
             @role('superadmin')
-            <li class="sidebar-item {{ request()->routeIs('admin.user.*') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ route('admin.user.index') }}">
+            <li class="sidebar-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.users.index') }}">
                     <i class="align-middle" data-feather="users"></i>
                     <span class="align-middle">Daftar Pengguna</span>
                 </a>

@@ -33,7 +33,7 @@
                 </p>
             </div>
 
-            <a href="{{ route('admin.user.create') }}" class="btn btn-primary">
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
                 <i data-feather="plus"></i>
                 Tambah Pengguna
             </a>
@@ -43,13 +43,13 @@
         <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
                 <a class="nav-link {{ request('status', 'active') === 'active' ? 'active' : '' }}"
-                    href="{{ route('admin.user.index', ['status' => 'active']) }}">
+                    href="{{ route('admin.users.index', ['status' => 'active']) }}">
                     Pengguna Aktif
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request('status') === 'inactive' ? 'active' : '' }}"
-                    href="{{ route('admin.user.index', ['status' => 'inactive']) }}">
+                    href="{{ route('admin.users.index', ['status' => 'inactive']) }}">
                     Pengguna Tidak Aktif
                 </a>
             </li>
@@ -102,13 +102,13 @@
 
                                     <td class="text-end">
                                         @if ($user->is_active)
-                                            <a href="{{ route('admin.user.edit', $user->uuid) }}"
+                                            <a href="{{ route('admin.users.edit', $user->uuid) }}"
                                                 class="btn btn-sm btn-warning">
                                                 <i data-feather="edit"></i>
                                             </a>
 
                                             @if ($user->uuid !== auth()->user()->uuid)
-                                                <form action="{{ route('admin.user.deactivate', $user->uuid) }}"
+                                                <form action="{{ route('admin.users.deactivate', $user->uuid) }}"
                                                     method="POST" class="d-inline">
                                                     @csrf
                                                     @method('put')
@@ -119,7 +119,7 @@
                                                 </form>
                                             @endif
                                         @else
-                                            <form action="{{ route('admin.user.remove', $user->uuid) }}" method="POST"
+                                            <form action="{{ route('admin.users.remove', $user->uuid) }}" method="POST"
                                                 class="d-inline"
                                                 onsubmit="return confirm('Yakin ingin menghapus pengguna ini?')">
                                                 @csrf
@@ -129,7 +129,7 @@
                                                 </button>
                                             </form>
 
-                                            <form action="{{ route('admin.user.activate', $user->uuid) }}" method="POST"
+                                            <form action="{{ route('admin.users.activate', $user->uuid) }}" method="POST"
                                                 class="d-inline">
                                                 @csrf
                                                 @method('put')

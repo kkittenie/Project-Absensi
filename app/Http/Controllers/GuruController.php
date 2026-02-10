@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -20,13 +21,13 @@ class GuruController extends Controller
             $gurus = Guru::where('is_active', true)->whereNull('deleted_at')->get();
         }
 
-        return view('guru.index', compact('gurus', 'status'));
+        return view('admin.guru.index', compact('gurus', 'status'));
     }
 
 
     public function create()
     {
-        return view('guru.create');
+        return view('admin.guru.create');
     }
 
     public function store(Request $request)
@@ -41,6 +42,7 @@ class GuruController extends Controller
 
         $data = $request->all();
         $data['uuid'] = Str::uuid();
+        $data['password'] = Hash::make($request->nip);
         $data['is_active'] = true;
 
         if ($request->hasFile('photo')) {
@@ -57,7 +59,7 @@ class GuruController extends Controller
     {
         $guru = Guru::where('uuid', $uuid)->firstOrFail();
 
-        return view('guru.edit', compact('guru'));
+        return view('admin.guru.edit', compact('guru'));
     }
 
     public function update(Request $request, $uuid)

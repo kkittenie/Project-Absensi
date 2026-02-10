@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Guru extends Model
+class Guru extends Authenticatable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes;
+
+    protected $table = 'gurus';
 
     protected $fillable = [
         'user_id',
@@ -18,7 +21,14 @@ class Guru extends Model
         'nip',
         'nomor_telepon',
         'photo',
-        'is_active'
+        'is_active',
+        'password',
+        'role', // ini baru
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [

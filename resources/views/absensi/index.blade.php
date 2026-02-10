@@ -36,12 +36,13 @@
 
                     <div class="card shadow p-3">
 
-                        <video id="video" class="w-100 rounded mirror" autoplay></video>
+                        <video id="video" class="w-100 rounded mirror" autoplay muted playsinline></video>
                         <canvas id="canvas" hidden></canvas>
 
                         <button type="button" id="snap" class="btn btn-primary w-100 mt-3">
-                            Absen Sekarang
+                            Aktifkan Kamera
                         </button>
+
 
                     </div>
 
@@ -66,7 +67,7 @@
     <script>
         const SCHOOL_LAT = -6.7340;
         const SCHOOL_LNG = 108.5367;
-        const MAX_RADIUS = 200; // meter
+        const MAX_RADIUS = 200;
         const ABSEN_MULAI = "06:00";
         const ABSEN_SELESAI = "21:00";
 
@@ -77,15 +78,7 @@
         const latitude = document.getElementById('latitude');
         const longitude = document.getElementById('longitude');
 
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => video.srcObject = stream)
-            .catch(err => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Kamera tidak bisa diakses',
-                    text: err.message
-                });
-            });
+        let cameraActive = false; // ✅ PINDAH KE SINI
 
         function cekJamAbsen() {
             const jam = new Date().toTimeString().slice(0, 5);
@@ -104,8 +97,32 @@
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
         }
 
-        snap.addEventListener('click', () => {
+        snap.addEventListener('click', async () => {
 
+            // =====================
+            // AKTIFKAN KAMERA
+            // =====================
+            if (!cameraActive) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = stream;
+
+                    cameraActive = true;
+                    snap.innerText = 'Absen Sekarang';
+                    snap.classList.remove('btn-success');
+                    snap.classList.add('btn-primary');
+                } catch (e) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Kamera tidak bisa diakses'
+                    });
+                }
+                return;
+            }
+
+            // =====================
+            // PROSES ABSENSI
+            // =====================
             if (!cekJamAbsen()) {
                 Swal.fire({
                     icon: 'warning',
@@ -141,7 +158,6 @@
                         return;
                     }
 
-                    // Capture foto
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
                     canvas.getContext('2d').drawImage(video, 0, 0);
@@ -163,14 +179,9 @@
                 function () {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Lokasi tidak diizinkan',
-                        text: 'Aktifkan GPS & izinkan lokasi'
+                        title: 'Lokasi tidak diizinkan'
                     });
                     resetBtn();
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000
                 }
             );
         });
