@@ -28,9 +28,13 @@ class AbsensiController extends Controller
             'photo_base64' => 'required',
             'latitude' => 'required',
             'longitude' => 'required',
-        ]);
+        ]); {
+            
+            $user = auth()->user();
+            $canAbsen = $user->hasRole('guru'); // true/false
 
-        $guru = auth('guru')->user();
+            return view('absensi.index', compact('canAbsen'));
+        }
 
         if (!$guru) {
             return back()->with('error', 'Akun belum terhubung dengan data guru');
@@ -61,7 +65,6 @@ class AbsensiController extends Controller
             base64_decode($base64Image)
         );
 
-        // ================= DATABASE =================
         Absensi::create([
             'uuid' => Str::uuid(),
             'guru_id' => $guru->id,

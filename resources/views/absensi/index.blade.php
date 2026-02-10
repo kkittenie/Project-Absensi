@@ -4,7 +4,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- SWEET ALERT SESSION --}}
     @if(session('success'))
         <script>
             Swal.fire({
@@ -38,11 +37,21 @@
 
                         <video id="video" class="w-100 rounded mirror" autoplay muted playsinline></video>
                         <canvas id="canvas" hidden></canvas>
+                        @if(!$canAbsen)
+                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: 'Hanya guru yang bisa melakukan absensi!'
+                                });
+                            </script>
+                        @endif
 
-                        <button type="button" id="snap" class="btn btn-primary w-100 mt-3">
-                            Aktifkan Kamera
+                        <video id="video" class="w-100 rounded mirror" autoplay muted playsinline {{ !$canAbsen ? 'disabled' : '' }}></video>
+                        <button type="button" id="snap" class="btn btn-primary w-100 mt-3" {{ !$canAbsen ? 'disabled' : '' }}>
+                            Absen Sekarang
                         </button>
-
 
                     </div>
 
@@ -78,7 +87,7 @@
         const latitude = document.getElementById('latitude');
         const longitude = document.getElementById('longitude');
 
-        let cameraActive = false; // ✅ PINDAH KE SINI
+        let cameraActive = false;
 
         function cekJamAbsen() {
             const jam = new Date().toTimeString().slice(0, 5);
@@ -99,9 +108,6 @@
 
         snap.addEventListener('click', async () => {
 
-            // =====================
-            // AKTIFKAN KAMERA
-            // =====================
             if (!cameraActive) {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -120,9 +126,6 @@
                 return;
             }
 
-            // =====================
-            // PROSES ABSENSI
-            // =====================
             if (!cekJamAbsen()) {
                 Swal.fire({
                     icon: 'warning',

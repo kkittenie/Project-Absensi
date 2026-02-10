@@ -34,7 +34,8 @@
             <div class="row gy-4">
                 <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
                     <p>
-                        SiHadir Guru adalah platform absensi sekolah berbasis digital yang dirancang untuk mempermudah proses
+                        SiHadir Guru adalah platform absensi sekolah berbasis digital yang dirancang untuk mempermudah
+                        proses
                         pencatatan kehadiran guru secara cepat, akurat, dan efisien. Sistem ini hadir sebagai
                         solusi modern untuk menggantikan metode absensi manual, sehingga data kehadiran dapat dikelola
                         dengan lebih rapi dan transparan.
@@ -151,10 +152,11 @@
                                 <p>smppgrisumber@gmail.com</p>
                             </div>
                         </div>
-                        <iframe
-                            src="https://maps.google.com/maps?width=600&amp;height=400&amp;hl=en&amp;q=SMP PGRI SUMBER&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-                            frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <div class="gmap_canvas" style="overflow:hidden; background:none!important;">
+                            <iframe width="500px" height="450px" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                src="https://www.google.com/maps/embed/v1/search?q=smp%20pgri%20sumber%20kabupaten%20cirebon&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-7">
@@ -163,22 +165,20 @@
                         <div class="row gy-4">
                             <div class="col-md-6">
                                 <label for="name-field" class="pb-2">Nama Lengkap</label>
-                                <input type="text" name="name" id="name-field" class="form-control"
-                                    required="">
+                                <input type="text" name="name" id="name-field" class="form-control" required="">
                             </div>
                             <div class="col-md-6">
                                 <label for="email-field" class="pb-2">Email</label>
-                                <input type="email" class="form-control" name="email" id="email-field"
-                                    required="">
+                                <input type="email" class="form-control" name="email" id="email-field" required="">
                             </div>
                             <div class="col-md-12">
                                 <label for="subject-field" class="pb-2">Subjek</label>
-                                <input type="text" class="form-control" name="subject" id="subject-field"
-                                    required="">
+                                <input type="text" class="form-control" name="subject" id="subject-field" required="">
                             </div>
                             <div class="col-md-12">
                                 <label for="message-field" class="pb-2">Pesan</label>
-                                <textarea class="form-control" name="message" rows="10" id="message-field" required=""></textarea>
+                                <textarea class="form-control" name="message" rows="10" id="message-field"
+                                    required=""></textarea>
                             </div>
                             <div class="col-md-12 text-center">
                                 <div class="loading">Memuat</div>

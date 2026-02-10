@@ -1,1 +1,1 @@
-Sistem Absensi - SMKN 1 Cirebon
+Sistem Absensi - SMP PGRI Sumber 
