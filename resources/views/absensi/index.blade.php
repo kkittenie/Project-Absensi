@@ -16,6 +16,10 @@
         </script>
     @endif
 
+    @php
+        $canAbsen = auth()->guard('guru')->check();
+    @endphp
+
     @if(session('error'))
         <script>
             Swal.fire({
@@ -37,8 +41,7 @@
 
                         <video id="video" class="w-100 rounded mirror" autoplay muted playsinline></video>
                         <canvas id="canvas" hidden></canvas>
-                        @if(!$canAbsen)
-                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                        @if(!$canAbsen && !auth()->guard('web')->check())
                             <script>
                                 Swal.fire({
                                     icon: 'error',
@@ -48,7 +51,6 @@
                             </script>
                         @endif
 
-                        <video id="video" class="w-100 rounded mirror" autoplay muted playsinline {{ !$canAbsen ? 'disabled' : '' }}></video>
                         <button type="button" id="snap" class="btn btn-primary w-100 mt-3" {{ !$canAbsen ? 'disabled' : '' }}>
                             Absen Sekarang
                         </button>

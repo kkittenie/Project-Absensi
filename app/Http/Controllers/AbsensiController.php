@@ -14,12 +14,23 @@ class AbsensiController extends Controller
 {
     public function index()
     {
-        return view('absensi.index');
+        $guru = auth('guru')->user();
+
+        $canAbsen = false;
+
+        if (Auth::guard('guru')->check()) {
+            $canAbsen = true;
+        }
+
+        return view('absensi.index', compact('canAbsen'));
     }
     public function create()
     {
-        $gurus = Guru::where('is_active', true)->get();
-        return view('absensi.index', compact('gurus'));
+        $guru = auth()->guard('guru')->user();
+
+        $canAbsen = $guru ? true : false;
+
+        return view('absensi.index', compact('canAbsen'));
     }
 
     public function store(Request $request)
@@ -29,11 +40,12 @@ class AbsensiController extends Controller
             'latitude' => 'required',
             'longitude' => 'required',
         ]); {
-            
-            $user = auth()->user();
-            $canAbsen = $user->hasRole('guru'); // true/false
 
-            return view('absensi.index', compact('canAbsen'));
+            $guru = auth()->guard('guru')->user();
+
+            if (!$guru) {
+                return back()->with('error', 'Akun belum terhubung dengan data guru');
+            }
         }
 
         if (!$guru) {
