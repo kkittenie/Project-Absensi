@@ -17,6 +17,7 @@ class Guru extends Authenticatable
         'user_id',
         'uuid',
         'nama_guru',
+        'email',
         'mapel_id',
         'nip',
         'nomor_telepon',

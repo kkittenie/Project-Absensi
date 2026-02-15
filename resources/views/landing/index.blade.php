@@ -214,18 +214,14 @@
 <!-- Main Template JS File -->
 <script src="{{ asset('assets/landing/js/main.js') }}"></script>
 
-<!-- ==================== SWEETALERT2 CDN ==================== -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- ==================== FLASH MESSAGE HANDLER ==================== -->
 <script>
-    // Debug: Cek apakah script ini jalan
     console.log('SweetAlert script loaded');
 
     @if(session('success'))
         console.log('Session success found:', '{{ session('success') }}');
 
-        // Tunggu sampai halaman fully loaded
         window.addEventListener('load', function () {
             Swal.fire({
                 icon: 'success',

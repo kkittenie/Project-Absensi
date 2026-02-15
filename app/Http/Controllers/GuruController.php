@@ -42,6 +42,7 @@ class GuruController extends Controller
     {
         $request->validate([
             'nama_guru' => 'required|string|max:255',
+            'email' => 'required|email|unique:gurus,email',
             'mapel_id' => 'required|exists:mapels,id',
             'nip' => 'required|string|unique:gurus,nip',
             'nomor_telepon' => 'required|string|max:20',
@@ -57,6 +58,7 @@ class GuruController extends Controller
 
         $data = $request->only([
             'nama_guru',
+            'email',
             'mapel_id',
             'nip',
             'nomor_telepon'
@@ -90,6 +92,7 @@ class GuruController extends Controller
 
         $request->validate([
             'nama_guru' => 'required|string|max:255',
+            'email' => 'required|email|unique:gurus,email,' . $guru->id,
             'mapel_id' => 'required|exists:mapels,id',
             'nip' => [
                 'required',
@@ -102,6 +105,7 @@ class GuruController extends Controller
 
         $data = $request->only([
             'nama_guru',
+            'email',
             'mapel_id',
             'nip',
             'nomor_telepon'

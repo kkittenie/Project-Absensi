@@ -5,24 +5,12 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ProfileController;
-
-/*
-|--------------------------------------------------------------------------
-| Public Routes
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\UserProfileController;  // ← Import controller baru
 
 // Landing Page
 Route::get('/', function () {
     return view('landing.index');
 })->name('landing.index');
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN Routes
-|--------------------------------------------------------------------------
-*/
 
 Route::prefix('admin')
     ->middleware(['auth', 'role:admin|superadmin'])
@@ -34,9 +22,9 @@ Route::prefix('admin')
             return view('admin.dashboard');
         })->name('dashboard');
 
-        // Profile Management
-        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        // Profile Management ← UPDATE INI
+        Route::get('/profile', [UserProfileController::class, 'indexAdmin'])->name('profile.index');
+        Route::put('/profile', [UserProfileController::class, 'updateAdmin'])->name('profile.update');
 
         // User Management
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -60,12 +48,6 @@ Route::prefix('admin')
         Route::delete('/guru/{uuid}/remove', [GuruController::class, 'remove'])->name('guru.remove');
     });
 
-/*
-|--------------------------------------------------------------------------
-| GURU Routes
-|--------------------------------------------------------------------------
-*/
-
 Route::prefix('guru')
     ->middleware('auth:guru')
     ->name('guru.')
@@ -75,6 +57,10 @@ Route::prefix('guru')
         Route::get('/dashboard', function () {
             return view('guru.dashboard');
         })->name('dashboard');
+
+        // Profile Management
+        Route::get('/profile', [UserProfileController::class, 'indexGuru'])->name('profile.index');
+        Route::put('/profile', [UserProfileController::class, 'updateGuru'])->name('profile.update');
 
         // Absensi
         Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');

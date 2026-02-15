@@ -4,22 +4,6 @@
 
 @section('content')
 
-    @if ($errors->any())
-        <x-alert type="danger" title="Gagal!">
-            <ul class="mb-0 ps-3">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </x-alert>
-    @endif
-
-    @if (session('success'))
-        <x-alert type="success">
-            {{ session('success') }}
-        </x-alert>
-    @endif
-
     {{-- Page Header --}}
     <div class="row mb-3">
         <div class="col-12">
@@ -158,8 +142,37 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            
+            // Alert Success jika ada session success
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            @endif
+
+            // Alert Error jika ada errors
+            @if ($errors->any())
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    html: '<ul class="text-start mb-0" style="list-style-position: inside;">' +
+                        @foreach ($errors->all() as $error)
+                            '<li>{{ $error }}</li>' +
+                        @endforeach
+                        '</ul>',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            // Chart.js untuk Statistik Kehadiran
             if (window.Chart) {
                 const ctx = document.getElementById("attendanceChart");
                 new Chart(ctx, {

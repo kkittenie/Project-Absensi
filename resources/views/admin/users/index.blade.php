@@ -4,22 +4,6 @@
 
 @section('content')
 
-    @if ($errors->any())
-        <x-alert type="danger" title="Gagal!">
-            <ul class="mb-0 ps-3">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </x-alert>
-    @endif
-
-    @if (session('success'))
-        <x-alert type="success">
-            {{ session('success') }}
-        </x-alert>
-    @endif
-
     <div class="container-fluid p-0">
 
         {{-- PAGE TITLE --}}
@@ -109,32 +93,29 @@
 
                                             @if ($user->uuid !== auth()->user()->uuid)
                                                 <form action="{{ route('admin.users.deactivate', $user->uuid) }}"
-                                                    method="POST" class="d-inline">
+                                                    method="POST" class="d-inline form-deactivate">
                                                     @csrf
                                                     @method('put')
-                                                    <button class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('Nonaktifkan pengguna ini?')">
+                                                    <button type="button" class="btn btn-sm btn-danger btn-deactivate">
                                                         <i data-feather="user-x"></i>
                                                     </button>
                                                 </form>
                                             @endif
                                         @else
                                             <form action="{{ route('admin.users.remove', $user->uuid) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('Yakin ingin menghapus pengguna ini?')">
+                                                class="d-inline form-delete">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="btn btn-sm btn-outline-danger">
+                                                <button type="button" class="btn btn-sm btn-outline-danger btn-delete">
                                                     <i data-feather="trash-2"></i>
                                                 </button>
                                             </form>
 
                                             <form action="{{ route('admin.users.activate', $user->uuid) }}" method="POST"
-                                                class="d-inline">
+                                                class="d-inline form-activate">
                                                 @csrf
                                                 @method('put')
-                                                <button class="btn btn-sm btn-success"
-                                                    onclick="return confirm('Aktifkan pengguna ini?')">
+                                                <button type="button" class="btn btn-sm btn-success btn-activate">
                                                     <i data-feather="user-check"></i>
                                                 </button>
                                             </form>
@@ -158,3 +139,107 @@
 
     </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Alert Success jika ada session success
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        @endif
+
+        // Alert Error jika ada errors
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                html: '<ul class="text-start mb-0" style="list-style-position: inside;">' +
+                    @foreach ($errors->all() as $error)
+                        '<li>{{ $error }}</li>' +
+                    @endforeach
+                    '</ul>',
+                confirmButtonText: 'OK'
+            });
+        @endif
+
+        // Konfirmasi Nonaktifkan Pengguna
+        document.querySelectorAll('.btn-deactivate').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('.form-deactivate');
+                
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin menonaktifkan pengguna ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Nonaktifkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        // Konfirmasi Hapus Pengguna
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('.form-delete');
+                
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    text: 'Data yang dihapus tidak dapat dikembalikan. Yakin ingin melanjutkan?',
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        // Konfirmasi Aktifkan Pengguna
+        document.querySelectorAll('.btn-activate').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('.form-activate');
+                
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin mengaktifkan kembali pengguna ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Aktifkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+    });
+</script>
+@endpush

@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-body">
 
-                <form action="{{ route('admin.users.update', $user->uuid) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.users.update', $user->uuid) }}" method="POST" enctype="multipart/form-data" id="formEditUser">
                     @csrf
                     @method('PUT')
 
@@ -87,9 +87,6 @@
                             <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>
                                 Admin
                             </option>
-                            <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>
-                                User
-                            </option>
                         </select>
                     </div>
 
@@ -104,10 +101,10 @@
 
                     {{-- Action --}}
                     <div class="d-flex justify-content-end">
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2">
+                        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary me-2" id="btnBatal">
                             Batal
                         </a>
-                        <button class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
                             Update
                         </button>
                     </div>
@@ -119,3 +116,61 @@
 
     </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Konfirmasi sebelum update
+        document.getElementById('formEditUser').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin mengupdate data pengguna ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Update!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+
+        // Konfirmasi sebelum batal
+        document.getElementById('btnBatal').addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('href');
+            
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin membatalkan? Perubahan tidak akan disimpan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Batalkan!',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        // Alert jika ada error validasi
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Terdapat kesalahan pada form. Silakan periksa kembali.',
+                confirmButtonText: 'OK'
+            });
+        @endif
+    });
+</script>
+@endpush
