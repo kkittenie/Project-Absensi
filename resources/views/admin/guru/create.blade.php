@@ -33,13 +33,23 @@
                         @enderror
                     </div>
 
-                    {{-- Mata Pelajaran --}}
+                    {{-- Mapel --}}
                     <div class="mb-3">
                         <label class="form-label">Mata Pelajaran</label>
-                        <input type="text" name="mata_pelajaran" value="{{ old('mata_pelajaran') }}"
-                            class="form-control @error('mata_pelajaran') is-invalid @enderror">
 
-                        @error('mata_pelajaran')
+                        <select name="mapel_id" class="form-select @error('mapel_id') is-invalid @enderror">
+
+                            <option value="">-- Pilih Mapel --</option>
+
+                            @foreach ($mapels as $mapel)
+                                <option value="{{ $mapel->id }}" {{ old('mapel_id') == $mapel->id ? 'selected' : '' }}>
+                                    {{ $mapel->nama_mapel }}
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                        @error('mapel_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -85,8 +95,12 @@
                     <div class="mb-4">
                         <label class="form-label">Status</label>
                         <select name="is_active" class="form-select">
-                            <option value="1" selected>Aktif</option>
-                            <option value="0">Nonaktif</option>
+                            <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>
+                                Aktif
+                            </option>
+                            <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>
+                                Nonaktif
+                            </option>
                         </select>
                     </div>
 
@@ -95,7 +109,7 @@
                         <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary me-2">
                             Batal
                         </a>
-                        <button class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
                             Simpan
                         </button>
                     </div>

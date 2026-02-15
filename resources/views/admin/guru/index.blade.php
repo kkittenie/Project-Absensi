@@ -69,7 +69,7 @@
                                 </td>
 
                                 <td>{{ $guru->nama_guru }}</td>
-                                <td>{{ $guru->mata_pelajaran }}</td>
+                                <td>{{ $guru->mapel->nama_mapel ?? '-' }}</td>
                                 <td>{{ $guru->nip }}</td>
 
                                 <td>

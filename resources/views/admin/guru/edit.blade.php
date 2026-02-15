@@ -37,13 +37,23 @@
                     {{-- Mata Pelajaran --}}
                     <div class="mb-3">
                         <label class="form-label">Mata Pelajaran</label>
-                        <input type="text" name="mata_pelajaran" value="{{ old('mata_pelajaran', $guru->mata_pelajaran) }}"
-                            class="form-control @error('mata_pelajaran') is-invalid @enderror">
 
-                        @error('mata_pelajaran')
+                        <select name="mapel_id" class="form-select @error('mapel_id') is-invalid @enderror">
+
+                            <option value="">-- Pilih Mapel --</option>
+
+                            @foreach ($mapels as $mapel)
+                                <option value="{{ $mapel->id }}" {{ old('mapel_id', $guru->mapel_id) == $mapel->id ? 'selected' : '' }}>
+                                    {{ $mapel->nama_mapel }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @error('mapel_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
 
                     {{-- NIP --}}
                     <div class="mb-3">

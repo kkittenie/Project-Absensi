@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
+use App\Models\Mapel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -15,9 +16,17 @@ class GuruController extends Controller
         $status = $request->get('status', 'active');
 
         if ($status === 'inactive') {
-            $gurus = Guru::where('is_active', false)->get();
+            $gurus = Guru::with('mapel')
+                ->where('is_active', false)
+                ->get();
         } else {
-            $gurus = Guru::where('is_active', true)->whereNull('deleted_at')->get();
+            $gurus = Guru::with('mapel')
+                ->when(request('status') === 'inactive', function ($q) {
+                    $q->where('is_active', 0);
+                }, function ($q) {
+                    $q->where('is_active', 1);
+                })
+                ->get();
         }
 
         return view('admin.guru.index', compact('gurus', 'status'));
@@ -25,31 +34,36 @@ class GuruController extends Controller
 
     public function create()
     {
-        return view('admin.guru.create');
+        $mapels = Mapel::all();
+        return view('admin.guru.create', compact('mapels'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama_guru' => 'required|string|max:255',
-            'mata_pelajaran' => 'required|string|max:255',
+            'mapel_id' => 'required|exists:mapels,id',
             'nip' => 'required|string|unique:gurus,nip',
             'nomor_telepon' => 'required|string|max:20',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'nama_guru.required' => 'Nama guru wajib diisi.',
-            'mata_pelajaran.required' => 'Mata pelajaran wajib diisi.',
+            'mapel_id.required' => 'Mapel wajib dipilih.',
+            'mapel_id.exists' => 'Mapel tidak valid.',
             'nip.required' => 'NIP wajib diisi.',
             'nip.unique' => 'NIP sudah digunakan.',
             'nomor_telepon.required' => 'Nomor telepon wajib diisi.',
-            'photo.image' => 'Foto wajib berupa gambar.',
-            'photo.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WEBP.',
-            'photo.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
-        $data = $request->only(['nama_guru', 'mata_pelajaran', 'nip', 'nomor_telepon']);
+        $data = $request->only([
+            'nama_guru',
+            'mapel_id',
+            'nip',
+            'nomor_telepon'
+        ]);
+
         $data['uuid'] = Str::uuid();
-        $data['password'] = Hash::make($request->nip); // default password NIP
+        $data['password'] = Hash::make($request->nip);
         $data['is_active'] = true;
 
         if ($request->hasFile('photo')) {
@@ -65,7 +79,9 @@ class GuruController extends Controller
     public function edit($uuid)
     {
         $guru = Guru::where('uuid', $uuid)->firstOrFail();
-        return view('admin.guru.edit', compact('guru'));
+        $mapels = Mapel::all();
+
+        return view('admin.guru.edit', compact('guru', 'mapels'));
     }
 
     public function update(Request $request, $uuid)
@@ -74,7 +90,7 @@ class GuruController extends Controller
 
         $request->validate([
             'nama_guru' => 'required|string|max:255',
-            'mata_pelajaran' => 'required|string|max:255',
+            'mapel_id' => 'required|exists:mapels,id',
             'nip' => [
                 'required',
                 'string',
@@ -84,7 +100,12 @@ class GuruController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $data = $request->only(['nama_guru', 'mata_pelajaran', 'nip', 'nomor_telepon']);
+        $data = $request->only([
+            'nama_guru',
+            'mapel_id',
+            'nip',
+            'nomor_telepon'
+        ]);
 
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('guru', 'public');

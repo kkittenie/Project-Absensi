@@ -17,13 +17,13 @@ class Guru extends Authenticatable
         'user_id',
         'uuid',
         'nama_guru',
-        'mata_pelajaran',
+        'mapel_id',
         'nip',
         'nomor_telepon',
         'photo',
         'is_active',
         'password',
-        'role', // ini baru
+        'role',
     ];
 
     protected $hidden = [
@@ -35,9 +35,13 @@ class Guru extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-    // RELASI KE USER
+    // relasi
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class);
     }
 }
