@@ -1,8 +1,7 @@
 @extends('layouts.auth')
 
-@section('title', 'Login | Admin')
+@section('title', 'Login | SiHadir Guru')
 
-{{-- Custom CSS untuk halaman login --}}
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/login/login.css') }}">
 @endpush
@@ -24,15 +23,25 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label class="form-label">NIP</label>
-                            <input class="form-control form-control-lg" type="text" name="nip"
-                                value="{{ old('nip') }}" placeholder="Masukan NIP" required autofocus>
+                            <label class="form-label">Username / NIP</label>
+                            <input class="form-control form-control-lg" type="text" name="identifier"
+                                value="{{ old('identifier') }}" placeholder="Masukkan Username atau NIP"
+                                required autofocus>
+                            <small class="text-muted">
+                                Admin masukkan <strong>username</strong>, Guru masukkan <strong>NIP</strong>
+                            </small>
+                            @error('identifier')
+                                <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Password</label>
                             <input class="form-control form-control-lg" type="password" name="password"
-                                placeholder="Masukan Password" required>
+                                placeholder="Masukkan Password" required>
+                            @error('password')
+                                <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-4">
@@ -47,7 +56,7 @@
 
                         <div class="d-grid">
                             <button type="submit" class="btn btn-login">
-                                <i class="bi bi-box-arrow-in-right"></i>Masuk
+                                <i class="bi bi-box-arrow-in-right"></i> Masuk
                             </button>
                         </div>
                     </form>
@@ -56,20 +65,19 @@
 
             <div class="back-link">
                 <a href="{{ route('landing.index') }}">
-                    <i class="bi bi-arrow-left"></i>Kembali ke Landing Page
+                    <i class="bi bi-arrow-left"></i> Kembali ke Landing Page
                 </a>
             </div>
         </div>
     </div>
 @endsection
 
-{{-- Custom JS untuk halaman login --}}
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            
-            // Alert Success (untuk logout atau pesan lainnya)
+
+            // Alert Success (logout atau pesan lainnya)
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -77,10 +85,7 @@
                     showConfirmButton: false,
                     timer: 2500,
                     timerProgressBar: true,
-                    background: '#fff',
-                    customClass: {
-                        popup: 'animated-popup'
-                    }
+                    background: '#fff'
                 });
             @endif
 
@@ -103,7 +108,7 @@
             // Loading saat submit form
             const formLogin = document.getElementById('formLogin');
             if (formLogin) {
-                formLogin.addEventListener('submit', function(e) {
+                formLogin.addEventListener('submit', function() {
                     Swal.fire({
                         title: 'Memproses...',
                         text: 'Mohon tunggu sebentar',

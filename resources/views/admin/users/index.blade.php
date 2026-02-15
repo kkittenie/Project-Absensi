@@ -1,48 +1,38 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Users | Admin')
+@section('title', 'Manajemen Admin | Admin')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/guru.css') }}">
+@endpush
 
 @section('content')
 
     <div class="container-fluid p-0">
 
-        {{-- PAGE TITLE --}}
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="col-5">
-                <h1 class="h3 mb-0">
-                    <strong>Manajemen Pengguna</strong> Admin
-                </h1>
-                <p class="text-muted">
-                    Ringkasan data pengguna
-                </p>
+        <div class="page-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-0"><strong>Manajemen</strong> Admin</h1>
+                <p class="text-muted mb-0">Daftar akun admin sistem</p>
             </div>
-
             <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                <i data-feather="plus"></i>
-                Tambah Pengguna
+                <i data-feather="plus"></i> Tambah Admin
             </a>
         </div>
 
-        {{-- TABS --}}
         <ul class="nav nav-tabs mb-3">
             <li class="nav-item">
                 <a class="nav-link {{ request('status', 'active') === 'active' ? 'active' : '' }}"
-                    href="{{ route('admin.users.index', ['status' => 'active']) }}">
-                    Pengguna Aktif
-                </a>
+                    href="{{ route('admin.users.index', ['status' => 'active']) }}">Admin Aktif</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request('status') === 'inactive' ? 'active' : '' }}"
-                    href="{{ route('admin.users.index', ['status' => 'inactive']) }}">
-                    Pengguna Tidak Aktif
-                </a>
+                    href="{{ route('admin.users.index', ['status' => 'inactive']) }}">Admin Tidak Aktif</a>
             </li>
         </ul>
 
-        {{-- TABLE --}}
         <div class="card">
             <div class="card-body">
-
                 <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle">
                         <thead>
@@ -56,26 +46,17 @@
                                 <th class="text-end">Aksi</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @forelse ($users as $user)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-
                                     <td>
                                         <img src="{{ $user->photo ? asset('storage/' . $user->photo) : asset('assets/admin/img/avatars/default.jpg') }}"
                                             class="rounded-2 object-fit-cover" width="40" height="40">
                                     </td>
-
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->username }}</td>
-
-                                    <td>
-                                        <span class="badge bg-secondary">
-                                            {{ $user->role }}
-                                        </span>
-                                    </td>
-
+                                    <td><span class="badge bg-secondary">{{ $user->role }}</span></td>
                                     <td>
                                         @if ($user->is_active)
                                             <span class="badge bg-success">Aktif</span>
@@ -83,38 +64,29 @@
                                             <span class="badge bg-danger">Tidak Aktif</span>
                                         @endif
                                     </td>
-
                                     <td class="text-end">
                                         @if ($user->is_active)
-                                            <a href="{{ route('admin.users.edit', $user->uuid) }}"
-                                                class="btn btn-sm btn-warning">
+                                            <a href="{{ route('admin.users.edit', $user->uuid) }}" class="btn btn-sm btn-warning">
                                                 <i data-feather="edit"></i>
                                             </a>
-
                                             @if ($user->uuid !== auth()->user()->uuid)
                                                 <form action="{{ route('admin.users.deactivate', $user->uuid) }}"
                                                     method="POST" class="d-inline form-deactivate">
-                                                    @csrf
-                                                    @method('put')
+                                                    @csrf @method('PUT')
                                                     <button type="button" class="btn btn-sm btn-danger btn-deactivate">
                                                         <i data-feather="user-x"></i>
                                                     </button>
                                                 </form>
                                             @endif
                                         @else
-                                            <form action="{{ route('admin.users.remove', $user->uuid) }}" method="POST"
-                                                class="d-inline form-delete">
-                                                @csrf
-                                                @method('DELETE')
+                                            <form action="{{ route('admin.users.remove', $user->uuid) }}" method="POST" class="d-inline form-delete">
+                                                @csrf @method('DELETE')
                                                 <button type="button" class="btn btn-sm btn-outline-danger btn-delete">
                                                     <i data-feather="trash-2"></i>
                                                 </button>
                                             </form>
-
-                                            <form action="{{ route('admin.users.activate', $user->uuid) }}" method="POST"
-                                                class="d-inline form-activate">
-                                                @csrf
-                                                @method('put')
+                                            <form action="{{ route('admin.users.activate', $user->uuid) }}" method="POST" class="d-inline form-activate">
+                                                @csrf @method('PUT')
                                                 <button type="button" class="btn btn-sm btn-success btn-activate">
                                                     <i data-feather="user-check"></i>
                                                 </button>
@@ -124,121 +96,46 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">
-                                        Data pengguna tidak ditemukan
-                                    </td>
+                                    <td colspan="7" class="text-center text-muted py-4">Data admin tidak ditemukan</td>
                                 </tr>
                             @endforelse
                         </tbody>
-
                     </table>
                 </div>
-
             </div>
         </div>
 
     </div>
+
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
-        // Alert Success jika ada session success
+
         @if (session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true
-            });
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: '{{ session('success') }}', showConfirmButton: false, timer: 2000, timerProgressBar: true, confirmButtonColor: '#47b2e4' });
         @endif
 
-        // Alert Error jika ada errors
         @if ($errors->any())
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                html: '<ul class="text-start mb-0" style="list-style-position: inside;">' +
-                    @foreach ($errors->all() as $error)
-                        '<li>{{ $error }}</li>' +
-                    @endforeach
-                    '</ul>',
-                confirmButtonText: 'OK'
-            });
+            Swal.fire({ icon: 'error', title: 'Gagal!', html: '<ul class="text-start mb-0" style="list-style-position: inside;">' + @foreach ($errors->all() as $error) '<li>{{ $error }}</li>' + @endforeach '</ul>', confirmButtonText: 'OK', confirmButtonColor: '#47b2e4' });
         @endif
 
-        // Konfirmasi Nonaktifkan Pengguna
-        document.querySelectorAll('.btn-deactivate').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const form = this.closest('.form-deactivate');
-                
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: 'Apakah Anda yakin ingin menonaktifkan pengguna ini?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Nonaktifkan!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
+        document.querySelectorAll('.btn-deactivate').forEach(b => b.addEventListener('click', function() {
+            const form = this.closest('.form-deactivate');
+            Swal.fire({ title: 'Konfirmasi', text: 'Nonaktifkan admin ini?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', cancelButtonColor: '#6c757d', confirmButtonText: 'Ya, Nonaktifkan!', cancelButtonText: 'Batal' }).then(r => { if (r.isConfirmed) form.submit(); });
+        }));
 
-        // Konfirmasi Hapus Pengguna
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const form = this.closest('.form-delete');
-                
-                Swal.fire({
-                    title: 'Konfirmasi Hapus',
-                    text: 'Data yang dihapus tidak dapat dikembalikan. Yakin ingin melanjutkan?',
-                    icon: 'error',
-                    showCancelButton: true,
-                    confirmButtonColor: '#dc3545',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
+        document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', function() {
+            const form = this.closest('.form-delete');
+            Swal.fire({ title: 'Konfirmasi Hapus', text: 'Data yang dihapus tidak dapat dikembalikan.', icon: 'error', showCancelButton: true, confirmButtonColor: '#dc3545', cancelButtonColor: '#6c757d', confirmButtonText: 'Ya, Hapus!', cancelButtonText: 'Batal' }).then(r => { if (r.isConfirmed) form.submit(); });
+        }));
 
-        // Konfirmasi Aktifkan Pengguna
-        document.querySelectorAll('.btn-activate').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const form = this.closest('.form-activate');
-                
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: 'Apakah Anda yakin ingin mengaktifkan kembali pengguna ini?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#28a745',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Aktifkan!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
+        document.querySelectorAll('.btn-activate').forEach(b => b.addEventListener('click', function() {
+            const form = this.closest('.form-activate');
+            Swal.fire({ title: 'Konfirmasi', text: 'Aktifkan kembali admin ini?', icon: 'question', showCancelButton: true, confirmButtonColor: '#28a745', cancelButtonColor: '#6c757d', confirmButtonText: 'Ya, Aktifkan!', cancelButtonText: 'Batal' }).then(r => { if (r.isConfirmed) form.submit(); });
+        }));
 
     });
 </script>

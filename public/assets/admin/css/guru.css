@@ -1,0 +1,296 @@
+/*--------------------------------------------------------------
+# Guru Pages CSS - Tema Landing Page
+# Warna: #37517e (navy) | #47b2e4 (biru accent)
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Page Header
+--------------------------------------------------------------*/
+.page-header h1 {
+    font-family: "Jost", sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #37517e;
+    margin-bottom: 0.25rem;
+}
+
+.page-header h1 strong {
+    color: #47b2e4;
+}
+
+.page-header p.text-muted {
+    font-family: "Open Sans", sans-serif;
+    font-size: 0.875rem;
+}
+
+/*--------------------------------------------------------------
+# Tombol Tambah
+--------------------------------------------------------------*/
+.btn-primary {
+    background: linear-gradient(135deg, #47b2e4, #4668a2) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 8px 20px !important;
+    font-family: "Jost", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 15px rgba(71, 178, 228, 0.3) !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2d9fd0, #37517e) !important;
+    box-shadow: 0 6px 20px rgba(71, 178, 228, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+.btn-secondary {
+    border-radius: 50px !important;
+    padding: 8px 20px !important;
+    font-family: "Jost", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+}
+
+/*--------------------------------------------------------------
+# Nav Tabs
+--------------------------------------------------------------*/
+.nav-tabs {
+    border-bottom: 2px solid #e1e8ed !important;
+}
+
+.nav-tabs .nav-link {
+    font-family: "Jost", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    color: #6c757d !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    margin-bottom: -2px !important;
+    padding: 0.6rem 1.25rem !important;
+    border-radius: 0 !important;
+    transition: all 0.3s ease !important;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #47b2e4 !important;
+    border-bottom-color: #47b2e4 !important;
+    background: transparent !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: #37517e !important;
+    border-bottom: 2px solid #47b2e4 !important;
+    background: transparent !important;
+    font-weight: 600 !important;
+}
+
+/*--------------------------------------------------------------
+# Card
+--------------------------------------------------------------*/
+.card {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.07) !important;
+    transition: all 0.3s ease !important;
+}
+
+.card-body {
+    padding: 1.5rem !important;
+}
+
+/*--------------------------------------------------------------
+# Table
+--------------------------------------------------------------*/
+.table {
+    font-family: "Open Sans", sans-serif !important;
+    font-size: 0.875rem !important;
+}
+
+.table thead th {
+    font-family: "Jost", sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: #37517e !important;
+    background: #f8f9fc !important;
+    border-bottom: 2px solid #e1e8ed !important;
+    padding: 0.85rem 0.75rem !important;
+    white-space: nowrap !important;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease !important;
+    border-bottom: 1px solid #f0f2f5 !important;
+}
+
+.table tbody tr:hover {
+    background: #f0f7fd !important;
+}
+
+.table tbody td {
+    padding: 0.85rem 0.75rem !important;
+    vertical-align: middle !important;
+    color: #444444 !important;
+    border-bottom: none !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(71, 178, 228, 0.03) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd):hover {
+    background-color: #f0f7fd !important;
+}
+
+/* Foto di tabel */
+.table tbody td img.rounded-2 {
+    border-radius: 8px !important;
+    object-fit: cover !important;
+    border: 2px solid #e1e8ed !important;
+    transition: all 0.3s ease !important;
+}
+
+.table tbody tr:hover td img.rounded-2 {
+    border-color: #47b2e4 !important;
+}
+
+/*--------------------------------------------------------------
+# Badge
+--------------------------------------------------------------*/
+.badge {
+    font-family: "Jost", sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.72rem !important;
+    padding: 0.4em 0.85em !important;
+    border-radius: 50px !important;
+    letter-spacing: 0.3px !important;
+}
+
+.badge.bg-success { background: linear-gradient(135deg, #28a745, #20c997) !important; }
+.badge.bg-danger  { background: linear-gradient(135deg, #dc3545, #c82333) !important; }
+.badge.bg-warning { background: linear-gradient(135deg, #ffc107, #fd7e14) !important; color: #333 !important; }
+
+/*--------------------------------------------------------------
+# Action Buttons
+--------------------------------------------------------------*/
+.btn-sm {
+    border-radius: 8px !important;
+    padding: 5px 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-sm:hover {
+    transform: translateY(-1px) !important;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3) !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+    border: none !important;
+    box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3) !important;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+    border: none !important;
+    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3) !important;
+}
+
+.btn-outline-danger {
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+/*--------------------------------------------------------------
+# Empty State
+--------------------------------------------------------------*/
+.table tbody td.text-center.text-muted {
+    font-family: "Jost", sans-serif !important;
+    font-size: 0.9rem !important;
+    color: #adb5bd !important;
+    padding: 2.5rem !important;
+}
+
+/*--------------------------------------------------------------
+# Form (Create & Edit)
+--------------------------------------------------------------*/
+.form-label {
+    font-family: "Jost", sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    color: #37517e !important;
+    margin-bottom: 0.4rem !important;
+}
+
+.form-control,
+.form-select {
+    font-family: "Open Sans", sans-serif !important;
+    font-size: 0.875rem !important;
+    border: 2px solid #e1e8ed !important;
+    border-radius: 10px !important;
+    padding: 0.65rem 1rem !important;
+    color: #444 !important;
+    background-color: #f8f9fc !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #47b2e4 !important;
+    box-shadow: 0 0 0 0.2rem rgba(71, 178, 228, 0.15) !important;
+    background-color: #ffffff !important;
+    outline: none !important;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+    font-family: "Open Sans", sans-serif !important;
+    font-size: 0.8rem !important;
+}
+
+/* Preview foto */
+.form-group img.rounded-2,
+.mb-3 img.rounded-2 {
+    border-radius: 10px !important;
+    border: 2px solid #e1e8ed !important;
+    object-fit: cover !important;
+}
+
+/* Divider di form */
+hr {
+    border-color: #e1e8ed !important;
+    margin: 1.5rem 0 !important;
+}
+
+/*--------------------------------------------------------------
+# Animasi
+--------------------------------------------------------------*/
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeInUp 0.4s ease-out both;
+}
+
+.page-header {
+    animation: fadeInUp 0.3s ease-out both;
+}

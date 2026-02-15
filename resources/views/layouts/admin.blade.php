@@ -12,6 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="{{ asset('assets/admin/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/admin/css/components.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/landing/css/header.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="{{ asset('assets/admin/css/sidebar.css') }}" rel="stylesheet">
 
     @stack('styles')
 </head>
