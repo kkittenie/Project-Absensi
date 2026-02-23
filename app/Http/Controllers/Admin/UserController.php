@@ -70,6 +70,12 @@ class UserController extends Controller
 
         $user->syncRoles([$request->role]);
 
+        if ($request->role === 'guru') {
+            $user->guru()->create([
+                'nip' => $request->nip ?? null, // field lain sesuai tabel guru
+                // user_id otomatis diisi karena relasi
+            ]);
+        }
         if ($user->hasRole('superadmin') || $user->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
         }

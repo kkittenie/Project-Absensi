@@ -15,6 +15,8 @@
 
     <link href="{{ asset('assets/admin/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/admin/css/components.css') }}" rel="stylesheet">
+    
+    @stack('styles')
 </head>
 
 <body>
@@ -23,6 +25,8 @@
     </main>
 
     <script src="{{ asset('assets/admin/js/app.js') }}"></script>
+    
+    @stack('scripts')
 </body>
 
 </html>

@@ -22,7 +22,7 @@
             <li class="sidebar-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.users.index') }}">
                     <i class="align-middle" data-feather="users"></i>
-                    <span class="align-middle">Daftar Pengguna</span>
+                    <span class="align-middle">Daftar Admin</span>
                 </a>
             </li>
             @endrole
