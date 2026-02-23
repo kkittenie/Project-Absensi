@@ -40,4 +40,9 @@ class Guru extends Authenticatable
     {
         return $this->belongsTo(User::class);
     }
+
+    public function izins()
+    {
+    return $this->hasMany(Izin::class, 'guru_id');
+    }
 }

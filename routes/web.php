@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\IzinController;
+use App\Http\Controllers\Admin\PerizinanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\Auth\LoginController;
@@ -12,6 +14,7 @@ use App\Http\Controllers\Admin\ProfileController;
 | Landing
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('landing.index');
 })->name('landing.index');
@@ -92,6 +95,18 @@ Route::prefix('admin')
 
         Route::put('/profile', [ProfileController::class, 'edit'])
             ->name('profile.edit');
+
+        Route::get('/admin/surat/{izin}', [PerizinanController::class, 'surat'])
+            ->name('perizinan.surat');
+
+        Route::get('/admin/perizinan', [PerizinanController::class, 'index'])
+            ->name('perizinan.index');
+
+        Route::put('/admin/izin-guru/{id}/approve', [PerizinanController::class, 'approve'])
+            ->name('perizinan.approve');
+
+        Route::put('/admin/izin-guru/{id}/reject', [PerizinanController::class, 'reject'])
+            ->name('perizinan.reject');
     });
 
 
@@ -119,6 +134,10 @@ Route::prefix('guru')
         Route::post('/absensi', [AbsensiController::class, 'store'])
             ->name('absensi.store');
 
+        Route::get('/izin', [IzinController::class, 'index'])->name('izin.index');
+        Route::get('/guru/izin/create', [IzinController::class, 'create'])->name('izin.create');
+        Route::post('/guru/izin', [IzinController::class, 'store'])->name('izin.store');
+
         Route::post('/logout', [LoginController::class, 'logout'])
             ->name('logout');
     });
@@ -139,7 +158,6 @@ Route::middleware(['auth:guru'])
 
         Route::post('/absensi', [AbsensiController::class, 'store'])
             ->name('absensi.store');
-
     });
 
 require __DIR__ . '/auth.php';

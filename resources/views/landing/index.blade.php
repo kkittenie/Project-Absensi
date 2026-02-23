@@ -13,8 +13,8 @@
                     <p>SMP PGRI Sumber</p>
                     <div class="d-flex">
                         <a href="{{ route('guru.absensi.create') }}" class="btn-get-started">Form Absensi</a>
-                        <a href="#" class="btn-get-started">Pengajuan Izin</a>
-                        <a href="#" class="btn-get-started">Status Izin</a>
+                        <a href="{{ route('guru.izin.create') }}" class="btn-get-started">Pengajuan Izin</a>
+                        <a href="{{ route('guru.izin.index') }}" class="btn-get-started">Status Izin</a>
                     </div>
                 </div>
 
