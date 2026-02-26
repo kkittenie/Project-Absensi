@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PerizinanController;
 use App\Http\Controllers\GuruController;
@@ -11,33 +12,27 @@ use App\Http\Controllers\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------
-| Landing
+| Landing Page
 |--------------------------------------------------------------------------
 */
-
-// Landing Page
 Route::get('/', function () {
     return view('landing.index');
 })->name('landing.index');
-
 
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
 */
-
 Route::prefix('admin')
     ->middleware(['auth', 'role:admin|superadmin'])
     ->name('admin.')
     ->group(function () {
 
         // Dashboard
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Profile Management
+        // Profile
         Route::get('/profile', [UserProfileController::class, 'indexAdmin'])->name('profile.index');
         Route::put('/profile', [UserProfileController::class, 'updateAdmin'])->name('profile.update');
 
@@ -51,85 +46,47 @@ Route::prefix('admin')
         Route::put('/users/{uuid}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
         Route::delete('/users/{uuid}', [UserController::class, 'remove'])->name('users.remove');
 
-        // ===== GURU MANAGEMENT =====
+        // Guru Management
         Route::resource('guru', GuruController::class);
+        Route::put('/guru/{uuid}/activate', [GuruController::class, 'activate'])->name('guru.activate');
+        Route::put('/guru/{uuid}/deactivate', [GuruController::class, 'deactivate'])->name('guru.deactivate');
+        Route::delete('/guru/{uuid}/remove', [GuruController::class, 'remove'])->name('guru.remove');
 
-        // Custom activate / deactivate
-        Route::put('/guru/{uuid}/activate', [GuruController::class, 'activate'])
-            ->name('guru.activate');
-
-        Route::put('/guru/{uuid}/deactivate', [GuruController::class, 'deactivate'])
-            ->name('guru.deactivate');
-
-        Route::delete('/guru/{uuid}/remove', [GuruController::class, 'remove'])
-            ->name('guru.remove');
-
-        // ===== PERIZINAN MANAGEMENT =====
-        Route::get('/perizinan', [PerizinanController::class, 'index'])
-            ->name('perizinan.index');
-
-        Route::get('/perizinan/surat/{izin}', [PerizinanController::class, 'surat'])
-            ->name('perizinan.surat');
-
-        Route::put('/perizinan/{id}/approve', [PerizinanController::class, 'approve'])
-            ->name('perizinan.approve');
-
-        Route::put('/perizinan/{id}/reject', [PerizinanController::class, 'reject'])
-            ->name('perizinan.reject');
-
-        // Logout Admin
-        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+        // Perizinan Management
+        Route::get('/perizinan', [PerizinanController::class, 'index'])->name('perizinan.index');
+        Route::get('/perizinan/surat/{izin}', [PerizinanController::class, 'surat'])->name('perizinan.surat');
+        Route::put('/perizinan/{id}/approve', [PerizinanController::class, 'approve'])->name('perizinan.approve');
+        Route::put('/perizinan/{id}/reject', [PerizinanController::class, 'reject'])->name('perizinan.reject');
     });
-
 
 /*
 |--------------------------------------------------------------------------
 | Guru Routes
 |--------------------------------------------------------------------------
 */
-
 Route::prefix('guru')
     ->middleware('auth:guru')
     ->name('guru.')
     ->group(function () {
 
-        // ===== ABSENSI =====
-        Route::get('/absensi', [AbsensiController::class, 'index'])
-            ->name('absensi.index');
+        // Absensi
+        Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+        Route::get('/absensi/create', [AbsensiController::class, 'create'])->name('absensi.create');
+        Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
 
-        Route::get('/absensi/create', [AbsensiController::class, 'create'])
-            ->name('absensi.create');
+        // Izin
+        Route::get('/izin', [IzinController::class, 'index'])->name('izin.index');
+        Route::get('/izin/create', [IzinController::class, 'create'])->name('izin.create');
+        Route::post('/izin', [IzinController::class, 'store'])->name('izin.store');
 
-        Route::post('/absensi', [AbsensiController::class, 'store'])
-            ->name('absensi.store');
-
-        // ===== IZIN =====
-        Route::get('/izin', [IzinController::class, 'index'])
-            ->name('izin.index');
-
-        Route::get('/izin/create', [IzinController::class, 'create'])
-            ->name('izin.create');
-
-        Route::post('/izin', [IzinController::class, 'store'])
-            ->name('izin.store');
-
-        // ===== PROFILE =====
-        Route::get('/profile', [UserProfileController::class, 'indexGuru'])
-            ->name('profile.index');
-
-        Route::put('/profile', [UserProfileController::class, 'updateGuru'])
-            ->name('profile.update');
-
-        // ===== LOGOUT =====
-        Route::post('/logout', [LoginController::class, 'logout'])
-            ->name('logout');
+        // Profile
+        Route::get('/profile', [UserProfileController::class, 'indexGuru'])->name('profile.index');
+        Route::put('/profile', [UserProfileController::class, 'updateGuru'])->name('profile.update');
     });
-
 
 /*
 |--------------------------------------------------------------------------
 | Auth Routes
 |--------------------------------------------------------------------------
 */
-
 require __DIR__ . '/auth.php';

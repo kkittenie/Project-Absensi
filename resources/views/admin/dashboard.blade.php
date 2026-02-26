@@ -29,9 +29,14 @@
                             <i data-feather="users"></i>
                         </div>
                     </div>
-                    <div class="stat-number">320</div>
+                    <div class="stat-number">{{ $totalGuru }}</div>
                     <p class="stat-desc">
-                        <span class="text-success">+5</span> dari bulan lalu
+                        @if($totalGuruChange >= 0)
+                            <span class="text-success">+{{ $totalGuruChange }}</span>
+                        @else
+                            <span class="text-danger">{{ $totalGuruChange }}</span>
+                        @endif
+                        dari bulan lalu
                     </p>
                 </div>
             </div>
@@ -47,9 +52,9 @@
                             <i data-feather="check-circle"></i>
                         </div>
                     </div>
-                    <div class="stat-number">295</div>
+                    <div class="stat-number">{{ $hadirHariIni }}</div>
                     <p class="stat-desc">
-                        <span class="text-success">92%</span> tingkat kehadiran
+                        <span class="text-success">{{ $persenKehadiran }}%</span> tingkat kehadiran
                     </p>
                 </div>
             </div>
@@ -65,7 +70,7 @@
                             <i data-feather="alert-circle"></i>
                         </div>
                     </div>
-                    <div class="stat-number">18</div>
+                    <div class="stat-number">{{ $izinHariIni }}</div>
                     <p class="stat-desc">Pengajuan izin aktif</p>
                 </div>
             </div>
@@ -81,7 +86,7 @@
                             <i data-feather="x-circle"></i>
                         </div>
                     </div>
-                    <div class="stat-number">7</div>
+                    <div class="stat-number">{{ $alphaHariIni }}</div>
                     <p class="stat-desc">Tidak hadir tanpa keterangan</p>
                 </div>
             </div>
@@ -100,7 +105,7 @@
                         <div class="header-icon">
                             <i data-feather="bar-chart-2"></i>
                         </div>
-                        <h5 class="card-title">Statistik Kehadiran</h5>
+                        <h5 class="card-title">Statistik Kehadiran (5 Hari Terakhir)</h5>
                     </div>
                 </div>
                 <div class="card-body">
@@ -122,18 +127,25 @@
                 </div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush attendance-list px-3">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>XI RPL 1</span>
-                            <span class="badge bg-success">Hadir</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>XI RPL 2</span>
-                            <span class="badge bg-warning">Izin</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>X TKJ 1</span>
-                            <span class="badge bg-danger">Alpha</span>
-                        </li>
+                        @forelse($recentAbsensi as $absensi)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ $absensi->guru->nama_guru ?? '-' }}</strong><br>
+                                    <small class="text-muted">{{ $absensi->tanggal->format('d M Y, H:i') }}</small>
+                                </div>
+                                @if($absensi->status == 'hadir')
+                                    <span class="badge bg-success">Hadir</span>
+                                @elseif($absensi->status == 'izin')
+                                    <span class="badge bg-warning">Izin</span>
+                                @else
+                                    <span class="badge bg-danger">Alpha</span>
+                                @endif
+                            </li>
+                        @empty
+                            <li class="list-group-item text-center text-muted py-3">
+                                Belum ada data absensi
+                            </li>
+                        @endforelse
                     </ul>
                 </div>
             </div>
@@ -180,11 +192,11 @@
                 new Chart(ctx, {
                     type: "line",
                     data: {
-                        labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"],
+                        labels: @json($chartLabels),
                         datasets: [
                             {
                                 label: "Hadir",
-                                data: [280, 290, 300, 295, 305],
+                                data: @json($chartHadir),
                                 borderColor: "#47b2e4",
                                 backgroundColor: "rgba(71, 178, 228, 0.1)",
                                 borderWidth: 3,
@@ -197,7 +209,7 @@
                             },
                             {
                                 label: "Izin",
-                                data: [15, 12, 10, 18, 14],
+                                data: @json($chartIzin),
                                 borderColor: "#ffc107",
                                 backgroundColor: "rgba(255, 193, 7, 0.1)",
                                 borderWidth: 3,
@@ -210,7 +222,7 @@
                             },
                             {
                                 label: "Alpha",
-                                data: [5, 8, 6, 7, 4],
+                                data: @json($chartAlpha),
                                 borderColor: "#dc3545",
                                 backgroundColor: "rgba(220, 53, 69, 0.08)",
                                 borderWidth: 3,
@@ -259,13 +271,15 @@
                                 }
                             },
                             y: {
+                                beginAtZero: true,
                                 grid: {
                                     color: 'rgba(0,0,0,0.05)',
                                     drawBorder: false,
                                 },
                                 ticks: {
                                     font: { family: 'Open Sans', size: 12 },
-                                    color: '#6c757d'
+                                    color: '#6c757d',
+                                    stepSize: 5
                                 }
                             }
                         }

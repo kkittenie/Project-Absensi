@@ -2,24 +2,18 @@
 
 @section('title', 'Perizinan Guru | Admin')
 
-@section('content')
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/guru.css') }}">
+@endpush
 
-@if(session('success'))
-    <x-alert type="success">
-        {{ session('success') }}
-    </x-alert>
-@endif
+@section('content')
 
 <div class="container-fluid p-0">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-0">
-                <strong>Perizinan</strong> Guru
-            </h1>
-            <p class="text-muted">
-                Daftar pengajuan izin guru
-            </p>
+            <h1 class="h3 mb-0"><strong>Perizinan</strong> Guru</h1>
+            <p class="text-muted mb-0">Daftar pengajuan izin guru</p>
         </div>
     </div>
 
@@ -48,19 +42,17 @@
                                         <strong>{{ $izin->guru->nama_guru }}</strong><br>
                                         <small class="text-muted">{{ $izin->guru->nip }}</small>
                                     @else
-                                        <span class="text-danger fst-italic">
-                                            Guru tidak ditemukan
-                                        </span>
+                                        <span class="text-danger fst-italic">Guru tidak ditemukan</span>
                                     @endif
                                 </td>
-                                <td>{{ ucfirst($izin->jenis_izin) }}</td>
-                                <td>{{ $izin->tanggal_izin }}</td>
-                                <td>{{ $izin->alasan ?? '-' }}</td>
+                                <td><span class="badge bg-secondary">{{ ucfirst($izin->jenis_izin) }}</span></td>
+                                <td>{{ \Carbon\Carbon::parse($izin->tanggal_izin)->format('d M Y') }}</td>
+                                <td>{{ Str::limit($izin->alasan ?? '-', 40) }}</td>
                                 <td class="text-center">
                                     @if ($izin->foto_surat)
                                         <a href="{{ route('admin.perizinan.surat', $izin->id) }}"
                                            class="btn btn-sm btn-info">
-                                            Lihat
+                                            <i data-feather="file-text"></i>
                                         </a>
                                     @else
                                         -
@@ -78,17 +70,21 @@
                                 <td class="text-end">
                                     @if ($izin->status == 'menunggu')
                                         <form action="{{ route('admin.perizinan.approve', $izin->id) }}"
-                                              method="POST" class="d-inline">
+                                              method="POST" class="d-inline form-approve">
                                             @csrf
                                             @method('PUT')
-                                            <button class="btn btn-sm btn-success">Setujui</button>
+                                            <button type="button" class="btn btn-sm btn-success btn-approve">
+                                                <i data-feather="check"></i>
+                                            </button>
                                         </form>
 
                                         <form action="{{ route('admin.perizinan.reject', $izin->id) }}"
-                                              method="POST" class="d-inline">
+                                              method="POST" class="d-inline form-reject">
                                             @csrf
                                             @method('PUT')
-                                            <button class="btn btn-sm btn-danger">Tolak</button>
+                                            <button type="button" class="btn btn-sm btn-danger btn-reject">
+                                                <i data-feather="x"></i>
+                                            </button>
                                         </form>
                                     @else
                                         -
@@ -110,3 +106,60 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                confirmButtonColor: '#47b2e4'
+            });
+        @endif
+
+        document.querySelectorAll('.btn-approve').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('.form-approve');
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Setujui pengajuan izin ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Setujui!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-reject').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('.form-reject');
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Tolak pengajuan izin ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Tolak!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+
+    });
+</script>
+@endpush

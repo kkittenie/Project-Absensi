@@ -14,11 +14,10 @@
                 <li><a href="{{ route('landing.index') }}#about">Tentang Kami</a></li>
                 <li><a href="{{ route('landing.index') }}#contact">Kontak</a></li>
             </ul>
-            {{-- Hamburger dikembalikan ke dalam nav --}}
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        {{-- Tombol profil / login (kanan) --}}
+        {{-- Tombol profil / login (kanan, setelah hamburger di mobile) --}}
         @if(auth('web')->check() && auth('web')->user()->hasAnyRole(['admin','superadmin']))
             <div class="user-dropdown" id="userDropdown">
                 <button class="user-dropdown-toggle" onclick="toggleDropdown()">
@@ -29,7 +28,7 @@
                         <i class="bi bi-person-circle"></i>
                     @endif
                     <span>{{ auth('web')->user()->name }}</span>
-                    <i class="bi bi-chevron-down" style="font-size: 12px;"></i>
+                    <i class="bi bi-chevron-down"></i>
                 </button>
 
                 <div class="user-dropdown-menu">
@@ -70,7 +69,7 @@
                         <i class="bi bi-person-circle"></i>
                     @endif
                     <span>{{ auth('guru')->user()->nama_guru }}</span>
-                    <i class="bi bi-chevron-down" style="font-size: 12px;"></i>
+                    <i class="bi bi-chevron-down"></i>
                 </button>
 
                 <div class="user-dropdown-menu">
