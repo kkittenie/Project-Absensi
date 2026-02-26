@@ -1,135 +1,217 @@
-    .user-dropdown {
-        position: relative;
-        display: inline-block;
-        margin-left: 30px; /* Spacing dari menu kontak */
-    }
-    
-    .user-dropdown-toggle {
-        background: var(--accent-color, #47b2e4);
-        color: #ffffff;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 50px;
-        font-family: var(--heading-font, "Jost", sans-serif);
-        font-weight: 500;
-        font-size: 15px;
-        letter-spacing: 1px;
-        cursor: pointer;
-        transition: 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .user-dropdown-toggle:hover {
-        background: color-mix(in srgb, var(--accent-color, #47b2e4), transparent 15%);
-    }
-    
-    .user-dropdown-toggle i {
-        font-size: 18px;
-    }
+/*--------------------------------------------------------------
+# Header Layout Fix - Override template landing page
+--------------------------------------------------------------*/
+#header .container-fluid,
+#header .container-xl {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+}
 
-    /* Foto profil di tombol navbar */
-    .user-dropdown-toggle .avatar-img {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid rgba(255, 255, 255, 0.6);
-        flex-shrink: 0;
-    }
-    
-    .user-dropdown-menu {
-        position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
-        background: #ffffff;
-        min-width: 200px;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        z-index: 1000;
-        overflow: hidden;
-    }
-    
-    .user-dropdown.show .user-dropdown-menu {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-    
-    .user-dropdown-header {
-        padding: 15px;
-        background: var(--accent-color, #47b2e4);
-        color: #ffffff;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .user-dropdown-header .user-name {
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 3px;
-    }
-    
-    .user-dropdown-header .user-role {
-        font-size: 12px;
-        opacity: 0.9;
-    }
-    
-    .user-dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 15px;
-        color: #444444;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        border: none;
-        background: none;
-        width: 100%;
-        text-align: left;
-        cursor: pointer;
-        font-family: var(--default-font, "Open Sans", sans-serif);
-        font-size: 14px;
-    }
-    
-    .user-dropdown-item:hover {
-        background: #f5f6f8;
-        color: var(--accent-color, #47b2e4);
-    }
-    
-    .user-dropdown-item i {
-        font-size: 16px;
-        width: 20px;
-        text-align: center;
-    }
-    
-    .user-dropdown-divider {
-        height: 1px;
-        background: #e1e8ed;
-        margin: 5px 0;
-    }
-    
-    /* Form reset untuk logout button */
-    .logout-dropdown-form {
-        margin: 0;
-        padding: 0;
-        display: block;
-    }
+/* Logo tetap di kiri */
+#header .logo {
+    flex: 0 0 auto !important;
+    margin-right: auto !important;
+    min-width: 0 !important;
+}
 
-    /* Override AdminKit untuk dropdown admin navbar */
-.navbar .user-dropdown-toggle {
+/* Nav di tengah */
+#header #navmenu {
+    flex: 0 0 auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* Tombol profil & login SELALU di kanan */
+#header .user-dropdown,
+#header .btn-getstarted {
+    flex: 0 0 auto !important;
+    margin-left: 20px !important;
+    margin-right: 0 !important;
+    order: 10 !important;
+}
+
+/* Hamburger paling kanan */
+#header .mobile-nav-toggle {
+    flex: 0 0 auto !important;
+    margin-left: 10px !important;
+    order: 20 !important;
+}
+
+/*--------------------------------------------------------------
+# User Dropdown Toggle
+--------------------------------------------------------------*/
+.user-dropdown {
+    position: relative !important;
+    display: inline-flex !important;
+    flex-shrink: 0 !important;
+}
+
+.user-dropdown-toggle {
     background: var(--accent-color, #47b2e4) !important;
     color: #ffffff !important;
     border: none !important;
     padding: 8px 20px !important;
     border-radius: 50px !important;
-    font-family: "Jost", sans-serif !important;
+    font-family: var(--heading-font, "Jost", sans-serif) !important;
     font-weight: 500 !important;
     font-size: 15px !important;
     letter-spacing: 1px !important;
-    box-shadow: none !important;
+    cursor: pointer !important;
+    transition: 0.3s !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+}
+
+.user-dropdown-toggle:hover {
+    background: color-mix(in srgb, var(--accent-color, #47b2e4), transparent 15%) !important;
+}
+
+.user-dropdown-toggle i {
+    font-size: 18px !important;
+}
+
+.user-dropdown-toggle .avatar-img {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    flex-shrink: 0 !important;
+}
+
+/*--------------------------------------------------------------
+# Dropdown Menu
+--------------------------------------------------------------*/
+.user-dropdown-menu {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    left: auto !important;
+    background: #ffffff !important;
+    min-width: 200px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(-10px) !important;
+    transition: all 0.3s ease !important;
+    z-index: 99999 !important;
+    overflow: hidden !important;
+}
+
+.user-dropdown.show .user-dropdown-menu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+.user-dropdown-header {
+    padding: 15px !important;
+    background: var(--accent-color, #47b2e4) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.user-dropdown-header .user-name {
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 3px !important;
+}
+
+.user-dropdown-header .user-role {
+    font-size: 12px !important;
+    opacity: 0.9 !important;
+}
+
+.user-dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 15px !important;
+    color: #444444 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    background: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    font-family: var(--default-font, "Open Sans", sans-serif) !important;
+    font-size: 14px !important;
+}
+
+.user-dropdown-item:hover {
+    background: #f5f6f8 !important;
+    color: var(--accent-color, #47b2e4) !important;
+}
+
+.user-dropdown-item i {
+    font-size: 16px !important;
+    width: 20px !important;
+    text-align: center !important;
+}
+
+.user-dropdown-divider {
+    height: 1px !important;
+    background: #e1e8ed !important;
+    margin: 5px 0 !important;
+}
+
+.logout-dropdown-form {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+.btn-getstarted {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+
+/*--------------------------------------------------------------
+# Responsive
+--------------------------------------------------------------*/
+@media (max-width: 1199px) {
+    #header .user-dropdown,
+    #header .btn-getstarted {
+        margin-left: 15px !important;
+    }
+
+    .user-dropdown-toggle {
+        padding: 7px 14px !important;
+        font-size: 13px !important;
+    }
+
+    .user-dropdown-toggle span {
+        max-width: 90px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+}
+
+@media (max-width: 575px) {
+    #header .user-dropdown,
+    #header .btn-getstarted {
+        margin-left: 8px !important;
+    }
+
+    .user-dropdown-toggle {
+        padding: 6px 10px !important;
+        gap: 4px !important;
+    }
+
+    .user-dropdown-toggle span {
+        display: none !important;
+    }
+
+    .user-dropdown-menu {
+        right: 0 !important;
+        left: auto !important;
+        min-width: 175px !important;
+    }
 }

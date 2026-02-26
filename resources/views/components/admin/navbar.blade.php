@@ -9,7 +9,6 @@
             <li class="nav-item">
                 <div class="user-dropdown" id="adminUserDropdown">
                     <button class="user-dropdown-toggle" onclick="toggleAdminDropdown()">
-                        {{-- Foto profil, fallback ke icon --}}
                         @if(auth()->user()->photo)
                             <img src="{{ asset('storage/' . auth()->user()->photo) }}"
                                  alt="Foto Profil"
@@ -27,10 +26,16 @@
                             <div class="user-role">{{ auth()->user()->role ?? '' }}</div>
                         </div>
 
+                        <a href="{{ route('landing.index') }}" class="user-dropdown-item">
+                            <i class="bi bi-house"></i>
+                            <span>Beranda</span>
+                        </a>
+
                         <a href="{{ route('admin.profile.index') }}" class="user-dropdown-item">
                             <i class="bi bi-person"></i>
                             <span>Profil Saya</span>
                         </a>
+
 
                         <div class="user-dropdown-divider"></div>
 
@@ -56,7 +61,6 @@
         dropdown.classList.toggle('show');
     }
 
-    // Tutup dropdown kalau klik di luar
     document.addEventListener('click', function(event) {
         const dropdown = document.getElementById('adminUserDropdown');
         if (dropdown && !dropdown.contains(event.target)) {
@@ -64,7 +68,6 @@
         }
     });
 
-    // Konfirmasi logout
     document.addEventListener('DOMContentLoaded', function() {
         const btnLogout = document.getElementById('btnAdminLogout');
         const logoutForm = document.getElementById('adminLogoutForm');
