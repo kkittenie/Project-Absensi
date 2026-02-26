@@ -36,20 +36,27 @@ class Guru extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-    // relasi
+    /*
+    |--------------------------------------------------------------------------
+    | RELASI
+    |--------------------------------------------------------------------------
+    */
+
+    // Guru milik satu user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-<<<<<<< HEAD
 
+    // Guru punya banyak izin
     public function izins()
     {
-    return $this->hasMany(Izin::class, 'guru_id');
-=======
+        return $this->hasMany(Izin::class, 'guru_id');
+    }
+
+    // Guru punya satu mapel
     public function mapel()
     {
         return $this->belongsTo(Mapel::class);
->>>>>>> 86d166ac40757a8758089db043addefcd0fa8716
     }
 }

@@ -57,7 +57,7 @@
 
                     </div>
 
-                    <form id="absenForm" method="POST" action="{{ route('absensi.store') }}">
+                    <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">
                         @csrf
                         <input type="hidden" name="photo_base64" id="photo">
                         <input type="hidden" name="latitude" id="latitude">
