@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany; // <--- WAJIB TAMBAHKAN INI
+use App\Models\Kehadiran;
+use App\Models\User;
 
 class Guru extends Authenticatable
 {
@@ -23,7 +26,7 @@ class Guru extends Authenticatable
         'photo',
         'is_active',
         'password',
-        'role', // ini baru
+        'role',
     ];
 
     protected $hidden = [
@@ -35,9 +38,15 @@ class Guru extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-    // RELASI KE USER
+    // Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke Kehadiran
+    public function kehadiran(): HasMany // Sekarang HasMany sudah dikenali
+    {
+        return $this->hasMany(Kehadiran::class, 'guru_id');
     }
 }

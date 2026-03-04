@@ -35,6 +35,14 @@
                 </a>
             </li>
             @endrole
+            @role('superadmin')
+            <li class="sidebar-item {{ request()->routeIs('admin.kehadiran.index') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.kehadiran.index') }}">
+                    <i class="align-middle" data-feather="user"></i>
+                    <span class="align-middle">Data Kehadiran</span>
+                </a>
+            </li>
+            @endrole
         </ul>
     </div>
 </nav>
