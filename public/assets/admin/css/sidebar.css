@@ -1,0 +1,305 @@
+/*--------------------------------------------------------------
+# Sidebar Override - Tema Landing Page
+# Warna: #37517e (navy) | #47b2e4 (biru accent) | #4668a2
+--------------------------------------------------------------*/
+
+/* Sidebar wrapper */
+.sidebar {
+    background: linear-gradient(180deg, #37517e 0%, #2d4168 100%) !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.sidebar-content {
+    background: transparent !important;
+}
+
+/* Brand / Logo */
+.sidebar-brand {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 1.25rem 1.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    transition: all 0.3s ease !important;
+}
+
+.sidebar-brand:hover {
+    background: rgba(0, 0, 0, 0.2) !important;
+    text-decoration: none !important;
+}
+
+.sidebar-brand span,
+.sidebar-brand .align-middle {
+    font-family: "Jost", sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+}
+
+/* Section header */
+.sidebar-header {
+    font-family: "Jost", sans-serif !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+    padding: 1.25rem 1.5rem 0.5rem !important;
+}
+
+/* Nav list */
+.sidebar-nav {
+    padding: 0.5rem 0 !important;
+}
+
+/* Nav item */
+.sidebar-item {
+    margin: 2px 0.75rem !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+/* Nav link */
+.sidebar-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 10px !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-family: "Open Sans", sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    background: transparent !important;
+}
+
+.sidebar-link i,
+.sidebar-link svg {
+    width: 18px !important;
+    height: 18px !important;
+    stroke: rgba(255, 255, 255, 0.75) !important;
+    flex-shrink: 0 !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Hover state */
+.sidebar-link:hover {
+    color: #ffffff !important;
+    background: rgba(71, 178, 228, 0.2) !important;
+    text-decoration: none !important;
+}
+
+.sidebar-link:hover i,
+.sidebar-link:hover svg {
+    stroke: #47b2e4 !important;
+}
+
+/* Active state */
+.sidebar-item.active > .sidebar-link {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #47b2e4, #4668a2) !important;
+    box-shadow: 0 4px 15px rgba(71, 178, 228, 0.35) !important;
+    font-weight: 600 !important;
+}
+
+.sidebar-item.active > .sidebar-link i,
+.sidebar-item.active > .sidebar-link svg {
+    stroke: #ffffff !important;
+}
+
+/* Active indicator bar */
+.sidebar-item.active {
+    position: relative !important;
+}
+
+.sidebar-item.active::before {
+    content: '' !important;
+    position: absolute !important;
+    left: -0.75rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 4px !important;
+    height: 60% !important;
+    background: #47b2e4 !important;
+    border-radius: 0 4px 4px 0 !important;
+    display: none !important; /* aktifkan kalau mau tampil */
+}
+
+/* Scrollbar sidebar */
+.sidebar-content::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 10px !important;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35) !important;
+}
+
+/*--------------------------------------------------------------
+# Navbar Override - Tema Landing Page
+--------------------------------------------------------------*/
+.navbar-bg {
+    background: #ffffff !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08) !important;
+    border-bottom: 1px solid #f0f2f5 !important;
+}
+
+.navbar .hamburger,
+.navbar .hamburger::before,
+.navbar .hamburger::after {
+    background: #37517e !important;
+}
+
+/* User dropdown di navbar admin - override Bootstrap */
+.navbar .user-dropdown {
+    position: relative !important;
+    display: inline-block !important;
+    margin-left: 0 !important;
+}
+
+.navbar .user-dropdown-toggle {
+    background: linear-gradient(135deg, #47b2e4, #4668a2) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 8px 18px !important;
+    border-radius: 50px !important;
+    font-family: "Jost", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 15px rgba(71, 178, 228, 0.3) !important;
+}
+
+.navbar .user-dropdown-toggle:hover {
+    background: linear-gradient(135deg, #2d9fd0, #37517e) !important;
+    box-shadow: 0 6px 20px rgba(71, 178, 228, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+
+.navbar .user-dropdown-toggle .avatar-img {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    flex-shrink: 0 !important;
+}
+
+.navbar .user-dropdown-toggle i {
+    font-size: 18px !important;
+}
+
+.navbar .user-dropdown-toggle .bi-chevron-down {
+    font-size: 11px !important;
+    transition: transform 0.3s ease !important;
+}
+
+.navbar .user-dropdown.show .bi-chevron-down {
+    transform: rotate(180deg) !important;
+}
+
+.navbar .user-dropdown-menu {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    background: #ffffff !important;
+    min-width: 210px !important;
+    border-radius: 14px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(-10px) !important;
+    transition: all 0.3s ease !important;
+    z-index: 1050 !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+.navbar .user-dropdown.show .user-dropdown-menu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+.navbar .user-dropdown-header {
+    padding: 15px !important;
+    background: linear-gradient(135deg, #47b2e4, #37517e) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.navbar .user-dropdown-header .user-name {
+    font-family: "Jost", sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 3px !important;
+}
+
+.navbar .user-dropdown-header .user-role {
+    font-size: 11px !important;
+    opacity: 0.85 !important;
+    text-transform: capitalize !important;
+}
+
+.navbar .user-dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 11px 15px !important;
+    color: #444444 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    background: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    font-family: "Open Sans", sans-serif !important;
+    font-size: 13.5px !important;
+}
+
+.navbar .user-dropdown-item:hover {
+    background: #f0f7fd !important;
+    color: #47b2e4 !important;
+}
+
+.navbar .user-dropdown-item.text-danger:hover {
+    background: #fff0f0 !important;
+    color: #dc3545 !important;
+}
+
+.navbar .user-dropdown-item i {
+    font-size: 16px !important;
+    width: 20px !important;
+    text-align: center !important;
+}
+
+.navbar .user-dropdown-divider {
+    height: 1px !important;
+    background: #f0f2f5 !important;
+    margin: 4px 0 !important;
+}
+
+.navbar .logout-dropdown-form {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}

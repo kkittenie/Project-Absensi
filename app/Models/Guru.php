@@ -17,13 +17,14 @@ class Guru extends Authenticatable
         'user_id',
         'uuid',
         'nama_guru',
-        'mata_pelajaran',
+        'email',
+        'mapel_id',
         'nip',
         'nomor_telepon',
         'photo',
         'is_active',
         'password',
-        'role', // ini baru
+        'role',
     ];
 
     protected $hidden = [
@@ -35,12 +36,19 @@ class Guru extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-    // RELASI KE USER
+    /*
+    |--------------------------------------------------------------------------
+    | RELASI
+    |--------------------------------------------------------------------------
+    */
+
+    // Guru milik satu user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+<<<<<<< HEAD
   
 public function waktus()
 {
@@ -49,3 +57,17 @@ public function waktus()
 
 
 }
+=======
+    // Guru punya banyak izin
+    public function izins()
+    {
+        return $this->hasMany(Izin::class, 'guru_id');
+    }
+
+    // Guru punya satu mapel
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class);
+    }
+}
+>>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434

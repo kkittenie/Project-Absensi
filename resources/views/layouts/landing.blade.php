@@ -26,7 +26,8 @@
 
     <!-- Main CSS -->
     <link href="{{ asset('assets/landing/css/main.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('assets/landing/css/header.css') }}" rel="stylesheet"> 
+    
     @stack('styles')
 </head>
 

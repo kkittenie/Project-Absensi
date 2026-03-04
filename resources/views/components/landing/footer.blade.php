@@ -44,7 +44,7 @@
                 <h4>Layanan</h4>
                 <ul>
                     <li><i class="bi bi-chevron-right"></i> <a href="#">Absensi Online</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Pengajuan Izin</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.izin.create') }}">Pengajuan Izin</a></li>
                     <li><i class="bi bi-chevron-right"></i> <a href="#">Rekap Kehadiran</a></li>
                 </ul>
             </div>

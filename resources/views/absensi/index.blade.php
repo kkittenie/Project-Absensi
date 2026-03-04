@@ -4,7 +4,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- SWEET ALERT SESSION --}}
     @if(session('success'))
         <script>
             Swal.fire({
@@ -16,6 +15,10 @@
             });
         </script>
     @endif
+
+    @php
+        $canAbsen = auth()->guard('guru')->check();
+    @endphp
 
     @if(session('error'))
         <script>
@@ -38,14 +41,23 @@
 
                         <video id="video" class="w-100 rounded mirror" autoplay muted playsinline></video>
                         <canvas id="canvas" hidden></canvas>
+                        @if(!$canAbsen && !auth()->guard('web')->check())
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: 'Hanya guru yang bisa melakukan absensi!'
+                                });
+                            </script>
+                        @endif
 
-                        <button type="button" id="snap" class="btn btn-primary w-100 mt-3">
-                            Aktifkan Kamera
+                        <button type="button" id="snap" class="btn btn-primary w-100 mt-3" {{ !$canAbsen ? 'disabled' : '' }}>
+                            Absen Sekarang
                         </button>
-
 
                     </div>
 
+<<<<<<< HEAD
                <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">
     @csrf
     <input type="hidden" name="photo_base64" id="photo">
@@ -53,6 +65,14 @@
     <input type="hidden" name="longitude" id="longitude">
 </form>
 
+=======
+                    <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">
+                        @csrf
+                        <input type="hidden" name="photo_base64" id="photo">
+                        <input type="hidden" name="latitude" id="latitude">
+                        <input type="hidden" name="longitude" id="longitude">
+                    </form>
+>>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
 
                 </div>
             </div>
@@ -79,7 +99,7 @@
         const latitude = document.getElementById('latitude');
         const longitude = document.getElementById('longitude');
 
-        let cameraActive = false; // ✅ PINDAH KE SINI
+        let cameraActive = false;
 
         function cekJamAbsen() {
             const jam = new Date().toTimeString().slice(0, 5);
@@ -100,9 +120,6 @@
 
         snap.addEventListener('click', async () => {
 
-            // =====================
-            // AKTIFKAN KAMERA
-            // =====================
             if (!cameraActive) {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -121,9 +138,6 @@
                 return;
             }
 
-            // =====================
-            // PROSES ABSENSI
-            // =====================
             if (!cekJamAbsen()) {
                 Swal.fire({
                     icon: 'warning',
