@@ -59,8 +59,9 @@ class LoginController extends Controller
         if ($guru && Hash::check($password, $guru->password)) {
             Auth::guard('guru')->login($guru, $remember);
 
-            return redirect()->route('absensi.index')
-                ->withSuccess("Selamat datang, {$guru->nama_guru}");
+           return redirect()->route('guru.absensi.index')
+    ->withSuccess("Selamat datang, {$guru->nama_guru}");
+
         }
         return back()->withErrors([
             'nip' => 'NIP atau password salah, atau akun tidak aktif.',

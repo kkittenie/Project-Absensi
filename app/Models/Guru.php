@@ -40,4 +40,12 @@ class Guru extends Authenticatable
     {
         return $this->belongsTo(User::class);
     }
+
+  
+public function waktus()
+{
+    return $this->hasMany(Waktu::class);
+}
+
+
 }

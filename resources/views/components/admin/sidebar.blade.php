@@ -35,6 +35,14 @@
                 </a>
             </li>
             @endrole
+            @role('superadmin')
+            <li class="sidebar-item {{ request()->routeIs('admin.waktu.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.waktu.index') }}">
+                    <i class="align-middle" data-feather="user"></i>
+                    <span class="align-middle">Pengaturan Waktu</span>
+                </a>
+            </li>
+            @endrole
         </ul>
     </div>
 </nav>

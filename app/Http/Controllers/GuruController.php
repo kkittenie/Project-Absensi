@@ -2,121 +2,62 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Guru;
-use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Facades\Hash;
 
 class GuruController extends Controller
 {
+    // =====================
+    // INDEX
+    // =====================
     public function index(Request $request)
     {
         $status = $request->get('status', 'active');
 
-        if ($status === 'inactive') {
-            $gurus = Guru::where('is_active', false)->get();
-        } else {
-            $gurus = Guru::where('is_active', true)->whereNull('deleted_at')->get();
-        }
+        $gurus = Guru::where('is_active', $status === 'active' ? 1 : 0)
+            ->orderBy('nama_guru')
+            ->get();
 
-        return view('admin.guru.index', compact('gurus', 'status'));
+        return view('admin.guru.index', compact('gurus'));
     }
 
-
+    // =====================
+    // CREATE
+    // =====================
     public function create()
     {
         return view('admin.guru.create');
     }
 
+    // =====================
+    // STORE (INI YANG FIX!)
+    // =====================
     public function store(Request $request)
     {
         $request->validate([
-            'nama_guru' => 'required',
-            'mata_pelajaran' => 'required',
-            'nip' => 'required|unique:gurus,nip',
-            'nomor_telepon' => 'required',
-            'photo' => 'nullable|image|max:2048'
+            'nama_guru'      => 'required|string|max:255',
+            'mata_pelajaran' => 'required|string|max:255',
+            'nip'            => 'required|string|max:50',
+            'nomor_telepon'  => 'required|string|max:20',
+            'is_active'      => 'required|boolean',
         ]);
 
-        $data = $request->all();
-        $data['uuid'] = Str::uuid();
-        $data['password'] = Hash::make($request->nip);
-        $data['is_active'] = true;
-
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('guru', 'public');
-        }
-
-        Guru::create($data);
-
-        return redirect()->route('admin.guru.index');
-    }
-
-
-    public function edit($uuid)
-    {
-        $guru = Guru::where('uuid', $uuid)->firstOrFail();
-
-        return view('admin.guru.edit', compact('guru'));
-    }
-
-    public function update(Request $request, $uuid)
-    {
-        $guru = Guru::where('uuid', $uuid)->firstOrFail();
-
-        $request->validate([
-            'nama_guru' => 'required',
-            'mata_pelajaran' => 'required',
-            'nip' => [
-                'required',
-                Rule::unique('gurus', 'nip')->ignore($guru->id),
-            ],
-            'nomor_telepon' => 'required',
-            'photo' => 'nullable|image|max:2048',
+        Guru::create([
+            'uuid'           => Str::uuid(),
+            'nama_guru'      => $request->nama_guru,
+            'mata_pelajaran' => $request->mata_pelajaran,
+            'nip'            => $request->nip,
+            'nomor_telepon'  => $request->nomor_telepon,
+            'is_active'      => $request->is_active, // 🔥 WAJIB
+            'role'           => 'guru',
+            'password'       => Hash::make('password123'),
         ]);
 
-
-        $data = $request->all();
-
-        if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('guru', 'public');
-        }
-
-        $guru->update($data);
-
-        return redirect()->route('admin.guru.index');
-    }
-
-    public function remove($uuid)
-    {
-        $guru = Guru::where('uuid', $uuid)->firstOrFail();
-        $guru->delete();
-
-        return redirect()->route('admin.guru.index');
-    }
-    public function activate($uuid)
-    {
-        $guru = Guru::where('uuid', $uuid)->firstOrFail();
-
-        $guru->update([
-            'is_active' => true
-        ]);
-
-        return redirect()->route('admin.guru.index')
-            ->with('success', 'Guru berhasil diaktifkan kembali');
-    }
-
-    public function deactivate($uuid)
-    {
-        $guru = Guru::where('uuid', $uuid)->firstOrFail();
-
-        $guru->update([
-            'is_active' => false
-        ]);
-
-        return redirect()->route('admin.guru.index')
-            ->with('success', 'Guru berhasil dinonaktifkan');
+        return redirect()
+            ->route('admin.guru.index', ['status' => 'active'])
+            ->with('success', 'Guru berhasil ditambahkan');
     }
 }

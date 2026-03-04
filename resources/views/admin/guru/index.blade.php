@@ -64,8 +64,13 @@
                                 <td>{{ $loop->iteration }}</td>
 
                                 <td>
-                                    <img src="{{ $guru->photo ? asset('storage/' . $guru->photo) : asset('assets/admin/img/avatars/default.jpg') }}"
-                                        width="40" height="40" class="rounded-2 object-fit-cover">
+                                    <img
+                                        src="{{ $guru->photo
+                                            ? asset('storage/' . $guru->photo)
+                                            : asset('assets/admin/img/avatars/default.jpg') }}"
+                                        width="40"
+                                        height="40"
+                                        class="rounded-2 object-fit-cover">
                                 </td>
 
                                 <td>{{ $guru->nama_guru }}</td>
@@ -73,7 +78,7 @@
                                 <td>{{ $guru->nip }}</td>
 
                                 <td>
-                                    @if($guru->is_active)
+                                    @if ($guru->is_active)
                                         <span class="badge bg-success">Aktif</span>
                                     @else
                                         <span class="badge bg-danger">Tidak Aktif</span>
@@ -81,21 +86,27 @@
                                 </td>
 
                                 <td class="text-end">
-                                    @if($guru->is_active)
-                                        <a href="{{ route('admin.guru.edit', $guru->uuid) }}" class="btn btn-sm btn-warning">
+                                    @if ($guru->is_active)
+                                        {{-- EDIT --}}
+                                        <a href="{{ route('admin.guru.edit', $guru->uuid) }}"
+                                            class="btn btn-sm btn-warning">
                                             <i data-feather="edit"></i>
                                         </a>
 
-                                        <form action="{{ route('admin.guru.deactivate', $guru->uuid) }}" method="POST"
-                                            class="d-inline">
+                                        {{-- DEACTIVATE --}}
+                                        <form action="{{ route('admin.guru.deactivate', $guru->uuid) }}"
+                                            method="POST" class="d-inline">
                                             @csrf
                                             @method('PUT')
-                                            <button class="btn btn-sm btn-danger" onclick="return confirm('Nonaktifkan guru ini?')">
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Nonaktifkan guru ini?')">
                                                 <i data-feather="user-x"></i>
                                             </button>
                                         </form>
                                     @else
-                                        <form action="{{ route('admin.guru.remove', $guru->uuid) }}" method="POST" class="d-inline">
+                                        {{-- DELETE --}}
+                                        <form action="{{ route('admin.guru.remove', $guru->uuid) }}"
+                                            method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-sm btn-outline-danger"
@@ -104,8 +115,9 @@
                                             </button>
                                         </form>
 
-                                        <form action="{{ route('admin.guru.activate', $guru->uuid) }}" method="POST"
-                                            class="d-inline">
+                                        {{-- ACTIVATE --}}
+                                        <form action="{{ route('admin.guru.activate', $guru->uuid) }}"
+                                            method="POST" class="d-inline">
                                             @csrf
                                             @method('PUT')
                                             <button class="btn btn-sm btn-success">
