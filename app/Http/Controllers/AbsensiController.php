@@ -14,12 +14,23 @@ class AbsensiController extends Controller
 {
     public function index()
     {
-        return view('absensi.index');
+        $guru = auth('guru')->user();
+
+        $canAbsen = false;
+
+        if (Auth::guard('guru')->check()) {
+            $canAbsen = true;
+        }
+
+        return view('absensi.index', compact('canAbsen'));
     }
     public function create()
     {
-        $gurus = Guru::where('is_active', true)->get();
-        return view('absensi.index', compact('gurus'));
+        $guru = auth()->guard('guru')->user();
+
+        $canAbsen = $guru ? true : false;
+
+        return view('absensi.index', compact('canAbsen'));
     }
 
     public function store(Request $request)
@@ -28,9 +39,14 @@ class AbsensiController extends Controller
             'photo_base64' => 'required',
             'latitude' => 'required',
             'longitude' => 'required',
-        ]);
+        ]); {
 
-        $guru = auth('guru')->user();
+            $guru = auth()->guard('guru')->user();
+
+            if (!$guru) {
+                return back()->with('error', 'Akun belum terhubung dengan data guru');
+            }
+        }
 
         if (!$guru) {
             return back()->with('error', 'Akun belum terhubung dengan data guru');
@@ -61,7 +77,6 @@ class AbsensiController extends Controller
             base64_decode($base64Image)
         );
 
-        // ================= DATABASE =================
         Absensi::create([
             'uuid' => Str::uuid(),
             'guru_id' => $guru->id,

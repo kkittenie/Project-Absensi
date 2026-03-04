@@ -12,14 +12,21 @@
                     <h1>Selamat Datang di Sistem Informasi Kehadiran Guru</h1>
                     <p>SMP PGRI Sumber</p>
                     <div class="d-flex">
-                        <a href="{{ route('guru.absensi.create') }}" class="btn-get-started">Form Absensi</a>
-                        <a href="#" class="btn-get-started">Pengajuan Izin</a>
-                        <a href="#" class="btn-get-started">Status Izin</a>
+                        @auth('guru')
+                            <a href="{{ route('guru.absensi.create') }}" class="btn-get-started">Form Absensi</a>
+                            <a href="{{ route('guru.izin.create') }}" class="btn-get-started">Pengajuan Izin</a>
+                            <a href="{{ route('guru.izin.index') }}" class="btn-get-started">Status Izin</a>
+                        @else
+                            {{-- Hero section --}}
+                            @if(!auth('web')->check() && !auth('guru')->check())
+                                <a href="{{ route('login') }}" class="btn-get-started">Login Untuk Mulai</a>
+                            @endif
+                        @endauth
                     </div>
                 </div>
 
                 <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
-                    <img src="{{ asset('assets/landing/img/hero-img.png') }}" class="img-fluid animated" alt="">
+                    <img src="{{ asset('assets/landing/img/hero-img.png') }}" class="img-fluid animated" alt="Hero Image">
                 </div>
             </div>
         </div>
@@ -34,8 +41,8 @@
             <div class="row gy-4">
                 <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
                     <p>
-                        SiHadir Guru adalah platform absensi sekolah berbasis digital yang dirancang untuk mempermudah proses
-                        pencatatan kehadiran guru secara cepat, akurat, dan efisien. Sistem ini hadir sebagai
+                        SiHadir Guru adalah platform absensi sekolah berbasis digital yang dirancang untuk mempermudah
+                        proses pencatatan kehadiran guru secara cepat, akurat, dan efisien. Sistem ini hadir sebagai
                         solusi modern untuk menggantikan metode absensi manual, sehingga data kehadiran dapat dikelola
                         dengan lebih rapi dan transparan.
                     </p>
@@ -46,7 +53,8 @@
                     </ul>
                 </div>
                 <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                    <p>Website ini membantu guru dan pihak sekolah dalam memantau kehadiran guru secara real-time,
+                    <p>
+                        Website ini membantu guru dan pihak sekolah dalam memantau kehadiran guru secara real-time,
                         sekaligus memberikan kemudahan bagi guru dalam melakukan absensi harian. Dengan tampilan yang
                         sederhana dan fitur yang mudah digunakan, kami berkomitmen untuk mendukung digitalisasi pendidikan.
                     </p>
@@ -68,7 +76,7 @@
                     </div>
                     <div class="faq-container px-xl-5" data-aos="fade-up" data-aos-delay="200">
                         <div class="faq-item faq-active">
-                            <h3><span>01</span>Sistem Absen Harian </h3>
+                            <h3><span>01</span> Sistem Absen Harian</h3>
                             <div class="faq-content">
                                 <p>Pengguna melakukan absensi dengan membuka kamera melalui website, lalu mengambil foto
                                     sebagai bukti kehadiran yang akan tersimpan otomatis di sistem.</p>
@@ -84,7 +92,7 @@
                             <i class="faq-toggle bi bi-chevron-right"></i>
                         </div>
                         <div class="faq-item">
-                            <h3><span>03</span> Cek Status Perizinan </h3>
+                            <h3><span>03</span> Cek Status Perizinan</h3>
                             <div class="faq-content">
                                 <p>Pengguna dapat memantau status pengajuan izin apakah sudah disetujui, ditolak, atau masih
                                     diproses melalui menu cek status perizinan.</p>
@@ -94,8 +102,8 @@
                     </div>
                 </div>
                 <div class="col-lg-5 order-1 order-lg-2 why-us-img">
-                    <img src="{{ asset('assets/landing/img/why-us.png') }}" class="img-fluid" alt="" data-aos="zoom-in"
-                        data-aos-delay="100">
+                    <img src="{{ asset('assets/landing/img/why-us.png') }}" class="img-fluid" alt="Why Us"
+                        data-aos="zoom-in" data-aos-delay="100">
                 </div>
             </div>
         </div>
@@ -103,7 +111,7 @@
 
     {{-- Call To Action --}}
     <section id="call-to-action" class="call-to-action section dark-background">
-        <img src="{{ asset('assets/landing/img/bg/bg-8.webp') }}" alt="">
+        <img src="{{ asset('assets/landing/img/bg/bg-8.webp') }}" alt="Background">
         <div class="container">
             <div class="row" data-aos="zoom-in" data-aos-delay="100">
                 <div class="col-xl-9 text-center text-xl-start">
@@ -114,7 +122,11 @@
                         mudah.</p>
                 </div>
                 <div class="col-xl-3 cta-btn-container text-center">
-                    <a class="cta-btn align-middle" href="#">Mulai Menggunakan</a>
+                    @auth('guru')
+                        <a class="cta-btn align-middle" href="{{ route('guru.absensi.create') }}">Mulai Absensi</a>
+                    @else
+                        <a class="cta-btn align-middle" href="{{ route('login') }}">Mulai Sekarang</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -151,39 +163,39 @@
                                 <p>smppgrisumber@gmail.com</p>
                             </div>
                         </div>
-                        <iframe
-                            src="https://maps.google.com/maps?width=600&amp;height=400&amp;hl=en&amp;q=SMP PGRI SUMBER&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-                            frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <div class="gmap_canvas mt-3" style="overflow:hidden; background:none!important;">
+                            <iframe width="100%" height="350px" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"
+                                src="https://www.google.com/maps/embed/v1/search?q=smp%20pgri%20sumber%20kabupaten%20cirebon&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
+                        </div>
                     </div>
                 </div>
+
                 <div class="col-lg-7">
-                    <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up"
-                        data-aos-delay="200">
+                    <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+                        @csrf
                         <div class="row gy-4">
                             <div class="col-md-6">
                                 <label for="name-field" class="pb-2">Nama Lengkap</label>
-                                <input type="text" name="name" id="name-field" class="form-control"
-                                    required="">
+                                <input type="text" name="name" id="name-field" class="form-control" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="email-field" class="pb-2">Email</label>
-                                <input type="email" class="form-control" name="email" id="email-field"
-                                    required="">
+                                <input type="email" class="form-control" name="email" id="email-field" required>
                             </div>
                             <div class="col-md-12">
                                 <label for="subject-field" class="pb-2">Subjek</label>
-                                <input type="text" class="form-control" name="subject" id="subject-field"
-                                    required="">
+                                <input type="text" class="form-control" name="subject" id="subject-field" required>
                             </div>
                             <div class="col-md-12">
                                 <label for="message-field" class="pb-2">Pesan</label>
-                                <textarea class="form-control" name="message" rows="10" id="message-field" required=""></textarea>
+                                <textarea class="form-control" name="message" rows="10" id="message-field"
+                                    required></textarea>
                             </div>
                             <div class="col-md-12 text-center">
-                                <div class="loading">Memuat</div>
+                                <div class="loading">Memuat...</div>
                                 <div class="error-message"></div>
-                                <div class="sent-message">Pesan Kamu Sudah Terkirim. Terima Kasih!</div>
+                                <div class="sent-message">Pesan Anda sudah terkirim. Terima kasih!</div>
                                 <button type="submit">Kirim Pesan</button>
                             </div>
                         </div>
@@ -192,4 +204,50 @@
             </div>
         </div>
     </section>
+
 @endsection
+
+<!-- Vendor JS Files -->
+<script src="{{ asset('assets/landing/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/landing/vendor/php-email-form/validate.js') }}"></script>
+<script src="{{ asset('assets/landing/vendor/aos/aos.js') }}"></script>
+<script src="{{ asset('assets/landing/vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ asset('assets/landing/vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+<!-- Main Template JS File -->
+<script src="{{ asset('assets/landing/js/main.js') }}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    text: '{{ session('success') }}',
+                    title: 'Berhasil',
+                    text: successMessage,
+                    timer: 3000,
+                    showConfirmButton: false,
+                    timerProgressBar: true
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: errorMessage,
+                    confirmButtonText: 'OK'
+                });
+            }
+
+        });
+    </script>
+@endpush
+
+@stack('scripts')

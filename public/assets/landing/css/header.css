@@ -1,0 +1,267 @@
+/*--------------------------------------------------------------
+# Header Layout
+--------------------------------------------------------------*/
+#header .container-fluid,
+#header .container-xl {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+}
+
+#header .logo {
+    flex: 0 1 auto !important;
+    margin-right: auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+#header #navmenu {
+    flex: 0 0 auto !important;
+    margin-right: 15px !important;
+}
+
+/* Di desktop, dropdown setelah nav */
+#header .user-dropdown,
+#header .btn-getstarted {
+    flex: 0 0 auto !important;
+    margin-left: 0 !important;
+}
+
+/*--------------------------------------------------------------
+# User Dropdown
+--------------------------------------------------------------*/
+.user-dropdown {
+    position: relative !important;
+    display: inline-flex !important;
+}
+
+.user-dropdown-toggle {
+    background: var(--accent-color, #47b2e4) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 8px 18px !important;
+    border-radius: 50px !important;
+    font-family: var(--heading-font, "Jost", sans-serif) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    letter-spacing: 0.5px !important;
+    cursor: pointer !important;
+    transition: 0.3s !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    white-space: nowrap !important;
+}
+
+.user-dropdown-toggle:hover {
+    background: color-mix(in srgb, var(--accent-color, #47b2e4), transparent 15%) !important;
+}
+
+.user-dropdown-toggle .bi-person-circle {
+    font-size: 20px !important;
+}
+
+.user-dropdown-toggle .bi-chevron-down {
+    font-size: 10px !important;
+}
+
+.user-dropdown-toggle .avatar-img {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+    flex-shrink: 0 !important;
+}
+
+.user-dropdown-menu {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    background: #ffffff !important;
+    min-width: 200px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(-10px) !important;
+    transition: all 0.3s ease !important;
+    z-index: 99999 !important;
+    overflow: hidden !important;
+}
+
+.user-dropdown.show .user-dropdown-menu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+.user-dropdown-header {
+    padding: 15px !important;
+    background: var(--accent-color, #47b2e4) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.user-dropdown-header .user-name {
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 3px !important;
+}
+
+.user-dropdown-header .user-role {
+    font-size: 12px !important;
+    opacity: 0.9 !important;
+}
+
+.user-dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 15px !important;
+    color: #444444 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    background: none !important;
+    width: 100% !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    font-family: var(--default-font, "Open Sans", sans-serif) !important;
+    font-size: 14px !important;
+}
+
+.user-dropdown-item:hover {
+    background: #f5f6f8 !important;
+    color: var(--accent-color, #47b2e4) !important;
+}
+
+.user-dropdown-item i {
+    font-size: 16px !important;
+    width: 20px !important;
+    text-align: center !important;
+}
+
+.user-dropdown-divider {
+    height: 1px !important;
+    background: #e1e8ed !important;
+    margin: 5px 0 !important;
+}
+
+.logout-dropdown-form {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+.btn-getstarted {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+
+/*--------------------------------------------------------------
+# Responsive
+--------------------------------------------------------------*/
+
+/* Tablet */
+@media (max-width: 1199px) {
+    #header .user-dropdown,
+    #header .btn-getstarted {
+        margin-left: 12px !important;
+    }
+
+    .user-dropdown-toggle {
+        padding: 7px 14px !important;
+        font-size: 13px !important;
+    }
+
+    .user-dropdown-toggle span {
+        max-width: 80px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+
+/* Mobile: Dropdown pindah setelah hamburger */
+@media (max-width: 1199px) {
+    #header #navmenu {
+        order: 1 !important;
+    }
+
+    #header .user-dropdown,
+    #header .btn-getstarted {
+        order: 2 !important;
+        margin-left: 10px !important;
+    }
+}
+
+/* Mobile kecil */
+@media (max-width: 767px) {
+    #header .container-fluid,
+    #header .container-xl {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    #header .logo h1.sitename {
+        font-size: 18px !important;
+    }
+
+    #header .user-dropdown,
+    #header .btn-getstarted {
+        margin-left: 8px !important;
+    }
+
+    .user-dropdown-toggle {
+        padding: 6px 10px !important;
+        gap: 4px !important;
+    }
+
+    /* Sembunyikan nama, cukup foto + chevron */
+    .user-dropdown-toggle span {
+        display: none !important;
+    }
+
+    .user-dropdown-toggle .avatar-img {
+        width: 24px !important;
+        height: 24px !important;
+    }
+
+    /* Dropdown muncul dari kanan */
+    .user-dropdown-menu {
+        right: 0 !important;
+        min-width: 170px !important;
+    }
+
+    .btn-getstarted {
+        padding: 7px 14px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* Mobile sangat kecil */
+@media (max-width: 420px) {
+    #header .container-fluid,
+    #header .container-xl {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    #header .logo h1.sitename {
+        font-size: 16px !important;
+    }
+
+    #header .logo img {
+        max-height: 35px !important;
+    }
+
+    .user-dropdown-toggle {
+        padding: 5px 8px !important;
+    }
+
+    .btn-getstarted {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+}

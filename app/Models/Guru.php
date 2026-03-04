@@ -20,7 +20,8 @@ class Guru extends Authenticatable
         'user_id',
         'uuid',
         'nama_guru',
-        'mata_pelajaran',
+        'email',
+        'mapel_id',
         'nip',
         'nomor_telepon',
         'photo',
@@ -38,15 +39,38 @@ class Guru extends Authenticatable
         'is_active' => 'boolean',
     ];
 
+<<<<<<< HEAD
     // Relasi ke User
+=======
+    /*
+    |--------------------------------------------------------------------------
+    | RELASI
+    |--------------------------------------------------------------------------
+    */
+
+    // Guru milik satu user
+>>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+<<<<<<< HEAD
     // Relasi ke Kehadiran
     public function kehadiran(): HasMany // Sekarang HasMany sudah dikenali
     {
         return $this->hasMany(Kehadiran::class, 'guru_id');
+=======
+    // Guru punya banyak izin
+    public function izins()
+    {
+        return $this->hasMany(Izin::class, 'guru_id');
+    }
+
+    // Guru punya satu mapel
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class);
+>>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
     }
 }
