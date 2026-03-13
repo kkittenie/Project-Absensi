@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany; // <--- WAJIB TAMBAHKAN INI
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Kehadiran;
 use App\Models\User;
+use App\Models\Izin;
+use App\Models\Mapel;
 
 class Guru extends Authenticatable
 {
@@ -39,9 +41,6 @@ class Guru extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-<<<<<<< HEAD
-    // Relasi ke User
-=======
     /*
     |--------------------------------------------------------------------------
     | RELASI
@@ -49,18 +48,17 @@ class Guru extends Authenticatable
     */
 
     // Guru milik satu user
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-<<<<<<< HEAD
-    // Relasi ke Kehadiran
-    public function kehadiran(): HasMany // Sekarang HasMany sudah dikenali
+    // Guru punya banyak kehadiran
+    public function kehadiran(): HasMany
     {
         return $this->hasMany(Kehadiran::class, 'guru_id');
-=======
+    }
+
     // Guru punya banyak izin
     public function izins()
     {
@@ -71,6 +69,5 @@ class Guru extends Authenticatable
     public function mapel()
     {
         return $this->belongsTo(Mapel::class);
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
     }
 }

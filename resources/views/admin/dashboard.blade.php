@@ -131,8 +131,9 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>{{ $absensi->guru->nama_guru ?? '-' }}</strong><br>
-                                    <small class="text-muted">{{ $absensi->tanggal->format('d M Y, H:i') }}</small>
-                                </div>
+                                    <small class="text-muted">
+                                        {{ optional($absensi->tanggal)->format('d M Y, H:i') }}
+                                    </small>                                </div>
                                 @if($absensi->status == 'hadir')
                                     <span class="badge bg-success">Hadir</span>
                                 @elseif($absensi->status == 'izin')

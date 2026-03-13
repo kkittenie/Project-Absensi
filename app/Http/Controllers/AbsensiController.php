@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-
 class AbsensiController extends Controller
 {
     public function index()
@@ -24,6 +23,15 @@ class AbsensiController extends Controller
 
         return view('absensi.index', compact('canAbsen'));
     }
+    public function cetak()
+{
+    $data = Absensi::with('guru')
+        ->orderBy('waktu_absen', 'desc')
+        ->get();
+
+    return view('admin.kehadiran.cetak', compact('data'));
+}
+
     public function create()
     {
         $guru = auth()->guard('guru')->user();
@@ -39,14 +47,9 @@ class AbsensiController extends Controller
             'photo_base64' => 'required',
             'latitude' => 'required',
             'longitude' => 'required',
-        ]); {
+        ]);
 
-            $guru = auth()->guard('guru')->user();
-
-            if (!$guru) {
-                return back()->with('error', 'Akun belum terhubung dengan data guru');
-            }
-        }
+        $guru = auth()->guard('guru')->user();
 
         if (!$guru) {
             return back()->with('error', 'Akun belum terhubung dengan data guru');
@@ -59,7 +62,6 @@ class AbsensiController extends Controller
         if ($sudahAbsen) {
             return back()->with('error', 'Kamu sudah absen hari ini ❌');
         }
-
 
         // ================= FOTO =================
         $base64Image = $request->photo_base64;
@@ -90,4 +92,3 @@ class AbsensiController extends Controller
         return back()->with('success', '✅ Absensi berhasil!');
     }
 }
-
