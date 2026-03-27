@@ -37,8 +37,13 @@
 
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input class="form-control form-control-lg" type="password" name="password"
-                                placeholder="Masukkan Password" required>
+                            <div class="input-group">
+                                <input class="form-control form-control-lg" type="password" name="password"
+                                    id="inputPassword" placeholder="Masukkan Password" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
                             @error('password')
                                 <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
                             @enderror
@@ -77,7 +82,19 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // Alert Success (logout atau pesan lainnya)
+            const togglePassword = document.getElementById('togglePassword');
+            const inputPassword  = document.getElementById('inputPassword');
+            const eyeIcon        = document.getElementById('eyeIcon');
+
+            if (togglePassword) {
+                togglePassword.addEventListener('click', function() {
+                    const isPassword = inputPassword.type === 'password';
+                    inputPassword.type = isPassword ? 'text' : 'password';
+                    eyeIcon.classList.toggle('bi-eye', !isPassword);
+                    eyeIcon.classList.toggle('bi-eye-slash', isPassword);
+                });
+            }
+
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -89,7 +106,6 @@
                 });
             @endif
 
-            // Alert Error jika login gagal
             @if ($errors->any())
                 Swal.fire({
                     icon: 'error',
@@ -105,7 +121,6 @@
                 });
             @endif
 
-            // Loading saat submit form
             const formLogin = document.getElementById('formLogin');
             if (formLogin) {
                 formLogin.addEventListener('submit', function() {

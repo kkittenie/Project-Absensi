@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // Tambahkan ini
-use App\Models\Guru; 
 
 class Kehadiran extends Model
 {
-    protected $table = 'kehadirans'; // Pastikan nama table sesuai, biasanya jamak
+    protected $table = 'kehadirans';
 
     protected $fillable = [
         'guru_id',
@@ -18,11 +16,18 @@ class Kehadiran extends Model
         'lembur_menit',
     ];
 
-    /**
-     * Relasi ke model Guru (Many-to-One)
-     */
-    public function guru(): BelongsTo
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
+
+    public function guru()
     {
-        return $this->belongsTo(Guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class);
+    }
+
+    public function absensi()
+    {
+        return $this->hasOne(Absensi::class, 'guru_id', 'guru_id')
+            ->whereColumn('absensis.tanggal', 'kehadirans.tanggal');
     }
 }

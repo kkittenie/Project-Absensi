@@ -17,6 +17,52 @@
         </div>
     </div>
 
+    {{-- Filter --}}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.perizinan.index') }}" class="row align-items-end g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Bulan</label>
+                    <select name="bulan" class="form-select">
+                        @foreach(range(1, 12) as $m)
+                            <option value="{{ $m }}" {{ request('bulan', date('n')) == $m ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($m)->locale('id')->isoFormat('MMMM') }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Tahun</label>
+                    <select name="tahun" class="form-select">
+                        @foreach(range(date('Y') - 2, date('Y')) as $y)
+                            <option value="{{ $y }}" {{ request('tahun', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">Semua</option>
+                        <option value="menunggu"  {{ request('status') === 'menunggu'  ? 'selected' : '' }}>Menunggu</option>
+                        <option value="disetujui" {{ request('status') === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="ditolak"   {{ request('status') === 'ditolak'   ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Nama Guru</label>
+                    <input type="text" name="nama" class="form-control"
+                           placeholder="Cari nama guru..." value="{{ request('nama') }}">
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="filter" style="width:16px;height:16px;"></i> Filter
+                    </button>
+                    <a href="{{ route('admin.perizinan.index') }}" class="btn btn-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
@@ -24,7 +70,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Guru</th>
+                            <th>Nama</th>
                             <th>Jenis</th>
                             <th>Tanggal</th>
                             <th>Alasan</th>

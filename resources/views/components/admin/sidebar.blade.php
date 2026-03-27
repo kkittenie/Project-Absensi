@@ -9,7 +9,7 @@
 
             <li class="sidebar-header">Main</li>
 
-            <li class="sidebar-item {{ request()->routeIs('admin') ? 'active' : '' }}">
+            <li class="sidebar-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.dashboard') }}">
                     <i class="align-middle" data-feather="sliders"></i>
                     <span class="align-middle">Dashboard</span>
@@ -25,27 +25,14 @@
                     <span class="align-middle">Daftar Admin</span>
                 </a>
             </li>
-            @endrole
 
-            @role('superadmin')
             <li class="sidebar-item {{ request()->routeIs('admin.guru.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.guru.index') }}">
                     <i class="align-middle" data-feather="user"></i>
                     <span class="align-middle">Daftar Guru</span>
                 </a>
             </li>
-            @endrole
 
-            @role('superadmin')
-            <li class="sidebar-item {{ request()->routeIs('admin.kehadiran.index') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ route('admin.kehadiran.index') }}">
-                    <i class="align-middle" data-feather="check-square"></i>
-                    <span class="align-middle">Data Kehadiran</span>
-                </a>
-            </li>
-            @endrole
-
-            @role('superadmin')
             <li class="sidebar-item {{ request()->routeIs('admin.perizinan.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.perizinan.index') }}">
                     <i class="align-middle" data-feather="file-text"></i>
@@ -54,15 +41,12 @@
             </li>
             @endrole
 
-            <!-- @role('superadmin')
             <li class="sidebar-item {{ request()->routeIs('admin.kehadiran.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.kehadiran.index') }}">
-                    <i class="align-middle" data-feather="calendar"></i>
-                    <span class="align-middle">Kehadiran</span>
+                    <i class="align-middle" data-feather="check-square"></i>
+                    <span class="align-middle">Data Kehadiran</span>
                 </a>
             </li>
-            @endrole -->
-
         </ul>
     </div>
 </nav>

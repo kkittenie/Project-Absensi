@@ -7,22 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 class Absensi extends Model
 {
     protected $table = 'absensis';
+
     protected $fillable = [
         'uuid',
         'guru_id',
+        'tanggal',
+        'photo',
+        'photo_pulang',
         'latitude',
         'longitude',
-        'photo',
+        'latitude_pulang',
+        'longitude_pulang',
         'status',
-        'waktu_absen'
+    ];
+
+    protected $casts = [
+        'tanggal' => 'date',
     ];
 
     public function guru()
     {
         return $this->belongsTo(Guru::class);
     }
-       public function kehadiran()
+
+    public function kehadiran()
     {
-        return $this->belongsTo(kehadiran::class);
+        return $this->hasOne(Kehadiran::class, 'guru_id', 'guru_id')
+            ->whereColumn('kehadirans.tanggal', 'absensis.tanggal');
     }
 }

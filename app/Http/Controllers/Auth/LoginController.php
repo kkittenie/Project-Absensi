@@ -44,7 +44,6 @@ class LoginController extends Controller
 
         RateLimiter::hit($key, 60);
 
-        // Cek User Admin/Superadmin berdasarkan username
         $user = User::where('username', $identifier)->where('is_active', true)->first();
 
         if ($user && Hash::check($password, $user->password)) {
@@ -58,7 +57,6 @@ class LoginController extends Controller
                 ->with('success', "Selamat datang, {$user->name}!");
         }
 
-        // Cek Guru berdasarkan NIP
         $guru = Guru::where('nip', $identifier)->where('is_active', true)->first();
 
         if ($guru && Hash::check($password, $guru->password)) {

@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Kehadiran;
 use App\Models\User;
@@ -14,7 +13,7 @@ use App\Models\Mapel;
 
 class Guru extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
     protected $table = 'gurus';
 
@@ -47,25 +46,21 @@ class Guru extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
-    // Guru milik satu user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Guru punya banyak kehadiran
     public function kehadiran(): HasMany
     {
         return $this->hasMany(Kehadiran::class, 'guru_id');
     }
 
-    // Guru punya banyak izin
     public function izins()
     {
         return $this->hasMany(Izin::class, 'guru_id');
     }
 
-    // Guru punya satu mapel
     public function mapel()
     {
         return $this->belongsTo(Mapel::class);

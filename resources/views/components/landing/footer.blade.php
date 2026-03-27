@@ -43,9 +43,9 @@
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Layanan</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Absensi Online</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.absensi.index') }}">Absensi Online</a></li>
                     <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.izin.create') }}">Pengajuan Izin</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Rekap Kehadiran</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.izin.index') }}">Cek Status Izin</a></li>
                 </ul>
             </div>
 
@@ -77,7 +77,7 @@
             <span>All Rights Reserved</span>
         </p>
         <div class="credits">
-            Didesain oleh <strong>SMKN 1 Kota Cirebon | XI RPL 1</strong>
+            Didesain oleh <strong>Kelompok 4 | XI RPL 1 | SMKN 1 Kota Cirebon</strong>
         </div>
     </div>
 

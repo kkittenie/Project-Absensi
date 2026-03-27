@@ -119,7 +119,8 @@
             <div class="card flex-fill">
                 <div class="card-header">
                     <div class="d-flex align-items-center gap-2">
-                        <div class="header-icon" style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#47b2e4,#37517e);display:flex;align-items:center;justify-content:center;">
+                        <div class="header-icon"
+                            style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#47b2e4,#37517e);display:flex;align-items:center;justify-content:center;">
                             <i data-feather="clock" style="width:18px;height:18px;stroke:white;"></i>
                         </div>
                         <h5 class="card-title">Absensi Terbaru</h5>
@@ -132,14 +133,18 @@
                                 <div>
                                     <strong>{{ $absensi->guru->nama_guru ?? '-' }}</strong><br>
                                     <small class="text-muted">
-                                        {{ optional($absensi->tanggal)->format('d M Y, H:i') }}
-                                    </small>                                </div>
-                                @if($absensi->status == 'hadir')
+                                        {{ \Carbon\Carbon::parse($absensi->tanggal)->format('d M Y') }},
+                                        {{ \Carbon\Carbon::parse($absensi->created_at)->format('H:i') }}
+                                    </small>
+                                </div>
+                                @if(in_array($absensi->status, ['tepat_waktu', 'terlambat']))
                                     <span class="badge bg-success">Hadir</span>
-                                @elseif($absensi->status == 'izin')
-                                    <span class="badge bg-warning">Izin</span>
-                                @else
+                                @elseif($absensi->status === 'izin')
+                                    <span class="badge bg-warning text-dark">Izin</span>
+                                @elseif($absensi->status === 'alpha')
                                     <span class="badge bg-danger">Alpha</span>
+                                @else
+                                    <span class="badge bg-secondary">-</span>
                                 @endif
                             </li>
                         @empty
@@ -159,7 +164,7 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
 
             @if (session('success'))
                 Swal.fire({
@@ -187,8 +192,7 @@
                 });
             @endif
 
-            // Chart.js - Statistik Kehadiran
-            if (window.Chart) {
+                        if (window.Chart) {
                 const ctx = document.getElementById("attendanceChart");
                 new Chart(ctx, {
                     type: "line",
@@ -280,7 +284,7 @@
                                 ticks: {
                                     font: { family: 'Open Sans', size: 12 },
                                     color: '#6c757d',
-                                    stepSize: 5
+                                    stepSize: 1
                                 }
                             }
                         }

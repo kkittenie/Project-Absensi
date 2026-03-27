@@ -49,6 +49,9 @@ class GuruController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'nama_guru.required' => 'Nama guru wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan.',
             'mapel_id.required' => 'Mapel wajib dipilih.',
             'mapel_id.exists' => 'Mapel tidak valid.',
             'nip.required' => 'NIP wajib diisi.',
@@ -146,5 +149,15 @@ class GuruController extends Controller
 
         return redirect()->route('admin.guru.index')
             ->with('success', 'Guru berhasil dinonaktifkan.');
+    }
+
+    public function resetPassword($uuid)
+    {
+        $guru = Guru::where('uuid', $uuid)->firstOrFail();
+        $guru->update([
+            'password' => Hash::make($guru->nip)
+        ]);
+
+        return back()->with('success', 'Password guru berhasil direset ke NIP.');
     }
 }

@@ -3,63 +3,85 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Guru;
 use App\Models\Kehadiran;
+use App\Models\Absensi;
+use App\Models\Izin;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class KehadiranController extends Controller
 {
-    // Menampilkan daftar kehadiran guru hari ini
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil guru beserta kehadiran hari ini
-        $gurus = Guru::with(['kehadiran' => function ($q) {
-            $q->whereDate('tanggal', Carbon::now('Asia/Jakarta')->toDateString());
-        }])->get();
+        $bulan = $request->get('bulan', date('n'));
+        $tahun = $request->get('tahun', date('Y'));
+        $nama = $request->get('nama');
 
-        return view('admin.kehadiran.index', compact('gurus'));
+        $query = Kehadiran::with(['guru.mapel'])
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun);
+
+        if ($nama) {
+            $query->whereHas('guru', fn($q) => $q->where('nama_guru', 'like', "%{$nama}%"));
+        }
+
+        $absenMasuk = (clone $query)->orderBy('tanggal', 'desc')->get();
+        $absenPulang = (clone $query)->whereNotNull('jam_pulang')->orderBy('tanggal', 'desc')->get();
+
+        $absensiMap = Absensi::whereIn('guru_id', $absenMasuk->pluck('guru_id'))
+            ->whereMonth('created_at', $bulan)
+            ->whereYear('created_at', $tahun)
+            ->get()
+            ->keyBy(fn($a) => $a->guru_id . '_' . \Carbon\Carbon::parse($a->created_at)->toDateString());
+
+        $izins = Izin::with('guru')
+            ->whereMonth('tanggal_izin', $bulan)
+            ->whereYear('tanggal_izin', $tahun)
+            ->where('status', 'disetujui')
+            ->get()
+            ->keyBy(fn($i) => $i->guru_id . '_' . $i->tanggal_izin);
+
+        return view('admin.kehadiran.index', compact(
+            'absenMasuk',
+            'absenPulang',
+            'bulan',
+            'tahun',
+            'nama',
+            'absensiMap',
+            'izins'
+        ));
     }
 
-    // Absen masuk guru
-    public function masuk(Guru $guru)
+    public function cetak(Request $request)
     {
-        // Pastikan waktu WIB
-        $waktuSekarang = Carbon::now('Asia/Jakarta');
+        $bulan = $request->get('bulan', date('n'));
+        $tahun = $request->get('tahun', date('Y'));
+        $tab = $request->get('tab', 'masuk');
 
-        Kehadiran::create([
-            'guru_id' => $guru->id,
-            'tanggal' => $waktuSekarang->toDateString(),
-            'jam_masuk' => $waktuSekarang->toTimeString(),
-            'lembur_menit' => 0,
-        ]);
+        $data = Kehadiran::with(['guru.mapel'])
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->when($tab === 'pulang', fn($q) => $q->whereNotNull('jam_pulang'))
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
-        return back()->with('success', 'Absen masuk berhasil dicatat!');
-    }
+        $absensiMap = Absensi::whereIn('guru_id', $data->pluck('guru_id'))
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->get()
+            ->keyBy(fn($a) => $a->guru_id . '_' . \Carbon\Carbon::parse($a->tanggal)->toDateString());
 
-    // Absen pulang guru dengan catatan dan status
-    public function pulang(Request $request, Kehadiran $kehadiran)
-    {
-        $waktuSekarang = Carbon::now('Asia/Jakarta');
+        $data->each(function ($k) use ($absensiMap) {
+            $key = $k->guru_id . '_' . \Carbon\Carbon::parse($k->tanggal)->toDateString();
+            $k->setRelation('absensi', $absensiMap->get($key));
+        });
 
-        $kehadiran->update([
-            'jam_pulang' => $waktuSekarang->toTimeString(),
-            'catatan' => $request->catatan ?? null,
-            'status_pulang' => $request->status_pulang ?? null,
-        ]);
+        $izins = Izin::with('guru')
+            ->whereMonth('tanggal_izin', $bulan)
+            ->whereYear('tanggal_izin', $tahun)
+            ->where('status', 'disetujui')
+            ->get()
+            ->keyBy(fn($i) => $i->guru_id . '_' . $i->tanggal_izin);
 
-        return back()->with('success', 'Absen pulang berhasil dicatat!');
-    }
-  public function invoice($kehadiranId)
-    {
-        $kehadiran = Kehadiran::findOrFail($kehadiranId);
-        $guru = $kehadiran->guru;
-        $kehadirans = Kehadiran::where('guru_id', $guru->id)
-                                ->orderBy('tanggal', 'asc')
-                                ->get();
-
-        return view('admin.kehadiran.invoice', compact('guru', 'kehadirans'));
+        return view('admin.kehadiran.cetak', compact('data', 'bulan', 'tahun', 'tab', 'izins'));
     }
 }
-
-

@@ -13,7 +13,7 @@
                     <p>SMP PGRI Sumber</p>
                     <div class="d-flex">
                         @auth('guru')
-                            <a href="{{ route('guru.absensi.create') }}" class="btn-get-started">Form Absensi</a>
+                            <a href="{{ route('guru.absensi.index') }}" class="btn-get-started">Form Absensi</a>
                             <a href="{{ route('guru.izin.create') }}" class="btn-get-started">Pengajuan Izin</a>
                             <a href="{{ route('guru.izin.index') }}" class="btn-get-started">Status Izin</a>
                         @else
@@ -123,7 +123,7 @@
                 </div>
                 <div class="col-xl-3 cta-btn-container text-center">
                     @auth('guru')
-                        <a class="cta-btn align-middle" href="{{ route('guru.absensi.create') }}">Mulai Absensi</a>
+                        <a class="cta-btn align-middle" href="{{ route('guru.absensi.index') }}">Mulai Absensi</a>
                     @else
                         <a class="cta-btn align-middle" href="{{ route('login') }}">Mulai Sekarang</a>
                     @endauth
@@ -217,32 +217,21 @@
 <!-- Main Template JS File -->
 <script src="{{ asset('assets/landing/js/main.js') }}"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            if (successMessage) {
+            let success = @json(session('success'));
+
+            if (success) {
                 Swal.fire({
                     icon: 'success',
-                    text: '{{ session('success') }}',
                     title: 'Berhasil',
-                    text: successMessage,
+                    text: success,
                     timer: 3000,
-                    showConfirmButton: false,
-                    timerProgressBar: true
-                });
-            }
-
-            if (errorMessage) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: errorMessage,
-                    confirmButtonText: 'OK'
+                    showConfirmButton: false
                 });
             }
 

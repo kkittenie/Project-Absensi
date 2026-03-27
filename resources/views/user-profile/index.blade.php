@@ -2,12 +2,11 @@
 
 @section('title', 'Profil Saya')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/profile/profile.css') }}">
+@endpush
+
 @section('content')
-
-    @push('styles')
-        <link rel="stylesheet" href="{{ asset('assets/profile/profile.css') }}">
-    @endpush
-
     <section class="profile-section">
         <div class="profile-container container">
 
@@ -19,23 +18,19 @@
             <div class="profile-card">
                 <div class="row g-0">
 
-                    {{-- SIDEBAR: Profile Info --}}
+                    {{-- SIDEBAR --}}
                     <div class="col-lg-4">
                         <div class="profile-sidebar">
 
                             <div class="profile-avatar-wrapper">
                                 @if(auth('guru')->check())
-                                                        {{-- Foto Guru --}}
-                                                        <img id="profilePreview" src="{{ auth('guru')->user()->photo
-                                    ? asset('storage/' . auth('guru')->user()->photo)
-                                    : asset('assets/admin/img/avatars/default.jpg') }}" alt="Profile Photo"
-                                                            class="profile-avatar">
+                                    <img id="profilePreview"
+                                        src="{{ auth('guru')->user()->photo ? asset('storage/' . auth('guru')->user()->photo) : asset('assets/admin/img/avatars/default.jpg') }}"
+                                        alt="Profile Photo" class="profile-avatar">
                                 @else
-                                                        {{-- Foto Admin --}}
-                                                        <img id="profilePreview" src="{{ auth()->user()->photo
-                                    ? asset('storage/' . auth()->user()->photo)
-                                    : asset('assets/admin/img/avatars/default.jpg') }}" alt="Profile Photo"
-                                                            class="profile-avatar">
+                                    <img id="profilePreview"
+                                        src="{{ auth()->user()->photo ? asset('storage/' . auth()->user()->photo) : asset('assets/admin/img/avatars/default.jpg') }}"
+                                        alt="Profile Photo" class="profile-avatar">
                                 @endif
                                 <label for="photoInput" class="profile-avatar-edit">
                                     <i class="bi bi-camera"></i>
@@ -43,7 +38,6 @@
                             </div>
 
                             @if(auth('guru')->check())
-                                {{-- Info Guru --}}
                                 <div class="profile-name">{{ auth('guru')->user()->nama_guru }}</div>
                                 <div class="profile-role">Guru</div>
 
@@ -52,49 +46,43 @@
                                         <i class="bi bi-info-circle"></i>
                                         <span>Informasi Akun</span>
                                     </div>
-
                                     <div class="profile-info-item">
                                         <div class="profile-info-label">NIP</div>
                                         <div class="profile-info-value">{{ auth('guru')->user()->nip }}</div>
                                     </div>
-
                                     <div class="profile-info-item">
                                         <div class="profile-info-label">Email</div>
                                         <div class="profile-info-value">{{ auth('guru')->user()->email ?? '-' }}</div>
                                     </div>
-
                                     <div class="profile-info-item">
                                         <div class="profile-info-label">Mata Pelajaran</div>
                                         <div class="profile-info-value">{{ auth('guru')->user()->mapel->nama_mapel ?? '-' }}
                                         </div>
                                     </div>
-
                                     <div class="profile-info-item">
                                         <div class="profile-info-label">No. Telepon</div>
                                         <div class="profile-info-value">{{ auth('guru')->user()->nomor_telepon ?? '-' }}</div>
                                     </div>
                                 </div>
+
                             @else
-                                {{-- Info Admin --}}
                                 <div class="profile-name">{{ auth()->user()->name }}</div>
-                                <div class="profile-role">{{ auth()->user()->role }}</div>
+                                <div class="profile-role">{{ ucfirst(auth()->user()->getRoleNames()->first() ?? '-') }}</div>
 
                                 <div class="profile-info">
                                     <div class="profile-info-title">
                                         <i class="bi bi-info-circle"></i>
                                         <span>Informasi Akun</span>
                                     </div>
-
                                     <div class="profile-info-item">
                                         <div class="profile-info-label">Username</div>
                                         <div class="profile-info-value">{{ auth()->user()->username }}</div>
                                     </div>
-
                                     <div class="profile-info-item">
                                         <div class="profile-info-label">Hak Akses</div>
-                                        <div class="profile-info-value">{{ auth()->user()->role }}</div>
+                                        <div class="profile-info-value">
+                                            {{ ucfirst(auth()->user()->getRoleNames()->first() ?? '-') }}</div>
                                     </div>
-
                                     <div class="profile-info-item">
                                         <div class="profile-info-label">Bergabung Sejak</div>
                                         <div class="profile-info-value">{{ auth()->user()->created_at->format('d M Y') }}</div>
@@ -105,7 +93,7 @@
                         </div>
                     </div>
 
-                    {{-- CONTENT: Edit Form --}}
+                    {{-- CONTENT --}}
                     <div class="col-lg-8">
                         <div class="profile-content">
 
@@ -121,7 +109,6 @@
                                     @csrf
                                     @method('PUT')
 
-                                    {{-- NAMA GURU --}}
                                     <div class="form-group">
                                         <label class="form-label">Nama Lengkap</label>
                                         <input type="text" name="nama_guru"
@@ -132,7 +119,6 @@
                                         @enderror
                                     </div>
 
-                                    {{-- EMAIL --}}
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
                                         <input type="email" name="email"
@@ -143,7 +129,6 @@
                                         @enderror
                                     </div>
 
-                                    {{-- NO TELEPON --}}
                                     <div class="form-group">
                                         <label class="form-label">Nomor Telepon</label>
                                         <input type="text" name="nomor_telepon"
@@ -154,7 +139,6 @@
                                         @enderror
                                     </div>
 
-                                    {{-- PHOTO --}}
                                     <div class="form-group">
                                         <label class="form-label">Foto Profil</label>
                                         <input type="file" name="photo" id="photoInput"
@@ -167,11 +151,15 @@
 
                                     <hr class="form-divider">
 
-                                    {{-- PASSWORD --}}
                                     <div class="form-group">
                                         <label class="form-label">Password Baru (Opsional)</label>
-                                        <input type="password" name="password"
-                                            class="form-control @error('password') is-invalid @enderror">
+                                        <div class="input-group">
+                                            <input type="password" name="password" id="passwordGuru"
+                                                class="form-control @error('password') is-invalid @enderror">
+                                            <button class="btn btn-outline-secondary" type="button" id="togglePasswordGuru">
+                                                <i class="bi bi-eye" id="eyeIconGuru"></i>
+                                            </button>
+                                        </div>
                                         <small class="form-text">Kosongkan jika tidak ingin mengganti password</small>
                                         @error('password')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -187,6 +175,7 @@
                                         </button>
                                     </div>
                                 </form>
+
                             @else
                                 {{-- FORM ADMIN --}}
                                 <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data"
@@ -194,7 +183,6 @@
                                     @csrf
                                     @method('PUT')
 
-                                    {{-- NAME --}}
                                     <div class="form-group">
                                         <label class="form-label">Nama Lengkap</label>
                                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
@@ -204,7 +192,6 @@
                                         @enderror
                                     </div>
 
-                                    {{-- USERNAME --}}
                                     <div class="form-group">
                                         <label class="form-label">Username</label>
                                         <input type="text" name="username"
@@ -215,7 +202,6 @@
                                         @enderror
                                     </div>
 
-                                    {{-- PHOTO --}}
                                     <div class="form-group">
                                         <label class="form-label">Foto Profil</label>
                                         <input type="file" name="photo" id="photoInput"
@@ -228,11 +214,15 @@
 
                                     <hr class="form-divider">
 
-                                    {{-- PASSWORD --}}
                                     <div class="form-group">
                                         <label class="form-label">Password Baru (Opsional)</label>
-                                        <input type="password" name="password"
-                                            class="form-control @error('password') is-invalid @enderror">
+                                        <div class="input-group">
+                                            <input type="password" name="password" id="passwordAdmin"
+                                                class="form-control @error('password') is-invalid @enderror">
+                                            <button class="btn btn-outline-secondary" type="button" id="togglePasswordAdmin">
+                                                <i class="bi bi-eye" id="eyeIconAdmin"></i>
+                                            </button>
+                                        </div>
                                         <small class="form-text">Kosongkan jika tidak ingin mengganti password</small>
                                         @error('password')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -265,49 +255,64 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // Preview foto sebelum upload
-            document.getElementById('photoInput').addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (!file) return;
+            // Toggle show/hide password
+            ['Guru', 'Admin'].forEach(role => {
+                const toggle = document.getElementById('togglePassword' + role);
+                const input = document.getElementById('password' + role);
+                const icon = document.getElementById('eyeIcon' + role);
 
-                // Validasi ukuran file (max 2MB)
-                if (file.size > 2 * 1024 * 1024) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'File Terlalu Besar',
-                        text: 'Ukuran foto maksimal 2MB',
-                        confirmButtonColor: '#47b2e4'
+                if (toggle && input) {
+                    toggle.addEventListener('click', function () {
+                        const isPassword = input.type === 'password';
+                        input.type = isPassword ? 'text' : 'password';
+                        icon.classList.toggle('bi-eye', !isPassword);
+                        icon.classList.toggle('bi-eye-slash', isPassword);
                     });
-                    this.value = '';
-                    return;
                 }
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('profilePreview').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
             });
 
-            // Alert Success
-            @if (session('success'))
+            const photoInput = document.getElementById('photoInput');
+            if (photoInput) {
+                photoInput.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    if (file.size > 2 * 1024 * 1024) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File Terlalu Besar',
+                            text: 'Ukuran foto maksimal 2MB',
+                            confirmButtonColor: '#47b2e4'
+                        });
+                        this.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('profilePreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            @if(session('success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: '{{ session('success') }}',
+                    text: "{{ session('success') }}",
                     showConfirmButton: false,
                     timer: 2500,
                     timerProgressBar: true
                 });
             @endif
 
-            // Alert Error
-            @if ($errors->any())
+            @if($errors->any())
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
                     html: '<ul class="text-start mb-0" style="list-style-position: inside;">' +
-                        @foreach ($errors->all() as $error)
+                        @foreach($errors->all() as $error)
                             '<li>{{ $error }}</li>' +
                         @endforeach
                         '</ul>',
@@ -316,25 +321,28 @@
                 });
             @endif
 
-            // Konfirmasi sebelum submit
-            document.getElementById('profileForm').addEventListener('submit', function (e) {
-                e.preventDefault();
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const form = this;
 
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: 'Apakah Anda yakin ingin menyimpan perubahan?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#47b2e4',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Simpan!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.submit();
-                    }
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: 'Apakah Anda yakin ingin menyimpan perubahan?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#47b2e4',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Simpan',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 });
-            });
+            }
 
         });
     </script>

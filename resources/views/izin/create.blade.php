@@ -4,24 +4,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-{{-- SWEET ALERT --}}
 @if(session('success'))
 <script>
     Swal.fire({
         icon: 'success',
         title: 'Berhasil',
-        text: '{{ session('success') }}',
+        text: "{{ session('success') }}",
         timer: 2500,
         showConfirmButton: false
     });
 </script>
 @endif
 
-@if ($errors->any())
+@if(session('error'))
 <script>
     Swal.fire({
         icon: 'error',
-        title: 'Validasi gagal',
+        title: 'Gagal',
+        text: "{{ session('error') }}"
+    });
+</script>
+@endif
+
+@if($errors->any())
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Validasi Gagal',
         html: `{!! implode('<br>', $errors->all()) !!}`
     });
 </script>
@@ -30,64 +39,138 @@
 <section class="section dark-background" style="padding-top:120px">
     <div class="container">
         <div class="row justify-content-center">
-
             <div class="col-md-5 text-center">
 
                 <h3 class="mb-3">📝 Form Izin Guru</h3>
 
-                <div class="card shadow p-4 text-start">
+                @php
+                    $sudahIzinHariIni  = false;
+                    $sudahAbsenLengkap = false;
+                    $guru = auth()->guard('guru')->user();
+                    if ($guru) {
+                        $today = now()->toDateString();
 
-                    <form action="{{ route('guru.izin.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                        $sudahIzinHariIni = \App\Models\Izin::where('guru_id', $guru->id)
+                            ->whereDate('tanggal_izin', $today)
+                            ->exists();
 
-                        <!-- Jenis Izin -->
-                        <div class="mb-3">
-                            <label class="form-label">Jenis Izin</label>
-                            <select name="jenis_izin" class="form-control">
-                                <option value="">-- Pilih --</option>
-                                <option value="sakit">Sakit</option>
-                                <option value="izin">Izin</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                        </div>
+                        $sudahAbsenLengkap = \App\Models\Kehadiran::where('guru_id', $guru->id)
+                            ->whereDate('tanggal', $today)
+                            ->whereNotNull('jam_masuk')
+                            ->whereNotNull('jam_pulang')
+                            ->exists();
+                    }
+                @endphp
 
-                        <!-- Alasan -->
-                        <div class="mb-3">
-                            <label class="form-label">Alasan</label>
-                            <textarea
-                                name="alasan"
-                                class="form-control"
-                                rows="3"
-                                placeholder="Isi alasan izin"
-                            ></textarea>
-                        </div>
+                @if($sudahIzinHariIni)
+                    <div class="alert alert-warning">
+                        📋 Kamu sudah mengajukan izin untuk hari ini
+                    </div>
+                @elseif($sudahAbsenLengkap)
+                    <div class="alert alert-info">
+                        ✅ Kamu sudah absen lengkap hari ini, tidak perlu mengajukan izin
+                    </div>
+                @else
+                    <div class="card shadow p-4 text-start">
+                        <form action="{{ route('guru.izin.store') }}" method="POST"
+                              enctype="multipart/form-data" id="izinForm">
+                            @csrf
 
-                        <!-- Tanggal -->
-                        <div class="mb-3">
-                            <label class="form-label">Tanggal Izin</label>
-                            <input type="date" name="tanggal_izin" class="form-control">
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label">Jenis Izin</label>
+                                <select name="jenis_izin" class="form-control" required>
+                                    <option value="">-- Pilih --</option>
+                                    <option value="sakit"   {{ old('jenis_izin') === 'sakit'   ? 'selected' : '' }}>Sakit</option>
+                                    <option value="izin"    {{ old('jenis_izin') === 'izin'    ? 'selected' : '' }}>Izin</option>
+                                    <option value="lainnya" {{ old('jenis_izin') === 'lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                </select>
+                            </div>
 
-                        <!-- Foto -->
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Foto Surat <span class="text-muted">(Opsional)</span>
-                            </label>
-                            <input type="file" name="foto_surat" class="form-control">
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label">Alasan</label>
+                                <textarea name="alasan" class="form-control" rows="3"
+                                          placeholder="Isi alasan izin" required>{{ old('alasan') }}</textarea>
+                            </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
-                            Kirim Izin
-                        </button>
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal Izin</label>
+                                <input type="date" name="tanggal_izin" class="form-control"
+                                       value="{{ old('tanggal_izin', now()->toDateString()) }}"
+                                       min="{{ now()->toDateString() }}" required>
+                            </div>
 
-                    </form>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Foto Surat <span class="text-muted">(Opsional)</span>
+                                </label>
+                                <input type="file" name="foto_surat" class="form-control"
+                                       accept="image/*,.pdf">
+                            </div>
 
-                </div>
+                            <button type="button" id="btnKirim" class="btn btn-primary w-100">
+                                Kirim Izin
+                            </button>
+                        </form>
+                    </div>
+                @endif
 
             </div>
-
         </div>
     </div>
 </section>
+
+<script>
+    const JAM_MASUK_MULAI    = "06:00";
+    const JAM_MASUK_SELESAI  = "09:00";
+    const JAM_PULANG_MULAI   = "13:00";
+    const JAM_PULANG_SELESAI = "15:00";
+
+    function getMode() {
+        const jam = new Date().toTimeString().slice(0, 5);
+        if (jam >= JAM_MASUK_MULAI && jam <= JAM_MASUK_SELESAI) return 'masuk';
+        if (jam >= JAM_PULANG_MULAI && jam <= JAM_PULANG_SELESAI) return 'pulang';
+        return 'tutup';
+    }
+
+    const btnKirim = document.getElementById('btnKirim');
+
+    if (btnKirim) {
+        btnKirim.addEventListener('click', function () {
+            const tanggalIzin = document.querySelector('input[name=tanggal_izin]').value;
+            const today       = new Date().toISOString().split('T')[0];
+            const mode        = getMode();
+
+            if (tanggalIzin === today && mode !== 'tutup') {
+                const jamInfo = mode === 'masuk'
+                    ? `Jam absen masuk: ${JAM_MASUK_MULAI}–${JAM_MASUK_SELESAI}`
+                    : `Jam absen pulang: ${JAM_PULANG_MULAI}–${JAM_PULANG_SELESAI}`;
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Sedang Jam Absensi',
+                    text: `Kamu tidak bisa mengajukan izin saat ini. ${jamInfo}`,
+                    confirmButtonText: 'Mengerti',
+                    confirmButtonColor: '#0d6efd',
+                });
+                return;
+            }
+
+            Swal.fire({
+                icon: 'question',
+                title: 'Konfirmasi Pengajuan',
+                text: 'Yakin ingin mengajukan izin?',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Kirim',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    document.getElementById('izinForm').submit();
+                }
+            });
+        });
+    }
+</script>
 
 @endsection

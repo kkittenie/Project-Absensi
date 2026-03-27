@@ -9,9 +9,19 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
-                text: '{{ session('success') }}',
+                text: "{{ session('success') }}",
                 timer: 2500,
                 showConfirmButton: false
+            });
+        </script>
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}"
             });
         </script>
     @endif
@@ -20,16 +30,6 @@
         $canAbsen = auth()->guard('guru')->check();
     @endphp
 
-    @if(session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: '{{ session('error') }}'
-            });
-        </script>
-    @endif
-
     <section class="section dark-background" style="padding-top:120px">
         <div class="container">
             <div class="row justify-content-center">
@@ -37,10 +37,37 @@
 
                     <h3 class="mb-3">📸 Form Absensi</h3>
 
+                    {{-- Info status absensi hari ini --}}
+                    @if($canAbsen)
+                        <div class="mb-3">
+                            @if($sudahAbsenMasuk && $kehadiranHariIni)
+                                <div class="alert alert-success py-2">
+                                    ✅ Absen Masuk:
+                                    <strong>{{ \Carbon\Carbon::parse($kehadiranHariIni->jam_masuk)->format('H:i') }}</strong>
+                                </div>
+                            @endif
+                            @if($sudahAbsenPulang && $kehadiranHariIni)
+                                @php
+                                    $jamPulang = \Carbon\Carbon::parse($kehadiranHariIni->jam_pulang);
+                                    $batasNormal = \Carbon\Carbon::parse(now()->toDateString() . ' 15:00');
+                                    $pulangCepat = $jamPulang->lt($batasNormal);
+                                    $selisih = $pulangCepat ? (int) $jamPulang->diffInMinutes($batasNormal) : 0;
+                                @endphp
+                                <div class="alert {{ $pulangCepat ? 'alert-warning' : 'alert-info' }} py-2">
+                                    🏠 Absen Pulang: <strong>{{ $jamPulang->format('H:i') }}</strong>
+                                    @if($pulangCepat)
+                                        <br><small class="text-danger">⚠️ Pulang cepat {{ $selisih }} menit lebih awal</small>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
                     <div class="card shadow p-3">
 
                         <video id="video" class="w-100 rounded mirror" autoplay muted playsinline></video>
                         <canvas id="canvas" hidden></canvas>
+
                         @if(!$canAbsen && !auth()->guard('web')->check())
                             <script>
                                 Swal.fire({
@@ -51,9 +78,29 @@
                             </script>
                         @endif
 
-                        <button type="button" id="snap" class="btn btn-primary w-100 mt-3" {{ !$canAbsen ? 'disabled' : '' }}>
-                            Absen Sekarang
-                        </button>
+                        @if($canAbsen)
+                            @if($absenHariIni?->status === 'izin')
+                                <div class="alert alert-info mt-3">
+                                    📋 Kamu sudah mengajukan izin hari ini
+                                </div>
+                            @elseif($absenHariIni?->status === 'alpha')
+                                <div class="alert alert-danger mt-3">
+                                    ❌ Kamu tercatat <strong>Alpha</strong> hari ini
+                                </div>
+                            @elseif($sudahAbsenPulang)
+                                <div class="alert alert-success mt-3">
+                                    🎉 Absensi hari ini sudah lengkap!
+                                </div>
+                            @else
+                                <button type="button" id="snap" class="btn w-100 mt-3 btn-primary">
+                                    📍 Absen Masuk
+                                </button>
+                            @endif
+                        @else
+                            <button class="btn btn-primary w-100 mt-3" disabled>
+                                📍 Absen Sekarang
+                            </button>
+                        @endif
 
                     </div>
 
@@ -62,6 +109,7 @@
                         <input type="hidden" name="photo_base64" id="photo">
                         <input type="hidden" name="latitude" id="latitude">
                         <input type="hidden" name="longitude" id="longitude">
+                        <input type="hidden" name="mode" id="modeInput">
                     </form>
 
                 </div>
@@ -76,11 +124,52 @@
     </style>
 
     <script>
-        const SCHOOL_LAT = -6.7340;
-        const SCHOOL_LNG = 108.5367;
-        const MAX_RADIUS = 200;
-        const ABSEN_MULAI = "06:00";
-        const ABSEN_SELESAI = "21:00";
+        const SCHOOL_LAT = -6.7237601;
+        const SCHOOL_LNG = 108.5506205;
+        const MAX_RADIUS = 300;
+
+        const JAM_MASUK_MULAI = "06:00";
+        const JAM_MASUK_SELESAI = "08:30";
+        const JAM_PULANG_MULAI = "14:00";
+        const JAM_PULANG_SELESAI = "19:00";
+
+        const SUDAH_MASUK = {{ $sudahAbsenMasuk ? 'true' : 'false' }};
+        const SUDAH_PULANG = {{ $sudahAbsenPulang ? 'true' : 'false' }};
+
+        function getMode() {
+            const jam = new Date().toTimeString().slice(0, 5);
+            if (jam >= JAM_MASUK_MULAI && jam <= JAM_MASUK_SELESAI) return 'masuk';
+            if (jam >= JAM_PULANG_MULAI && jam <= JAM_PULANG_SELESAI) return 'pulang';
+            return 'tutup';
+        }
+
+        function updateTombol() {
+            const snap = document.getElementById('snap');
+            if (!snap) return;
+
+            const mode = getMode();
+
+            if (SUDAH_MASUK && !SUDAH_PULANG) {
+                snap.disabled = false;
+                snap.className = 'btn w-100 mt-3 btn-warning';
+                snap.innerText = '🏠 Absen Pulang';
+            } else if (!SUDAH_MASUK && mode === 'masuk') {
+                snap.disabled = false;
+                snap.className = 'btn w-100 mt-3 btn-primary';
+                snap.innerText = '📍 Absen Masuk';
+            } else if (!SUDAH_MASUK && mode === 'tutup') {
+                snap.disabled = true;
+                snap.className = 'btn w-100 mt-3 btn-secondary';
+                snap.innerText = '🕐 Di luar jam absensi';
+            } else if (!SUDAH_MASUK && mode === 'pulang') {
+                snap.disabled = true;
+                snap.className = 'btn w-100 mt-3 btn-secondary';
+                snap.innerText = '⚠️ Belum absen masuk';
+            }
+        }
+
+        updateTombol();
+        setInterval(updateTombol, 60000);
 
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -88,13 +177,7 @@
         const photoInput = document.getElementById('photo');
         const latitude = document.getElementById('latitude');
         const longitude = document.getElementById('longitude');
-
-        let cameraActive = false;
-
-        function cekJamAbsen() {
-            const jam = new Date().toTimeString().slice(0, 5);
-            return jam >= ABSEN_MULAI && jam <= ABSEN_SELESAI;
-        }
+        const modeInput = document.getElementById('modeInput');
 
         function hitungJarak(lat1, lon1, lat2, lon2) {
             const R = 6371000;
@@ -108,92 +191,114 @@
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
         }
 
-        snap.addEventListener('click', async () => {
+        if(snap) {
+            let cameraActive = false;
+            let sudahKonfirmasiPulangCepat = false; 
 
-            if (!cameraActive) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    video.srcObject = stream;
+            snap.addEventListener('click', async () => {
+                const mode = getMode();
 
-                    cameraActive = true;
-                    snap.innerText = 'Absen Sekarang';
-                    snap.classList.remove('btn-success');
-                    snap.classList.add('btn-primary');
-                } catch (e) {
+                if (!SUDAH_MASUK && mode === 'tutup') {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Kamera tidak bisa diakses'
+                        icon: 'warning',
+                        title: 'Di luar jam absensi',
+                        text: `Masuk: ${JAM_MASUK_MULAI}–${JAM_MASUK_SELESAI} | Pulang: ${JAM_PULANG_MULAI}–${JAM_PULANG_SELESAI}`
                     });
+                    return;
                 }
-                return;
-            }
 
-            if (!cekJamAbsen()) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Di luar jam absensi',
-                    text: `${ABSEN_MULAI} - ${ABSEN_SELESAI}`
-                });
-                return;
-            }
-
-            snap.disabled = true;
-            snap.innerText = 'Mengambil lokasi...';
-
-            navigator.geolocation.getCurrentPosition(
-                function (pos) {
-
-                    latitude.value = pos.coords.latitude;
-                    longitude.value = pos.coords.longitude;
-
-                    const jarak = hitungJarak(
-                        latitude.value,
-                        longitude.value,
-                        SCHOOL_LAT,
-                        SCHOOL_LNG
-                    );
-
-                    if (jarak > MAX_RADIUS) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Di luar area sekolah',
-                            text: `Jarak ${Math.round(jarak)} meter`
+                if (SUDAH_MASUK && !SUDAH_PULANG && !sudahKonfirmasiPulangCepat) {
+                    const jamSekarang = new Date().toTimeString().slice(0, 5);
+                    if (jamSekarang < '15:00') {
+                        const konfirmasi = await Swal.fire({
+                            icon: 'warning',
+                            title: 'Pulang Lebih Awal?',
+                            text: `Jam pulang normal adalah 15:00. Kamu akan tercatat pulang cepat. Lanjutkan?`,
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya, Lanjutkan',
+                            cancelButtonText: 'Batal',
+                            confirmButtonColor: '#e0a800',
+                            cancelButtonColor: '#6c757d',
                         });
-                        resetBtn();
-                        return;
+                        if (!konfirmasi.isConfirmed) return;
+                        sudahKonfirmasiPulangCepat = true;
                     }
-
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    canvas.getContext('2d').drawImage(video, 0, 0);
-                    photoInput.value = canvas.toDataURL('image/png');
-
-                    Swal.fire({
-                        title: 'Yakin ingin absen?',
-                        imageUrl: photoInput.value,
-                        showCancelButton: true,
-                        confirmButtonText: 'Ya, Absen'
-                    }).then(result => {
-                        if (result.isConfirmed) {
-                            document.getElementById('absenForm').submit();
-                        } else {
-                            resetBtn();
-                        }
-                    });
-                },
-                function () {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lokasi tidak diizinkan'
-                    });
-                    resetBtn();
                 }
-            );
-        });
 
-        function resetBtn() {
-            snap.disabled = false;
-            snap.innerText = 'Absen Sekarang';
+                if (!cameraActive) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        video.srcObject = stream;
+                        cameraActive = true;
+                    } catch (e) {
+                        Swal.fire({ icon: 'error', title: 'Kamera tidak bisa diakses' });
+                    }
+                    return;
+                }
+
+                snap.disabled = true;
+                snap.innerText = 'Mengambil lokasi...';
+
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        latitude.value = pos.coords.latitude;
+                        longitude.value = pos.coords.longitude;
+
+                        const jarak = hitungJarak(
+                            latitude.value, longitude.value,
+                            SCHOOL_LAT, SCHOOL_LNG
+                        );
+
+                        if (jarak > MAX_RADIUS) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Di luar area sekolah',
+                                text: `Jarak ${Math.round(jarak)} meter`
+                            });
+                            resetBtn();
+                            return;
+                        }
+
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0);
+                        photoInput.value = canvas.toDataURL('image/png');
+
+                        const modeSekarang = SUDAH_MASUK ? 'pulang' : 'masuk';
+                        modeInput.value = modeSekarang;
+                        const labelAbsen = modeSekarang === 'pulang' ? 'Absen Pulang' : 'Absen Masuk';
+
+                        Swal.fire({
+                            title: `Yakin ingin ${labelAbsen}?`,
+                            imageUrl: photoInput.value,
+                            showCancelButton: true,
+                            confirmButtonText: `Ya, ${labelAbsen}`
+                        }).then(result => {
+                            if (result.isConfirmed) {
+                                document.getElementById('absenForm').submit();
+                            } else {
+                                resetBtn();
+                            }
+                        });
+                    },
+                    function (error) {
+                        let message = '';
+                        switch (error.code) {
+                            case 1: message = 'Kamu menolak izin lokasi'; break;
+                            case 2: message = 'Lokasi tidak tersedia (coba pindah tempat atau mengganti jaringan)'; break;
+                            case 3: message = 'Request lokasi timeout. Coba lagi nanti'; break;
+                            default: message = error.message;
+                        }
+                        Swal.fire({ icon: 'error', title: 'Gagal ambil lokasi', text: message });
+                        resetBtn();
+                    }
+                );
+            });
+
+            function resetBtn() {
+                snap.disabled = false;
+                updateTombol();
+            }
         }
     </script>
 
