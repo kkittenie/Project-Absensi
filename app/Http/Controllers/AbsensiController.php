@@ -26,6 +26,15 @@ class AbsensiController extends Controller
         return view('absensi.index', compact('canAbsen'));
     }
 
+    public function cetak()
+    {
+        $data = Absensi::with('guru')
+            ->orderBy('waktu_absen', 'desc')
+            ->get();
+
+        return view('admin.kehadiran.cetak', compact('data'));
+    }
+
     public function create()
     {
         $guru = auth()->guard('guru')->user();

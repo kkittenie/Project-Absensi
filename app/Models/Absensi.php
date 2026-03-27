@@ -21,4 +21,8 @@ class Absensi extends Model
     {
         return $this->belongsTo(Guru::class);
     }
+       public function kehadiran()
+    {
+        return $this->belongsTo(kehadiran::class);
+    }
 }

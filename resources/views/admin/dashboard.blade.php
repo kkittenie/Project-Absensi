@@ -131,10 +131,11 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>{{ $absensi->guru->nama_guru ?? '-' }}</strong><br>
-                                 <small class="text-muted">
-    {{ optional($absensi->tanggal)->format('d M Y, H:i') ?? '-' }}
-</small>
+                                    <small class="text-muted">
+                                        {{ optional($absensi->tanggal)->format('d M Y, H:i') ?? '-' }}
+                                    </small>
                                 </div>
+
                                 @if($absensi->status == 'hadir')
                                     <span class="badge bg-success">Hadir</span>
                                 @elseif($absensi->status == 'izin')
@@ -188,7 +189,6 @@
                 });
             @endif
 
-            // Chart.js - Statistik Kehadiran
             if (window.Chart) {
                 const ctx = document.getElementById("attendanceChart");
                 new Chart(ctx, {
@@ -239,52 +239,7 @@
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                labels: {
-                                    font: {
-                                        family: 'Jost',
-                                        size: 13,
-                                        weight: '500'
-                                    },
-                                    usePointStyle: true,
-                                    pointStyleWidth: 10,
-                                    padding: 20,
-                                }
-                            },
-                            tooltip: {
-                                backgroundColor: '#37517e',
-                                titleFont: { family: 'Jost', size: 13 },
-                                bodyFont: { family: 'Open Sans', size: 12 },
-                                padding: 12,
-                                cornerRadius: 10,
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    display: false,
-                                },
-                                ticks: {
-                                    font: { family: 'Open Sans', size: 12 },
-                                    color: '#6c757d'
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0,0,0,0.05)',
-                                    drawBorder: false,
-                                },
-                                ticks: {
-                                    font: { family: 'Open Sans', size: 12 },
-                                    color: '#6c757d',
-                                    stepSize: 5
-                                }
-                            }
-                        }
+                        maintainAspectRatio: false
                     }
                 });
             }

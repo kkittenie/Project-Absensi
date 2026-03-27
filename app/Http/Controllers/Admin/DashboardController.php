@@ -13,35 +13,38 @@ class DashboardController extends Controller
     {
         // Total Guru Aktif
         $totalGuru = Guru::where('is_active', true)->count();
-        
+
         // Perubahan dari bulan lalu
         $totalGuruBulanLalu = Guru::where('is_active', true)
             ->whereMonth('created_at', now()->subMonth()->month)
             ->count();
+
         $totalGuruChange = $totalGuru - $totalGuruBulanLalu;
 
         // Data Hari Ini
         $today = Carbon::today();
-        
+
         $hadirHariIni = Absensi::whereDate('created_at', $today)
             ->where('status', 'hadir')
             ->count();
-            
+
         $izinHariIni = Absensi::whereDate('created_at', $today)
             ->where('status', 'izin')
             ->count();
-            
+
         // Alpha = guru aktif yang belum absen hari ini
         $sudahAbsen = Absensi::whereDate('created_at', $today)
             ->pluck('guru_id');
+
         $alphaHariIni = Guru::where('is_active', true)
             ->whereNotIn('id', $sudahAbsen)
             ->count();
 
         // Persentase Kehadiran
         $totalGuruAktif = Guru::where('is_active', true)->count();
-        $persenKehadiran = $totalGuruAktif > 0 
-            ? round(($hadirHariIni / $totalGuruAktif) * 100) 
+
+        $persenKehadiran = $totalGuruAktif > 0
+            ? round(($hadirHariIni / $totalGuruAktif) * 100)
             : 0;
 
         // Data Chart 5 Hari Terakhir
@@ -75,25 +78,28 @@ class DashboardController extends Controller
         $izin = [];
         $alpha = [];
 
-        // 5 hari terakhir (termasuk hari ini)
+        // 5 hari terakhir
         for ($i = 4; $i >= 0; $i--) {
+
             $date = Carbon::today()->subDays($i);
-            
+
             // Label hari
-            $labels[] = $date->locale('id')->isoFormat('ddd'); // Sen, Sel, Rab
-            
-            // Hitung per status
+            $labels[] = $date->locale('id')->isoFormat('ddd');
+
+            // Hadir
             $hadir[] = Absensi::whereDate('created_at', $date)
                 ->where('status', 'hadir')
                 ->count();
-                
+
+            // Izin
             $izin[] = Absensi::whereDate('created_at', $date)
                 ->where('status', 'izin')
                 ->count();
-            
-            // Alpha = guru aktif yang tidak absen di hari tersebut
+
+            // Alpha
             $sudahAbsen = Absensi::whereDate('created_at', $date)
                 ->pluck('guru_id');
+
             $alpha[] = Guru::where('is_active', true)
                 ->whereNotIn('id', $sudahAbsen)
                 ->count();

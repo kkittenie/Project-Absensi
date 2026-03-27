@@ -37,10 +37,17 @@
             @endrole
 
             @role('superadmin')
+
            <li class="sidebar-item {{ request()->routeIs('admin.jam_kehadiran.*') ? 'active' : '' }}">
     <a class="sidebar-link" href="{{ route('admin.jam_kehadiran.index') }}">
                     <i class="align-middle" data-feather="user"></i>
                     <span class="align-middle">Pengaturan Waktu</span>
+
+            <li class="sidebar-item {{ request()->routeIs('admin.kehadiran.index') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.kehadiran.index') }}">
+                    <i class="align-middle" data-feather="check-square"></i>
+                    <span class="align-middle">Data Kehadiran</span>
+
                 </a>
             </li>
             @endrole
@@ -53,6 +60,16 @@
                 </a>
             </li>
             @endrole
+
+
+            <!-- @role('superadmin')
+            <li class="sidebar-item {{ request()->routeIs('admin.kehadiran.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.kehadiran.index') }}">
+                    <i class="align-middle" data-feather="calendar"></i>
+                    <span class="align-middle">Kehadiran</span>
+                </a>
+            </li>
+            @endrole -->
 
         </ul>
     </div>

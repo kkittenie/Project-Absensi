@@ -7,9 +7,11 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\WaktuController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PerizinanController;
+use App\Http\Controllers\Admin\KehadiranController;
+
 use App\Http\Controllers\GuruController;
-use App\Http\Controllers\IzinController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\IzinController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserProfileController;
 
@@ -18,15 +20,18 @@ use App\Http\Controllers\UserProfileController;
 | Landing Page
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('landing.index');
 })->name('landing.index');
+
 
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
 */
+
 Route::prefix('admin')
     ->middleware(['auth', 'role:admin|superadmin'])
     ->name('admin.')
@@ -47,14 +52,10 @@ Route::prefix('admin')
         | USERS
         |--------------------------------------------------------------------------
         */
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{uuid}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{uuid}', [UserController::class, 'update'])->name('users.update');
+        Route::resource('users', UserController::class);
         Route::put('/users/{uuid}/activate', [UserController::class, 'activate'])->name('users.activate');
         Route::put('/users/{uuid}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
-        Route::delete('/users/{uuid}', [UserController::class, 'remove'])->name('users.remove');
+        Route::delete('/users/{uuid}/remove', [UserController::class, 'remove'])->name('users.remove');
 
         /*
         |--------------------------------------------------------------------------
@@ -68,13 +69,21 @@ Route::prefix('admin')
 
         /*
         |--------------------------------------------------------------------------
-
+        | WAKTU
         |--------------------------------------------------------------------------
         */
-        // WAKTU
-Route::resource('jam_kehadiran', WaktuController::class)->only(['index', 'update']);
-Route::post('/jam_kehadiran/masuk/{guru}', [WaktuController::class, 'masuk'])->name('jam_kehadiran.masuk');
-Route::post('/jam_kehadiran/pulang/{guru}', [WaktuController::class, 'pulang'])->name('jam_kehadiran.pulang');
+        Route::resource('jam_kehadiran', WaktuController::class)->only(['index', 'update']);
+        Route::post('/jam_kehadiran/masuk/{guru}', [WaktuController::class, 'masuk'])->name('jam_kehadiran.masuk');
+        Route::post('/jam_kehadiran/pulang/{guru}', [WaktuController::class, 'pulang'])->name('jam_kehadiran.pulang');
+
+        /*
+        |--------------------------------------------------------------------------
+        | KEHADIRAN
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/kehadiran', [KehadiranController::class, 'index'])->name('kehadiran.index');
+        Route::get('/kehadiran/cetak', [KehadiranController::class, 'cetak'])->name('kehadiran.cetak');
+
         /*
         |--------------------------------------------------------------------------
         | PERIZINAN
@@ -85,13 +94,15 @@ Route::post('/jam_kehadiran/pulang/{guru}', [WaktuController::class, 'pulang'])-
         Route::put('/perizinan/{id}/approve', [PerizinanController::class, 'approve'])->name('perizinan.approve');
         Route::put('/perizinan/{id}/reject', [PerizinanController::class, 'reject'])->name('perizinan.reject');
 
-});
+    });
+
 
 /*
 |--------------------------------------------------------------------------
 | Guru Routes
 |--------------------------------------------------------------------------
 */
+
 Route::prefix('guru')
     ->middleware('auth:guru')
     ->name('guru.')
@@ -119,18 +130,37 @@ Route::prefix('guru')
         Route::post('/kehadiran/masuk/{guru}', [WaktuController::class, 'masuk'])->name('kehadiran.masuk');
         Route::post('/kehadiran/pulang/{guru}', [WaktuController::class, 'pulang'])->name('kehadiran.pulang');
 
-        // Izin
+        /*
+        |--------------------------------------------------------------------------
+        | IZIN
+        |--------------------------------------------------------------------------
+        */
         Route::get('/izin', [IzinController::class, 'index'])->name('izin.index');
         Route::get('/izin/create', [IzinController::class, 'create'])->name('izin.create');
         Route::post('/izin', [IzinController::class, 'store'])->name('izin.store');
 
-        // Profile
+        /*
+        |--------------------------------------------------------------------------
+        | PROFILE
+        |--------------------------------------------------------------------------
+        */
         Route::get('/profile', [UserProfileController::class, 'indexGuru'])->name('profile.index');
         Route::put('/profile', [UserProfileController::class, 'updateGuru'])->name('profile.update');
 
-        // Logout
+        /*
+        |--------------------------------------------------------------------------
+        | LOGOUT
+        |--------------------------------------------------------------------------
+        */
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-});
+    });
 
-require __DIR__.'/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| Auth Routes
+|--------------------------------------------------------------------------
+*/
+
+require __DIR__ . '/auth.php';
