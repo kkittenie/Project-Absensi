@@ -11,11 +11,9 @@ return new class extends Migration
         Schema::create('waktus', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('guru_id')
-                ->constrained('gurus')
-                ->cascadeOnDelete();
+          $table->foreignId('guru_id')->nullable()->constrained('gurus')->cascadeOnDelete();
 
-            $table->date('tanggal');
+           $table->date('tanggal')->nullable();
             $table->time('jam_masuk')->nullable();
             $table->time('jam_pulang')->nullable();
 

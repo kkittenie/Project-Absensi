@@ -64,18 +64,12 @@ class LoginController extends Controller
         if ($guru && Hash::check($password, $guru->password)) {
             Auth::guard('guru')->login($guru, $remember);
 
-<<<<<<< HEAD
-           return redirect()->route('guru.absensi.index')
-    ->withSuccess("Selamat datang, {$guru->nama_guru}");
-
-=======
             RateLimiter::clear($key);
 
             $request->session()->regenerate();
 
-            return redirect()->route('landing.index')
-                ->with('success', "Selamat datang, {$guru->nama_guru}!");
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
+            return redirect()->route('guru.absensi.index')
+                ->withSuccess("Selamat datang, {$guru->nama_guru}");
         }
 
         return back()->withErrors([

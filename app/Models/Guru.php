@@ -48,16 +48,11 @@ class Guru extends Authenticatable
         return $this->belongsTo(User::class);
     }
 
-<<<<<<< HEAD
-  
-public function waktus()
-{
-    return $this->hasMany(Waktu::class);
-}
+    public function waktus()
+    {
+        return $this->hasMany(Waktu::class);
+    }
 
-
-}
-=======
     // Guru punya banyak izin
     public function izins()
     {
@@ -70,4 +65,3 @@ public function waktus()
         return $this->belongsTo(Mapel::class);
     }
 }
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434

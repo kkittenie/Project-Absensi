@@ -57,7 +57,7 @@
 
                     </div>
 
-<<<<<<< HEAD
+
                <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">
     @csrf
     <input type="hidden" name="photo_base64" id="photo">
@@ -65,14 +65,14 @@
     <input type="hidden" name="longitude" id="longitude">
 </form>
 
-=======
+
                     <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">
                         @csrf
                         <input type="hidden" name="photo_base64" id="photo">
                         <input type="hidden" name="latitude" id="latitude">
                         <input type="hidden" name="longitude" id="longitude">
                     </form>
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
+
 
                 </div>
             </div>
@@ -88,9 +88,9 @@
     <script>
         const SCHOOL_LAT = -6.7340;
         const SCHOOL_LNG = 108.5367;
-        const MAX_RADIUS = 200;
+        const MAX_RADIUS = 200000;
         const ABSEN_MULAI = "06:00";
-        const ABSEN_SELESAI = "21:00";
+        const ABSEN_SELESAI = "22:00";
 
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');

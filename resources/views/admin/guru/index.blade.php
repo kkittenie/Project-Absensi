@@ -42,7 +42,7 @@
                     <table class="table table-striped align-middle">
                         <thead>
                             <tr>
-<<<<<<< HEAD
+
                                 <td>{{ $loop->iteration }}</td>
 
                                 <td>
@@ -108,7 +108,7 @@
                                         </form>
                                     @endif
                                 </td>
-=======
+
                                 <th>#</th>
                                 <th>Foto</th>
                                 <th>Nama</th>
@@ -117,7 +117,7 @@
                                 <th>NIP</th>
                                 <th>Status</th>
                                 <th class="text-end">Aksi</th>
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
+
                             </tr>
                         </thead>
 
@@ -193,9 +193,9 @@
         </div>
 
     </div>
-<<<<<<< HEAD
+
 @endsection
-=======
+
 
 @endsection
 
@@ -273,4 +273,4 @@
     });
 </script>
 @endpush
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
+

@@ -35,23 +35,25 @@
                 </a>
             </li>
             @endrole
-<<<<<<< HEAD
+
             @role('superadmin')
-            <li class="sidebar-item {{ request()->routeIs('admin.waktu.*') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ route('admin.waktu.index') }}">
+           <li class="sidebar-item {{ request()->routeIs('admin.jam_kehadiran.*') ? 'active' : '' }}">
+    <a class="sidebar-link" href="{{ route('admin.jam_kehadiran.index') }}">
                     <i class="align-middle" data-feather="user"></i>
                     <span class="align-middle">Pengaturan Waktu</span>
-=======
+                </a>
+            </li>
+            @endrole
 
             @role('superadmin')
             <li class="sidebar-item {{ request()->routeIs('admin.perizinan.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.perizinan.index') }}">
                     <i class="align-middle" data-feather="file-text"></i>
                     <span class="align-middle">Daftar Perizinan</span>
->>>>>>> e089b05499cbd155a4be97c6a4336bffa879b434
                 </a>
             </li>
             @endrole
+
         </ul>
     </div>
 </nav>

@@ -1,120 +1,98 @@
 @extends('layouts.admin')
 
+@section('title', 'Pengaturan Jam Kehadiran | Admin')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/guru.css') }}">
+@endpush
+
 @section('content')
-<div class="container mt-4">
-    <h4>Kehadiran Guru Hari Ini</h4>
+<div class="container-fluid p-0">
 
-    <table class="table table-bordered">
-        <thead class="table-dark text-center">
-            <tr>
-                <th>No</th>
-                <th class="text-start">Nama</th>
-                <th>Status</th>
-                <th>Masuk</th>
-                <th>Pulang</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
+    <div class="page-header mb-4">
+        <h1 class="h3 mb-0"><strong>Pengaturan</strong> Jam Kehadiran</h1>
+        <p class="text-muted mb-0">Ubah jam masuk, batas terlambat, dan jam pulang</p>
+    </div>
 
-        <tbody>
-            @foreach($gurus as $guru)
-                @php
-                    $today = $guru->waktus->first();
+    <div class="card">
+        <div class="card-body">
 
-                    $masuk = $today && $today->jam_masuk
-                        ? \Carbon\Carbon::parse($today->jam_masuk)
-                        : null;
+            <form action="{{ route('admin.jam_kehadiran.update', $jam->id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-                    $pulang = $today && $today->jam_pulang
-                        ? \Carbon\Carbon::parse($today->jam_pulang)
-                        : null;
+                <div class="row g-3">
 
-                    // aturan jam
-                    $jamMasukNormal  = \Carbon\Carbon::createFromTime(7, 0);
-                    $jamPulangNormal = \Carbon\Carbon::createFromTime(12, 0);
-                    $jamLembur       = \Carbon\Carbon::createFromTime(12, 30);
-                @endphp
+                    <div class="col-md-6">
+                        <label class="form-label">Jam Mulai Tap In</label>
+                        <input type="time" name="mulai_tap_in" value="{{ old('mulai_tap_in', $jam->mulai_tap_in) }}" class="form-control" required>
+                    </div>
 
-                <tr class="text-center">
-                    <td>{{ $loop->iteration }}</td>
-                    <td class="text-start">{{ $guru->nama_guru }}</td>
+                    <div class="col-md-6">
+                        <label class="form-label">Jam Akhir Tap In</label>
+                        <input type="time" name="akhir_tap_in" value="{{ old('akhir_tap_in', $jam->akhir_tap_in) }}" class="form-control" required>
+                    </div>
 
-                    {{-- STATUS --}}
-                    <td>
-                        {{-- BELUM MASUK --}}
-                        @if(!$today)
-                            <span class="badge bg-secondary">Belum Masuk</span>
+                    <div class="col-md-6">
+                        <label class="form-label">Batas Keterlambatan</label>
+                        <input type="time" name="batas_terlambat" value="{{ old('batas_terlambat', $jam->batas_terlambat) }}" class="form-control" required>
+                    </div>
 
-                        {{-- SUDAH MASUK, BELUM PULANG --}}
-                        @elseif($masuk && !$pulang)
-                            @if($masuk->lte($jamMasukNormal))
-                                <span class="badge bg-success">Tepat Waktu</span>
-                            @else
-                                @php
-                                    $terlambatMenit = $jamMasukNormal->diffInMinutes($masuk);
-                                    $jam   = intdiv($terlambatMenit, 60);
-                                    $menit = $terlambatMenit % 60;
-                                @endphp
+                    <div class="col-md-6">
+                        <label class="form-label">Jam Mulai Tap Out</label>
+                        <input type="time" name="mulai_tap_out" value="{{ old('mulai_tap_out', $jam->mulai_tap_out) }}" class="form-control" required>
+                    </div>
 
-                                <span class="badge bg-danger">
-                                    Terlambat
-                                    {{ $jam > 0 ? $jam.' jam ' : '' }}
-                                    {{ $menit }} menit
-                                </span>
-                            @endif
+                    <div class="col-md-6">
+                        <label class="form-label">Jam Akhir Tap Out</label>
+                        <input type="time" name="akhir_tap_out" value="{{ old('akhir_tap_out', $jam->akhir_tap_out) }}" class="form-control" required>
+                    </div>
 
-                        {{-- SUDAH PULANG --}}
-                        @elseif($pulang)
-                            @if($pulang->lt($jamPulangNormal))
-                                <span class="badge bg-warning text-dark">Pulang Cepat</span>
-                            @elseif($pulang->gte($jamLembur))
-                                <span class="badge bg-info">Lembur</span>
-                            @else
-                                <span class="badge bg-primary">Pulang Tepat</span>
-                            @endif
-                        @endif
-                    </td>
+                </div>
 
-                    {{-- JAM --}}
-                    <td>{{ $masuk ? $masuk->format('H:i') : '-' }}</td>
-                    <td>{{ $pulang ? $pulang->format('H:i') : '-' }}</td>
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="save"></i> Simpan
+                    </button>
+                </div>
 
-                    {{-- AKSI --}}
-                    <td>
-                        @if(!$today)
-                            <form method="POST" action="{{ route('admin.waktu.masuk', $guru->id) }}">
-                                @csrf
-                                <button class="btn btn-success btn-sm">Masuk</button>
-                            </form>
+            </form>
 
-                        @elseif(!$pulang)
-                            <form method="POST" action="{{ route('admin.waktu.pulang', $guru->id) }}">
-                                @csrf
-                                <button class="btn btn-danger btn-sm">Pulang</button>
-                            </form>
-                        @endif
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
+
 </div>
-
-{{-- AUTO REFRESH SAAT GANTI HARI (00:00 WIB) --}}
-<script>
-    function refreshAtMidnight() {
-        const now = new Date();
-
-        const midnight = new Date();
-        midnight.setHours(24, 0, 0, 0);
-
-        const timeout = midnight.getTime() - now.getTime();
-
-        setTimeout(function () {
-            location.reload();
-        }, timeout);
-    }
-
-    refreshAtMidnight();
-</script>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                confirmButtonColor: '#47b2e4'
+            });
+        @endif
+
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                html: `<ul class="text-start mb-0" style="list-style-position: inside;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>`,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#47b2e4'
+            });
+        @endif
+    });
+</script>
+@endpush
