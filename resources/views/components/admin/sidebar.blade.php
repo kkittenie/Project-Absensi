@@ -18,6 +18,7 @@
 
             <li class="sidebar-header">Management</li>
 
+            {{-- Hanya superadmin --}}
             @role('superadmin')
             <li class="sidebar-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.users.index') }}">
@@ -33,6 +34,13 @@
                 </a>
             </li>
 
+            <li class="sidebar-item {{ request()->routeIs('admin.jam_kehadiran.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('admin.jam_kehadiran.index') }}">
+                    <i class="align-middle" data-feather="clock"></i>
+                    <span class="align-middle">Pengaturan Waktu</span>
+                </a>
+            </li>
+
             <li class="sidebar-item {{ request()->routeIs('admin.perizinan.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.perizinan.index') }}">
                     <i class="align-middle" data-feather="file-text"></i>
@@ -41,6 +49,7 @@
             </li>
             @endrole
 
+            {{-- Admin & superadmin --}}
             <li class="sidebar-item {{ request()->routeIs('admin.kehadiran.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.kehadiran.index') }}">
                     <i class="align-middle" data-feather="check-square"></i>

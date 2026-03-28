@@ -1,11 +1,13 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
+
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\WaktuController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PerizinanController;
 use App\Http\Controllers\Admin\KehadiranController;
+
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\IzinController;
@@ -23,8 +25,6 @@ Route::get('/landing', function () {
 })->name('landing.index');
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
@@ -38,41 +38,63 @@ Route::prefix('admin')
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        /*
+        |--------------------------------------------------------------------------
+        | PROFILE
+        |--------------------------------------------------------------------------
+        */
         Route::get('/profile', [UserProfileController::class, 'indexAdmin'])->name('profile.index');
         Route::put('/profile', [UserProfileController::class, 'updateAdmin'])->name('profile.update');
 
+        /*
+        |--------------------------------------------------------------------------
+        | USERS
+        |--------------------------------------------------------------------------
+        */
         Route::resource('users', UserController::class);
+        Route::put('/users/{uuid}/activate', [UserController::class, 'activate'])->name('users.activate');
+        Route::put('/users/{uuid}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
+        Route::delete('/users/{uuid}/remove', [UserController::class, 'remove'])->name('users.remove');
 
-        Route::put(
-            '/users/{uuid}/activate',
-            [UserController::class, 'activate']
-        )->name('users.activate');
-
-        Route::put(
-            '/users/{uuid}/deactivate',
-            [UserController::class, 'deactivate']
-        )->name('users.deactivate');
-
-        Route::delete(
-            '/users/{uuid}/remove',
-            [UserController::class, 'remove']
-        )->name('users.remove');
-
+        /*
+        |--------------------------------------------------------------------------
+        | GURU
+        |--------------------------------------------------------------------------
+        */
         Route::resource('guru', GuruController::class);
         Route::put('/guru/{uuid}/activate', [GuruController::class, 'activate'])->name('guru.activate');
         Route::put('/guru/{uuid}/deactivate', [GuruController::class, 'deactivate'])->name('guru.deactivate');
         Route::delete('/guru/{uuid}/remove', [GuruController::class, 'remove'])->name('guru.remove');
         Route::put('/guru/{uuid}/reset-password', [GuruController::class, 'resetPassword'])->name('guru.reset-password');
 
+        /*
+        |--------------------------------------------------------------------------
+        | WAKTU
+        |--------------------------------------------------------------------------
+        */
+        Route::resource('jam_kehadiran', WaktuController::class)->only(['index', 'update']);
+        Route::post('/jam_kehadiran/masuk/{guru}', [WaktuController::class, 'masuk'])->name('jam_kehadiran.masuk');
+        Route::post('/jam_kehadiran/pulang/{guru}', [WaktuController::class, 'pulang'])->name('jam_kehadiran.pulang');
+
+        /*
+        |--------------------------------------------------------------------------
+        | KEHADIRAN
+        |--------------------------------------------------------------------------
+        */
         Route::get('/kehadiran', [KehadiranController::class, 'index'])->name('kehadiran.index');
         Route::get('/kehadiran/cetak', [KehadiranController::class, 'cetak'])->name('kehadiran.cetak');
 
+        /*
+        |--------------------------------------------------------------------------
+        | PERIZINAN
+        |--------------------------------------------------------------------------
+        */
         Route::get('/perizinan', [PerizinanController::class, 'index'])->name('perizinan.index');
+        Route::get('/perizinan/cetak', [PerizinanController::class, 'cetak'])->name('perizinan.cetak');
         Route::get('/perizinan/surat/{izin}', [PerizinanController::class, 'surat'])->name('perizinan.surat');
         Route::put('/perizinan/{id}/approve', [PerizinanController::class, 'approve'])->name('perizinan.approve');
         Route::put('/perizinan/{id}/reject', [PerizinanController::class, 'reject'])->name('perizinan.reject');
     });
-
 
 
 /*
@@ -90,19 +112,38 @@ Route::prefix('guru')
             return view('guru.dashboard');
         })->name('dashboard');
 
+        /*
+        |--------------------------------------------------------------------------
+        | ABSENSI
+        |--------------------------------------------------------------------------
+        */
         Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
         Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
 
+        /*
+        |--------------------------------------------------------------------------
+        | IZIN
+        |--------------------------------------------------------------------------
+        */
         Route::get('/izin', [IzinController::class, 'index'])->name('izin.index');
         Route::get('/izin/create', [IzinController::class, 'create'])->name('izin.create');
         Route::post('/izin', [IzinController::class, 'store'])->name('izin.store');
 
+        /*
+        |--------------------------------------------------------------------------
+        | PROFILE
+        |--------------------------------------------------------------------------
+        */
         Route::get('/profile', [UserProfileController::class, 'indexGuru'])->name('profile.index');
         Route::put('/profile', [UserProfileController::class, 'updateGuru'])->name('profile.update');
 
+        /*
+        |--------------------------------------------------------------------------
+        | LOGOUT
+        |--------------------------------------------------------------------------
+        */
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     });
-
 
 
 /*

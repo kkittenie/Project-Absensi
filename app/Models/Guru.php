@@ -10,6 +10,7 @@ use App\Models\Kehadiran;
 use App\Models\User;
 use App\Models\Izin;
 use App\Models\Mapel;
+use App\Models\Waktu;
 
 class Guru extends Authenticatable
 {
@@ -49,6 +50,11 @@ class Guru extends Authenticatable
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function waktus()
+    {
+        return $this->hasMany(Waktu::class);
     }
 
     public function kehadiran(): HasMany

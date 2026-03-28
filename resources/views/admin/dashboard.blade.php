@@ -8,7 +8,6 @@
 
 @section('content')
 
-    {{-- Page Header --}}
     <div class="page-header row mb-4">
         <div class="col-12">
             <h1 class="h3 mb-0"><strong>Dashboard</strong> Admin</h1>
@@ -16,18 +15,14 @@
         </div>
     </div>
 
-    {{-- Statistic Cards --}}
     <div class="row">
 
-        {{-- Total Guru --}}
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h5 class="card-title">Total Guru</h5>
-                        <div class="stat-icon">
-                            <i data-feather="users"></i>
-                        </div>
+                        <div class="stat-icon"><i data-feather="users"></i></div>
                     </div>
                     <div class="stat-number">{{ $totalGuru }}</div>
                     <p class="stat-desc">
@@ -42,15 +37,12 @@
             </div>
         </div>
 
-        {{-- Hadir Hari Ini --}}
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card card-hadir">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h5 class="card-title">Hadir Hari Ini</h5>
-                        <div class="stat-icon">
-                            <i data-feather="check-circle"></i>
-                        </div>
+                        <div class="stat-icon"><i data-feather="check-circle"></i></div>
                     </div>
                     <div class="stat-number">{{ $hadirHariIni }}</div>
                     <p class="stat-desc">
@@ -60,15 +52,12 @@
             </div>
         </div>
 
-        {{-- Izin --}}
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card card-izin">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h5 class="card-title">Izin</h5>
-                        <div class="stat-icon">
-                            <i data-feather="alert-circle"></i>
-                        </div>
+                        <div class="stat-icon"><i data-feather="alert-circle"></i></div>
                     </div>
                     <div class="stat-number">{{ $izinHariIni }}</div>
                     <p class="stat-desc">Pengajuan izin aktif</p>
@@ -76,15 +65,12 @@
             </div>
         </div>
 
-        {{-- Alpha --}}
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card card-alpha">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <h5 class="card-title">Alpha</h5>
-                        <div class="stat-icon">
-                            <i data-feather="x-circle"></i>
-                        </div>
+                        <div class="stat-icon"><i data-feather="x-circle"></i></div>
                     </div>
                     <div class="stat-number">{{ $alphaHariIni }}</div>
                     <p class="stat-desc">Tidak hadir tanpa keterangan</p>
@@ -94,10 +80,8 @@
 
     </div>
 
-    {{-- Charts & Recent Attendance --}}
     <div class="row">
 
-        {{-- Attendance Chart --}}
         <div class="col-xl-8 col-lg-7 mb-4">
             <div class="card chart-card flex-fill">
                 <div class="card-header">
@@ -114,7 +98,6 @@
             </div>
         </div>
 
-        {{-- Recent Attendance --}}
         <div class="col-xl-4 col-lg-5 mb-4">
             <div class="card flex-fill">
                 <div class="card-header">
@@ -133,8 +116,7 @@
                                 <div>
                                     <strong>{{ $absensi->guru->nama_guru ?? '-' }}</strong><br>
                                     <small class="text-muted">
-                                        {{ \Carbon\Carbon::parse($absensi->tanggal)->format('d M Y') }},
-                                        {{ \Carbon\Carbon::parse($absensi->created_at)->format('H:i') }}
+                                        {{ \Carbon\Carbon::parse($absensi->created_at)->locale('id')->isoFormat('D MMM Y, HH:mm') }}
                                     </small>
                                 </div>
                                 @if(in_array($absensi->status, ['tepat_waktu', 'terlambat']))
@@ -170,7 +152,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: '{{ session('success') }}',
+                    text: "{{ session('success') }}",
                     showConfirmButton: false,
                     timer: 2000,
                     timerProgressBar: true,
@@ -192,7 +174,7 @@
                 });
             @endif
 
-                        if (window.Chart) {
+            if (window.Chart) {
                 const ctx = document.getElementById("attendanceChart");
                 new Chart(ctx, {
                     type: "line",
@@ -267,9 +249,7 @@
                         },
                         scales: {
                             x: {
-                                grid: {
-                                    display: false,
-                                },
+                                grid: { display: false },
                                 ticks: {
                                     font: { family: 'Open Sans', size: 12 },
                                     color: '#6c757d'

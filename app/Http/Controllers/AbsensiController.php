@@ -8,51 +8,37 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
-    const JAM_MASUK_MULAI = '06:00';
-    const JAM_MASUK_SELESAI = '09:00';
-    const JAM_PULANG_MULAI = '13:00';
+    const JAM_MASUK_MULAI    = '06:00';
+    const JAM_MASUK_SELESAI  = '09:00';
+    const JAM_PULANG_MULAI   = '13:00';
     const JAM_PULANG_SELESAI = '15:00';
-
-    private function getModeAbsen(): string
-    {
-        $jam = now()->format('H:i');
-
-        if ($jam >= self::JAM_MASUK_MULAI && $jam <= self::JAM_MASUK_SELESAI) {
-            return 'masuk';
-        }
-        if ($jam >= self::JAM_PULANG_MULAI && $jam <= self::JAM_PULANG_SELESAI) {
-            return 'pulang';
-        }
-
-        return 'tutup';
-    }
 
     public function index()
     {
-        $guru = auth('guru')->user();
+        $guru     = auth('guru')->user();
         $canAbsen = Auth::guard('guru')->check();
 
-        $absenHariIni = null;
+        $absenHariIni     = null;
         $kehadiranHariIni = null;
-        $sudahAbsenMasuk = false;
+        $sudahAbsenMasuk  = false;
         $sudahAbsenPulang = false;
-        $modeAbsen = $this->getModeAbsen();
 
         if ($guru) {
             $today = now()->toDateString();
 
             $absenHariIni = Absensi::where('guru_id', $guru->id)
-                ->whereDate('tanggal', $today)
+                ->whereDate('created_at', $today)
                 ->first();
 
             $kehadiranHariIni = Kehadiran::where('guru_id', $guru->id)
-                ->whereDate('tanggal', $today)
+                ->where('tanggal', $today)
                 ->first();
 
-            $sudahAbsenMasuk = $absenHariIni !== null;
+            $sudahAbsenMasuk  = $absenHariIni !== null;
             $sudahAbsenPulang = $kehadiranHariIni?->jam_pulang !== null;
         }
 
@@ -62,7 +48,6 @@ class AbsensiController extends Controller
             'kehadiranHariIni',
             'sudahAbsenMasuk',
             'sudahAbsenPulang',
-            'modeAbsen'
         ));
     }
 
@@ -70,9 +55,9 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'photo_base64' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'mode' => 'required|in:masuk,pulang',
+            'latitude'     => 'required',
+            'longitude'    => 'required',
+            'mode'         => 'required|in:masuk,pulang',
         ]);
 
         $guru = auth()->guard('guru')->user();
@@ -81,19 +66,20 @@ class AbsensiController extends Controller
             return back()->with('error', 'Akun belum terhubung dengan data guru');
         }
 
-        $today = now()->toDateString();
+        $today     = now()->toDateString();
         $modeAbsen = $request->mode;
 
         $absenHariIni = Absensi::where('guru_id', $guru->id)
-            ->whereDate('tanggal', $today)
+            ->whereDate('created_at', $today)
             ->first();
 
         $kehadiranHariIni = Kehadiran::where('guru_id', $guru->id)
-            ->whereDate('tanggal', $today)
+            ->where('tanggal', $today)
             ->first();
 
+        // Simpan foto
         $base64Image = preg_replace('#^data:image/\w+;base64,#i', '', $request->photo_base64);
-        $fileName = 'absensi/' . Str::uuid() . '.png';
+        $fileName    = 'absensi/' . Str::uuid() . '.png';
         Storage::disk('public')->put($fileName, base64_decode($base64Image));
 
         // ===== ABSEN MASUK =====
@@ -102,27 +88,25 @@ class AbsensiController extends Controller
                 return back()->with('error', 'Kamu sudah absen masuk hari ini ❌');
             }
 
-            $batasTepat = \Carbon\Carbon::parse(now()->toDateString() . ' ' . self::JAM_MASUK_MULAI)->addHour();
-            $status = now()->lte($batasTepat) ? 'tepat_waktu' : 'terlambat';
+            $jamSekarang = now()->format('H:i');
+            $status      = $jamSekarang <= '07:00' ? 'tepat_waktu' : 'terlambat';
 
             Absensi::create([
-                'uuid' => Str::uuid(),
-                'guru_id' => $guru->id,
-                'tanggal' => $today,
-                'photo' => $fileName,
-                'latitude' => $request->latitude,
+                'uuid'      => Str::uuid(),
+                'guru_id'   => $guru->id,
+                'photo'     => $fileName,
+                'latitude'  => $request->latitude,
                 'longitude' => $request->longitude,
-                'status' => $status,
+                'status'    => $status,
             ]);
 
             Kehadiran::create([
-                'guru_id' => $guru->id,
-                'tanggal' => $today,
+                'guru_id'   => $guru->id,
+                'tanggal'   => $today,
                 'jam_masuk' => now()->format('H:i:s'),
             ]);
 
             $pesanStatus = $status === 'tepat_waktu' ? 'Tepat waktu 👍' : 'Terlambat ⚠️';
-
             return back()->with('success', "✅ Absen masuk berhasil! {$pesanStatus}");
         }
 
@@ -138,45 +122,52 @@ class AbsensiController extends Controller
                 return back()->with('error', 'Kamu sudah absen pulang hari ini ❌');
             }
 
-            $jamPulang = now();
+            $jamPulang   = now();
             $batasPulang = now()->setTimeFromTimeString(self::JAM_PULANG_SELESAI);
+            $batasCepat  = now()->setTimeFromTimeString(self::JAM_PULANG_MULAI);
             $lemburMenit = $jamPulang->gt($batasPulang)
                 ? $jamPulang->diffInMinutes($batasPulang)
                 : 0;
 
             $absenHariIni->update([
-                'photo_pulang' => $fileName,
-                'latitude_pulang' => $request->latitude,
+                'photo_pulang'     => $fileName,
+                'latitude_pulang'  => $request->latitude,
                 'longitude_pulang' => $request->longitude,
             ]);
 
             if ($kehadiranHariIni) {
                 $kehadiranHariIni->update([
-                    'jam_pulang' => now()->format('H:i:s'),
+                    'jam_pulang'   => now()->format('H:i:s'),
                     'lembur_menit' => $lemburMenit,
                 ]);
             } else {
                 Kehadiran::create([
-                    'guru_id' => $guru->id,
-                    'tanggal' => $today,
-                    'jam_pulang' => now()->format('H:i:s'),
+                    'guru_id'      => $guru->id,
+                    'tanggal'      => $today,
+                    'jam_pulang'   => now()->format('H:i:s'),
                     'lembur_menit' => $lemburMenit,
                 ]);
             }
 
-            $jamPulangCarbon = now();
-            $batasCepat = now()->setTimeFromTimeString('15:00');
-
             if ($lemburMenit > 0) {
                 $pesan = "Lembur {$lemburMenit} menit ⏰";
-            } elseif ($jamPulangCarbon->lt($batasCepat)) {
-                $selisihCepat = (int) $jamPulangCarbon->diffInMinutes($batasCepat);
-                $pesan = "Pulang cepat {$selisihCepat} menit lebih awal ⚠️";
+            } elseif ($jamPulang->lt($batasCepat)) {
+                $selisih = (int) $jamPulang->diffInMinutes($batasCepat);
+                $pesan   = "Pulang cepat {$selisih} menit lebih awal ⚠️";
             } else {
                 $pesan = 'Tepat waktu 👍';
             }
 
             return back()->with('success', "✅ Absen pulang berhasil! {$pesan}");
         }
+    }
+
+    public function cetak()
+    {
+        $data = Absensi::with('guru')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.kehadiran.cetak', compact('data'));
     }
 }

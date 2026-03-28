@@ -8,15 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('gurus', function (Blueprint $table) {
-            $table->string('password')->after('nip'); // setelah kolom NIP
-        });
+        // tidak perlu apa apa karena password sudah ada
     }
 
     public function down(): void
     {
-        Schema::table('gurus', function (Blueprint $table) {
-            $table->dropColumn('password');
-        });
+        //
     }
 };

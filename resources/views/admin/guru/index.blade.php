@@ -138,94 +138,94 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
 
-            @if (session('success'))
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                confirmButtonColor: '#47b2e4'
+            });
+        @endif
+
+        document.querySelectorAll('.btn-reset-password').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('.form-reset-password');
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    timerProgressBar: true,
-                    confirmButtonColor: '#47b2e4'
-                });
-            @endif
-
-            document.querySelectorAll('.btn-reset-password').forEach(button => {
-                button.addEventListener('click', function () {
-                    const form = this.closest('.form-reset-password');
-                    Swal.fire({
-                        title: 'Reset Password?',
-                        text: 'Password akan direset ke NIP guru ini.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#17a2b8',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Reset!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) form.submit();
-                    });
+                    title: 'Reset Password?',
+                    text: 'Password akan direset ke NIP guru ini.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#17a2b8',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Reset!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
                 });
             });
-
-            document.querySelectorAll('.btn-deactivate').forEach(button => {
-                button.addEventListener('click', function () {
-                    const form = this.closest('.form-deactivate');
-                    Swal.fire({
-                        title: 'Konfirmasi',
-                        text: 'Apakah Anda yakin ingin menonaktifkan guru ini?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc3545',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Nonaktifkan!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) form.submit();
-                    });
-                });
-            });
-
-            document.querySelectorAll('.btn-delete').forEach(button => {
-                button.addEventListener('click', function () {
-                    const form = this.closest('.form-delete');
-                    Swal.fire({
-                        title: 'Konfirmasi Hapus',
-                        text: 'Data yang dihapus tidak dapat dikembalikan. Yakin ingin melanjutkan?',
-                        icon: 'error',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc3545',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) form.submit();
-                    });
-                });
-            });
-
-            document.querySelectorAll('.btn-activate').forEach(button => {
-                button.addEventListener('click', function () {
-                    const form = this.closest('.form-activate');
-                    Swal.fire({
-                        title: 'Konfirmasi',
-                        text: 'Apakah Anda yakin ingin mengaktifkan kembali guru ini?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#28a745',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, Aktifkan!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) form.submit();
-                    });
-                });
-            });
-
         });
-    </script>
+
+        document.querySelectorAll('.btn-deactivate').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('.form-deactivate');
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin menonaktifkan guru ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Nonaktifkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('.form-delete');
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    text: 'Data yang dihapus tidak dapat dikembalikan. Yakin ingin melanjutkan?',
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-activate').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('.form-activate');
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin mengaktifkan kembali guru ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Aktifkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+
+    });
+</script>
 @endpush

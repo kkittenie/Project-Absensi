@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gurus', function (Blueprint $table) {
-            $table->id(); // primary key
-            $table->uuid('uuid')->nullable(); // uuid optional
-            $table->string('nama_guru'); // nama guru
-            $table->string('nip')->unique(); // nip unik
-            $table->string('password'); // password login
-            $table->boolean('is_active')->default(true); // status aktif
-            $table->timestamps(); // created_at & updated_at
-            $table->softDeletes(); // deleted_at
+            $table->id();
+            $table->uuid('uuid')->nullable();
+            $table->string('nama_guru');
+            $table->string('nip')->unique();
+            $table->string('password');
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes(); // untuk deleted_at
         });
     }
 

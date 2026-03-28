@@ -104,6 +104,15 @@
 
                     </div>
 
+
+                    <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">
+                        @csrf
+                        <input type="hidden" name="photo_base64" id="photo">
+                        <input type="hidden" name="latitude" id="latitude">
+                        <input type="hidden" name="longitude" id="longitude">
+                    </form>
+
+
                     <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">
                         @csrf
                         <input type="hidden" name="photo_base64" id="photo">
@@ -111,6 +120,7 @@
                         <input type="hidden" name="longitude" id="longitude">
                         <input type="hidden" name="mode" id="modeInput">
                     </form>
+
 
                 </div>
             </div>
@@ -191,9 +201,9 @@
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
         }
 
-        if(snap) {
+        if (snap) {
             let cameraActive = false;
-            let sudahKonfirmasiPulangCepat = false; 
+            let sudahKonfirmasiPulangCepat = false;
 
             snap.addEventListener('click', async () => {
                 const mode = getMode();

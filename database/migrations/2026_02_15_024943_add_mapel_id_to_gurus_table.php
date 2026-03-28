@@ -10,6 +10,13 @@ return new class extends Migration
     {
         Schema::table('gurus', function (Blueprint $table) {
 
+
+            // buat kolom mapel_id dulu
+            $table->foreignId('mapel_id')
+                ->nullable()
+                ->constrained('mapels')
+                ->cascadeOnDelete();
+
             // tambah kolom dulu
             if (!Schema::hasColumn('gurus', 'mapel_id')) {
 
@@ -22,6 +29,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('mapels')
                 ->onDelete('cascade');
+
 
         });
     }
