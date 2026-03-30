@@ -172,8 +172,8 @@
                 </div>
 
                 <div class="col-lg-7">
-                    <form action="#" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
-                        @csrf
+                    {{-- Hapus @csrf dan method="post", ganti pakai id --}}
+                    <form id="contactForm" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
                         <div class="row gy-4">
                             <div class="col-md-6">
                                 <label for="name-field" class="pb-2">Nama Lengkap</label>
@@ -193,9 +193,6 @@
                                     required></textarea>
                             </div>
                             <div class="col-md-12 text-center">
-                                <div class="loading">Memuat...</div>
-                                <div class="error-message"></div>
-                                <div class="sent-message">Pesan Anda sudah terkirim. Terima kasih!</div>
                                 <button type="submit">Kirim Pesan</button>
                             </div>
                         </div>
@@ -204,6 +201,52 @@
             </div>
         </div>
     </section>
+
+    @push('scripts')
+        <script>
+            document.getElementById('contactForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const name = document.getElementById('name-field').value.trim();
+                const email = document.getElementById('email-field').value.trim();
+                const subject = document.getElementById('subject-field').value.trim();
+                const message = document.getElementById('message-field').value.trim();
+
+                if (!name || !email || !subject || !message) return;
+
+                const body = `Nama: ${name}\nEmail Pengirim: ${email}\n\n${message}`;
+
+                const mailtoLink = `mailto:smppgrisumber@gmail.com`
+                    + `?subject=${encodeURIComponent(subject)}`
+                    + `&body=${encodeURIComponent(body)}`;
+
+                window.location.href = mailtoLink;
+            });
+        </script>
+    @endpush
+
+    @push('scripts')
+        <script>
+            document.getElementById('contactForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const name = document.getElementById('name-field').value.trim();
+                const email = document.getElementById('email-field').value.trim();
+                const subject = document.getElementById('subject-field').value.trim();
+                const message = document.getElementById('message-field').value.trim();
+
+                if (!name || !email || !subject || !message) return;
+
+                const body = `Nama: ${name}\nEmail Pengirim: ${email}\n\n${message}`;
+
+                const mailtoLink = `mailto:smppgrisumber@gmail.com`
+                    + `?subject=${encodeURIComponent(subject)}`
+                    + `&body=${encodeURIComponent(body)}`;
+
+                window.location.href = mailtoLink;
+            });
+        </script>
+    @endpush
 
 @endsection
 
@@ -221,6 +264,25 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name-field').value.trim();
+            const email = document.getElementById('email-field').value.trim();
+            const subject = document.getElementById('subject-field').value.trim();
+            const message = document.getElementById('message-field').value.trim();
+
+            if (!name || !email || !subject || !message) return;
+
+            const body = `Nama: ${name}\nEmail: ${email}\n\n${message}`;
+
+            const mailtoLink = `mailto:smppgrisumber@gmail.com`
+                + `?subject=${encodeURIComponent(subject)}`
+                + `&body=${encodeURIComponent(body)}`;
+
+            window.location.href = mailtoLink;
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
 
             let success = @json(session('success'));

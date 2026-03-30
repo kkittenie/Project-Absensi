@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Kehadiran;
 use App\Models\Absensi;
 use App\Models\Izin;
+use App\Models\Waktu;
 use Illuminate\Http\Request;
 
 class KehadiranController extends Controller
@@ -15,6 +16,7 @@ class KehadiranController extends Controller
         $bulan = $request->get('bulan', date('n'));
         $tahun = $request->get('tahun', date('Y'));
         $nama = $request->get('nama');
+        $jam = Waktu::first();
 
         $query = Kehadiran::with(['guru.mapel'])
             ->whereMonth('tanggal', $bulan)
@@ -47,7 +49,8 @@ class KehadiranController extends Controller
             'tahun',
             'nama',
             'absensiMap',
-            'izins'
+            'izins',
+            'jam'
         ));
     }
 

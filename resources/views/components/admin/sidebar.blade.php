@@ -37,7 +37,7 @@
             <li class="sidebar-item {{ request()->routeIs('admin.jam_kehadiran.*') ? 'active' : '' }}">
                 <a class="sidebar-link" href="{{ route('admin.jam_kehadiran.index') }}">
                     <i class="align-middle" data-feather="clock"></i>
-                    <span class="align-middle">Pengaturan Waktu</span>
+                    <span class="align-middle">Pengaturan Waktu & Hari Libur</span>
                 </a>
             </li>
 

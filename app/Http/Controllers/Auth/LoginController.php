@@ -66,7 +66,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->route('guru.absensi.index')
+            return redirect()->route('landing.index')
                 ->withSuccess("Selamat datang, {$guru->nama_guru}");
         }
 

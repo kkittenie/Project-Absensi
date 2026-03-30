@@ -23,13 +23,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validasi login NIP + password
         $credentials = $request->validate([
             'nip' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        // Coba login
         if (
             Auth::guard('guru')->attempt([
                 'nip' => $request->nip,
@@ -38,7 +36,6 @@ class AuthenticatedSessionController extends Controller
         ) {
             $request->session()->regenerate();
 
-            // Redirect ke landing page setelah login
             $guru = Auth::guard('guru')->user();
             return redirect()->route('landing.index')
                 ->withSuccess("Selamat datang, {$guru->nama_guru}!");

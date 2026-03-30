@@ -75,6 +75,9 @@ Route::prefix('admin')
         Route::resource('jam_kehadiran', WaktuController::class)->only(['index', 'update']);
         Route::post('/jam_kehadiran/masuk/{guru}', [WaktuController::class, 'masuk'])->name('jam_kehadiran.masuk');
         Route::post('/jam_kehadiran/pulang/{guru}', [WaktuController::class, 'pulang'])->name('jam_kehadiran.pulang');
+        Route::resource('jam_kehadiran', WaktuController::class)->only(['index', 'update']);
+        Route::post('/jam_kehadiran/libur', [WaktuController::class, 'tambahLibur'])->name('jam_kehadiran.libur.store');
+        Route::delete('/jam_kehadiran/libur/{id}', [WaktuController::class, 'hapusLibur'])->name('jam_kehadiran.libur.destroy');
 
         /*
         |--------------------------------------------------------------------------

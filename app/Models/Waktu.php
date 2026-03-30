@@ -6,15 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Waktu extends Model
 {
+    protected $table = 'waktus';
+
     protected $fillable = [
-        'guru_id',
-        'tanggal',
-        'jam_masuk',
-        'jam_pulang',
+        'mulai_tap_in',
+        'akhir_tap_in',
+        'batas_terlambat',
+        'mulai_tap_out',
+        'akhir_tap_out',
+        'hari_libur_mingguan',
     ];
 
-    public function guru()
-    {
-        return $this->belongsTo(Guru::class);
-    }
+    protected $casts = [
+        'hari_libur_mingguan' => 'array',
+    ];
+
+    protected $attributes = [
+        'hari_libur_mingguan' => '["Sabtu","Minggu"]',
+    ];
 }

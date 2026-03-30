@@ -43,9 +43,12 @@
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Layanan</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.absensi.index') }}">Absensi Online</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.izin.create') }}">Pengajuan Izin</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.izin.index') }}">Cek Status Izin</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.absensi.index') }}">Absensi
+                            Online</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.izin.create') }}">Pengajuan Izin</a>
+                    </li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="{{ route('guru.izin.index') }}">Cek Status Izin</a>
+                    </li>
                 </ul>
             </div>
 
@@ -57,9 +60,6 @@
                     seputar kegiatan sekolah dan pembaruan sistem absensi.
                 </p>
                 <div class="social-links d-flex">
-                    <a href="#" class="facebook">
-                        <i class="bi bi-facebook"></i>
-                    </a>
                     <a href="https://www.instagram.com/smp_pgri_sumber" class="instagram">
                         <i class="bi bi-instagram"></i>
                     </a>
@@ -78,6 +78,10 @@
         </p>
         <div class="credits">
             Didesain oleh <strong>Kelompok 4 | XI RPL 1 | SMKN 1 Kota Cirebon</strong>
+        </div>
+        <div class="mt-2">
+            <img src="{{ asset('assets/landing/img/logo-smkn1.png') }}" alt="SMKN 1 Kota Cirebon"
+                style="height: 50px; width: auto; opacity: 0.85;">
         </div>
     </div>
 

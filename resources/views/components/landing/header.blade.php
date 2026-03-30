@@ -17,7 +17,6 @@
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        {{-- Tombol profil / login (kanan, setelah hamburger di mobile) --}}
         @if(auth('web')->check() && auth('web')->user()->hasAnyRole(['admin','superadmin']))
             <div class="user-dropdown" id="userDropdown">
                 <button class="user-dropdown-toggle" onclick="toggleDropdown()">

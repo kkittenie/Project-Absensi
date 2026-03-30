@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use App\Models\Absensi;
+use App\Models\Izin;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -13,42 +14,33 @@ class DashboardController extends Controller
     {
         $today = Carbon::today()->toDateString();
 
-        // Total Guru Aktif
         $totalGuru = Guru::where('is_active', true)->count();
 
-        // Perubahan dari bulan lalu
         $totalGuruBulanLalu = Guru::where('is_active', true)
             ->whereMonth('created_at', now()->subMonth()->month)
             ->count();
 
         $totalGuruChange = $totalGuru - $totalGuruBulanLalu;
 
-        // Hadir = tepat_waktu + terlambat
-        $hadirHariIni = Absensi::whereDate('tanggal', $today)
+        $hadirHariIni = Absensi::whereDate('created_at', $today)
             ->whereIn('status', ['tepat_waktu', 'terlambat'])
             ->count();
 
-        // Izin
-        $izinHariIni = Absensi::whereDate('tanggal', $today)
+        $izinHariIni = Absensi::whereDate('created_at', $today)
             ->where('status', 'izin')
             ->count();
 
-        // Alpha
-        $alphaHariIni = Absensi::whereDate('tanggal', $today)
+        $alphaHariIni = Absensi::whereDate('created_at', $today)
             ->where('status', 'alpha')
             ->count();
 
-        // Persentase Kehadiran
         $persenKehadiran = $totalGuru > 0
             ? round(($hadirHariIni / $totalGuru) * 100)
             : 0;
 
-        // Data Chart 5 Hari Terakhir
         $chartData = $this->getChartData();
 
-        // Absensi Terbaru (5 terakhir)
         $recentAbsensi = Absensi::with('guru')
-            ->orderBy('tanggal', 'desc')
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
@@ -80,15 +72,15 @@ class DashboardController extends Controller
 
             $labels[] = Carbon::parse($date)->locale('id')->isoFormat('ddd, D MMM');
 
-            $hadir[] = Absensi::whereDate('tanggal', $date)
+            $hadir[] = Absensi::whereDate('created_at', $date)
                 ->whereIn('status', ['tepat_waktu', 'terlambat'])
                 ->count();
 
-            $izin[] = Absensi::whereDate('tanggal', $date)
+            $izin[] = Absensi::whereDate('created_at', $date)
                 ->where('status', 'izin')
                 ->count();
 
-            $alpha[] = Absensi::whereDate('tanggal', $date)
+            $alpha[] = Absensi::whereDate('created_at', $date)
                 ->where('status', 'alpha')
                 ->count();
         }

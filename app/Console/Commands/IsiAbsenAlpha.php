@@ -5,45 +5,60 @@ namespace App\Console\Commands;
 use App\Models\Absensi;
 use App\Models\Kehadiran;
 use App\Models\Guru;
+use App\Models\Waktu;
+use App\Models\HariLibur;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class IsiAbsenAlpha extends Command
 {
-    protected $signature = 'absensi:isi-alpha {--force : Bypass cek hari dan jam}';
+    protected $signature   = 'absensi:isi-alpha';
     protected $description = 'Otomatis isi alpha untuk guru yang tidak absen masuk';
-
-    const BATAS_JAM_MASUK = '09:00';
 
     public function handle()
     {
-        $hariIni = now()->dayOfWeek;
+        $today = now()->toDateString();
+        $jam   = Waktu::first();
 
-        if (in_array($hariIni, [0, 6])) {
-            $this->info('Hari libur (Sabtu/Minggu), skip.');
+        if (!$jam) {
+            $this->error('Pengaturan jam belum ada.');
             return;
         }
 
-        $jamSekarang = now()->format('H:i');
-
-        if ($jamSekarang < self::BATAS_JAM_MASUK) {
-            $this->info('Belum melewati batas jam absen masuk.');
+        // Cek apakah hari ini hari libur mingguan
+        $namaHari = Carbon::parse($today)->locale('id')->isoFormat('dddd');
+        if (in_array($namaHari, $jam->hari_libur_mingguan ?? [])) {
+            $this->info("Hari ini {$namaHari} — hari libur, skip.");
             return;
         }
 
-        $today     = now()->toDateString();
-        $semuaGuru = Guru::all();
+        // Cek apakah hari ini tanggal merah
+        if (HariLibur::where('tanggal', $today)->exists()) {
+            $this->info('Hari ini tanggal merah — hari libur, skip.');
+            return;
+        }
+
+        // Cek apakah sudah lewat batas tap in
+        $jamSekarang  = now()->format('H:i');
+        $batasAlpha   = $jam->akhir_tap_in;
+
+        if ($jamSekarang < $batasAlpha) {
+            $this->info("Belum melewati batas jam absen masuk ({$batasAlpha}).");
+            return;
+        }
+
+        $semuaGuru = Guru::whereNull('deleted_at')->get();
 
         foreach ($semuaGuru as $guru) {
             $sudahAbsen = Absensi::where('guru_id', $guru->id)
-                ->where('tanggal', $today)
+                ->whereDate('created_at', $today)
                 ->exists();
 
             if (!$sudahAbsen) {
                 Absensi::create([
                     'uuid'    => Str::uuid(),
                     'guru_id' => $guru->id,
-                    'tanggal' => $today,
                     'status'  => 'alpha',
                 ]);
 
