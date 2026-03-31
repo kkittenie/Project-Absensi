@@ -2,44 +2,26 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $superadminRole = Role::firstOrCreate(['name' => 'superadmin']);
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-
-        $superadmin = User::firstOrCreate(
+        DB::table('users')->updateOrInsert(
+            ['username' => 'superadmin'], // kunci unik
             [
-                'uuid' => (string) Str::uuid(),
+                'uuid' => Str::uuid(),
                 'name' => 'superadmin',
-                'username' => 'superadmin',
-                'password' => bcrypt('superadmin'),
+                'password' => Hash::make('superadmin123'),
                 'role' => 'superadmin',
-                'is_active' => true,
+                'is_active' => 1,
+                'updated_at' => now(),
+                'created_at' => now(),
             ]
         );
-        $superadmin->assignRole($superadminRole);
-
-        $admin = User::firstOrCreate(
-            [
-                'uuid' => (string) Str::uuid(),
-                'name' => 'admin',
-                'username' => 'admin',
-                'password' => bcrypt('admin'),
-                'role' => 'admin',
-                'is_active' => true,
-            ]
-        );
-        $admin->assignRole($adminRole);
     }
 }

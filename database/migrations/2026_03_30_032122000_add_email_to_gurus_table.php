@@ -10,11 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-
+        Schema::table('gurus', function (Blueprint $table) {
+            $table->string('email')->unique()->after('nama_guru');
+        });
     }
 
-    public function down(): void
-    {
-
-    }
+    public function down(): void {}
 };
