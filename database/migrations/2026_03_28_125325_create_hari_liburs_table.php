@@ -7,16 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('hari_liburs', function (Blueprint $table) {
-            $table->id();
-            $table->date('tanggal')->unique();
-            $table->string('keterangan')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('hari_liburs', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->date('tanggal')->unique();
+        //     $table->string('keterangan')->nullable();
+        //     $table->timestamps();
+        // });
 
-        Schema::table('waktus', function (Blueprint $table) {
-            $table->json('hari_libur_mingguan')->nullable()->after('akhir_tap_out');
-        });
+        // Schema::table('waktus', function (Blueprint $table) {
+        //     $table->json('hari_libur_mingguan')->nullable()->after('akhir_tap_out');
+        // });
     }
 
     public function down(): void

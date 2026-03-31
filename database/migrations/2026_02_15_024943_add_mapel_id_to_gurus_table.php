@@ -8,30 +8,30 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('gurus', function (Blueprint $table) {
+        // Schema::table('gurus', function (Blueprint $table) {
 
 
-            // buat kolom mapel_id dulu
-            $table->foreignId('mapel_id')
-                ->nullable()
-                ->constrained('mapels')
-                ->cascadeOnDelete();
+        //     // buat kolom mapel_id dulu
+        //     $table->foreignId('mapel_id')
+        //         ->nullable()
+        //         ->constrained('mapels')
+        //         ->cascadeOnDelete();
 
-            // tambah kolom dulu
-            if (!Schema::hasColumn('gurus', 'mapel_id')) {
+        //     // tambah kolom dulu
+        //     if (!Schema::hasColumn('gurus', 'mapel_id')) {
 
-                $table->unsignedBigInteger('mapel_id')->nullable();
+        //         $table->unsignedBigInteger('mapel_id')->nullable();
 
-            }
+        //     }
 
-            // baru foreign key
-            $table->foreign('mapel_id')
-                ->references('id')
-                ->on('mapels')
-                ->onDelete('cascade');
+        //     // baru foreign key
+        //     $table->foreign('mapel_id')
+        //         ->references('id')
+        //         ->on('mapels')
+        //         ->onDelete('cascade');
 
 
-        });
+        // });
     }
 
     public function down(): void
