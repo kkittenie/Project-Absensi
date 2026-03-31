@@ -68,7 +68,7 @@ class GuruController extends Controller
             'nomor_telepon' => $request->nomor_telepon,
             'is_active'     => true,
             'role'          => 'guru',
-            'password'      => Hash::make('password123'),
+            'password'      => Hash::make($request->nip),
         ];
 
         if ($request->hasFile('photo')) {

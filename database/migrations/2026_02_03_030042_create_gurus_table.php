@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('nip')->unique(); // nip unik
             $table->string('password'); // password login
             $table->boolean('is_active')->default(true); // status aktif
-            $table->timestamps(); // created_at & updated_at
-            $table->softDeletes(); // deleted_at
+            $table->timestamps(); 
         });
     }
 

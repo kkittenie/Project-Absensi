@@ -163,76 +163,74 @@
                         </thead>
                         <tbody>
                             @forelse ($absenPulang as $absen)
-                             @php
-    $tanggal = \Carbon\Carbon::parse($absen->tanggal)->toDateString();
-    $key = $absen->guru_id . '_' . $tanggal;
+                                                @php
+                                                    $tanggalObj = \Carbon\Carbon::parse($absen->tanggal);
+                                                    $tanggal = $tanggalObj->toDateString();
+                                                    $key = $absen->guru_id . '_' . $tanggal;
 
-    $absensi = $absensiMap[$key] ?? null;
-    $dataIzin = $izins[$key] ?? null;
+                                                    $dataIzin = $izins[$key] ?? null;
+                                                    $absensi = $absensiMap[$key] ?? null;
+                                                @endphp
 
-    $jamPulang = null;
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
 
-if ($absen->jam_pulang) {
-    $jp = \Carbon\Carbon::parse($absen->jam_pulang);
+                                                    {{-- FOTO --}}
+                                                    <td>
+                                                        @if($absensi?->photo_pulang)
+                                                            <img src="{{ asset('storage/' . $absensi->photo_pulang) }}" width="45" height="45"
+                                                                class="rounded-2 object-fit-cover" style="cursor:pointer"
+                                                                onclick="lihatFoto('{{ asset('storage/' . $absensi->photo_pulang) }}', 'Foto Absen Pulang - {{ $absen->guru->nama_guru }}')">
+                                                        @else
+                                                            <span class="text-muted">-</span>
+                                                        @endif
+                                                    </td>
 
-    if ($jp->format('H:i') >= '12:00') {
-        $jamPulang = $jp;
-    }
-}
+                                                    {{-- NAMA --}}
+                                                    <td>
+                                                        <strong>{{ $absen->guru->nama_guru }}</strong><br>
+                                                        <small class="text-muted">{{ $absen->guru->nip }}</small>
+                                                    </td>
 
-    $mulaiPulang = \Carbon\Carbon::parse($tanggal . ' ' . ($absen->jam_mulai_pulang ?? '13:00'));
-$akhirPulang = \Carbon\Carbon::parse($tanggal . ' ' . ($absen->jam_akhir_pulang ?? '15:00'));
+                                                    <td>{{ $absen->guru->mapel->nama_mapel ?? '-' }}</td>
 
-    $pulangCepat = $jamPulang && $jamPulang->lt($mulaiPulang);
-    $lembur      = $jamPulang && $jamPulang->gt($akhirPulang);
+                                                    <td>{{ $tanggalObj->locale('id')->isoFormat('dddd, D MMM Y') }}</td>
 
-    $selisihCepat = $pulangCepat
-        ? $jamPulang->diffInMinutes($mulaiPulang)
-        : 0;
+                                                    {{-- JAM PULANG --}}
+                                                    <td>
+                                                        {{ $absen->jam_pulang
+                                ? \Carbon\Carbon::parse($absen->jam_pulang)->format('H:i')
+                                : '-' }}
+                                                    </td>
 
-    $lemburMenit = $lembur
-        ? $akhirPulang->diffInMinutes($jamPulang)
-        : 0;
-@endphp
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>
-                                        @if($absensi?->photo_pulang)
-                                            <img src="{{ asset('storage/' . $absensi->photo_pulang) }}" width="45" height="45"
-                                                class="rounded-2 object-fit-cover" style="cursor:pointer"
-                                                onclick="lihatFoto('{{ asset('storage/' . $absensi->photo_pulang) }}', 'Foto Absen Pulang - {{ $absen->guru->nama_guru }}')"
-                                                title="Klik untuk perbesar">
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td><strong>{{ $absen->guru->nama_guru }}</strong></td>
-                                    <td>{{ $absen->guru->mapel->nama_mapel ?? '-' }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($absen->tanggal)->locale('id')->isoFormat('dddd, D MMM Y') }}
-                                    </td>
-                                    <td>{{ \Carbon\Carbon::parse($absen->jam_pulang)->format('H:i') }}</td>
-                                    <td>
-    @if($dataIzin)
-        <span class="badge bg-info text-dark">{{ ucfirst($dataIzin->jenis_izin) }}</span>
+                                                    {{-- STATUS --}}
+                                                    <td>
+                                                        @if($dataIzin)
+                                                            <span class="badge bg-info text-dark">
+                                                                {{ ucfirst($dataIzin->jenis_izin) }}
+                                                            </span>
 
-    @elseif($absensi?->status_pulang === 'pulang_cepat')
-    <span class="badge bg-danger">
-        Pulang Cepat ({{ $absensi->selisih_pulang_cepat ?? 0 }} mnt)
-    </span>
+                                                        @elseif($absensi?->status_pulang === 'pulang_cepat')
+                                                            <span class="badge bg-danger">
+                                                                Pulang Cepat ({{ (int) ($absensi->selisih_pulang_cepat ?? 0) }} menit)
+                                                            </span>
 
-    @elseif($absensi?->status_pulang === 'lembur')
-        <span class="badge bg-info text-dark">
-            Lembur {{ $absensi->lembur_menit ?? 0 }} menit
-        </span>
+                                                        @elseif($absensi?->status_pulang === 'lembur')
+                                                            <span class="badge bg-info text-dark">
+                                                                Lembur {{ (int) ($absensi->lembur_menit ?? 0) }} menit
+                                                            </span>
 
-    @elseif($absensi?->status_pulang === 'tepat_waktu')
-        <span class="badge bg-success">Tepat Waktu</span>
+                                                        @elseif($absensi?->status_pulang === 'tepat_waktu')
+                                                            <span class="badge bg-success">
+                                                                Tepat Waktu
+                                                            </span>
 
-    @else
-        <span class="badge bg-secondary">-</span>
-    @endif
-</td>
-                                </tr>
+                                                        @else
+                                                            <span class="badge bg-secondary">-</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+
                             @empty
                                 <tr>
                                     <td colspan="7" class="text-center text-muted py-4">

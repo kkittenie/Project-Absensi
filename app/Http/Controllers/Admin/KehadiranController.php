@@ -59,6 +59,7 @@ class KehadiranController extends Controller
         $bulan = $request->get('bulan', date('n'));
         $tahun = $request->get('tahun', date('Y'));
         $tab = $request->get('tab', 'masuk');
+        $jam = Waktu::first();
 
         $data = Kehadiran::with(['guru.mapel'])
             ->whereMonth('tanggal', $bulan)
@@ -68,10 +69,10 @@ class KehadiranController extends Controller
             ->get();
 
         $absensiMap = Absensi::whereIn('guru_id', $data->pluck('guru_id'))
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
+            ->whereMonth('created_at', $bulan)
+            ->whereYear('created_at', $tahun)
             ->get()
-            ->keyBy(fn($a) => $a->guru_id . '_' . \Carbon\Carbon::parse($a->tanggal)->toDateString());
+            ->keyBy(fn($a) => $a->guru_id . '_' . \Carbon\Carbon::parse($a->created_at)->toDateString());
 
         $data->each(function ($k) use ($absensiMap) {
             $key = $k->guru_id . '_' . \Carbon\Carbon::parse($k->tanggal)->toDateString();
@@ -85,6 +86,6 @@ class KehadiranController extends Controller
             ->get()
             ->keyBy(fn($i) => $i->guru_id . '_' . $i->tanggal_izin);
 
-        return view('admin.kehadiran.cetak', compact('data', 'bulan', 'tahun', 'tab', 'izins'));
+        return view('admin.kehadiran.cetak', compact('data', 'bulan', 'tahun', 'tab', 'izins', 'jam'));
     }
 }

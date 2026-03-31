@@ -158,9 +158,9 @@
     </style>
 
     <script>
-        const SCHOOL_LAT = -6.7237601;
-        const SCHOOL_LNG = 108.5506205;
-        const MAX_RADIUS = 4000;
+        const SCHOOL_LAT = -6.759614;
+        const SCHOOL_LNG = 108.4719739;
+        const MAX_RADIUS = 40000;
 
         const JAM_MASUK_MULAI = "{{ $jam->mulai_tap_in }}";
         const JAM_MASUK_SELESAI = "{{ $jam->akhir_tap_in }}";

@@ -179,7 +179,7 @@ class AbsensiController extends Controller
 
             if ($jamPulang->gt($batasLembur)) {
                 $statusPulang = 'lembur';
-                $lemburMenit = abs($jamPulang->diffInMinutes($batasLembur));
+                $lemburMenit = (int)($jamPulang->diffInMinutes($batasLembur));
             } elseif ($jamPulang->lt($batasCepat)) {
                 $statusPulang = 'pulang_cepat';
                 $selisihPulangCepat = (int)($jamPulang->diffInMinutes($batasCepat));

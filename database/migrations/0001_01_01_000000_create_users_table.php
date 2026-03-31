@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
-            $table->softDeletes()->index();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

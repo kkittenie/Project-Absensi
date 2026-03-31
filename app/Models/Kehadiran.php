@@ -27,7 +27,6 @@ class Kehadiran extends Model
 
     public function absensi()
     {
-        return $this->hasOne(Absensi::class, 'guru_id', 'guru_id')
-            ->whereColumn('absensis.tanggal', 'kehadirans.tanggal');
+        return $this->hasOne(Absensi::class, 'guru_id', 'guru_id');
     }
 }

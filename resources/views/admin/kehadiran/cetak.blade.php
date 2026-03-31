@@ -95,9 +95,18 @@
             white-space: nowrap;
         }
 
-        .info-dokumen td:first-child { width: 130px; }
-        .info-dokumen td:nth-child(2) { width: 16px; text-align: center; }
-        .info-dokumen td:nth-child(3) { font-weight: normal; }
+        .info-dokumen td:first-child {
+            width: 130px;
+        }
+
+        .info-dokumen td:nth-child(2) {
+            width: 16px;
+            text-align: center;
+        }
+
+        .info-dokumen td:nth-child(3) {
+            font-weight: normal;
+        }
 
         table {
             width: 100%;
@@ -126,32 +135,93 @@
             text-align: center;
         }
 
-        tbody tr:nth-child(even) { background: #f2f2f2; }
+        tbody tr:nth-child(even) {
+            background: #f2f2f2;
+        }
 
-        .td-left { text-align: left !important; }
+        .td-left {
+            text-align: left !important;
+        }
 
-        .status           { font-size: 10px; font-weight: bold; }
-        .status-tepat     { color: #1a7a1a; }
-        .status-terlambat { color: #856404; }
-        .status-izin      { color: #0c5460; }
-        .status-alpha     { color: #721c24; }
-        .status-lembur    { color: #0c5460; }
-        .status-cepat     { color: #721c24; }
+        .status {
+            font-size: 10px;
+            font-weight: bold;
+        }
 
-        .empty { color: #777; font-style: italic; text-align: center; }
+        .status-tepat {
+            color: #1a7a1a;
+        }
 
-        .footer { margin-top: 20px; display: flex; justify-content: flex-end; }
+        .status-terlambat {
+            color: #856404;
+        }
 
-        .ttd { text-align: center; width: 200px; font-size: 11.5px; }
-        .ttd .kota-tanggal { margin-bottom: 4px; }
-        .ttd .jabatan      { margin-bottom: 60px; }
-        .ttd .nama-ttd     { font-weight: bold; text-decoration: underline; margin-bottom: 2px; }
-        .ttd .nip-ttd      { font-size: 10.5px; }
+        .status-izin {
+            color: #0c5460;
+        }
+
+        .status-alpha {
+            color: #721c24;
+        }
+
+        .status-lembur {
+            color: #0c5460;
+        }
+
+        .status-cepat {
+            color: #721c24;
+        }
+
+        .empty {
+            color: #777;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .ttd {
+            text-align: center;
+            width: 200px;
+            font-size: 11.5px;
+        }
+
+        .ttd .kota-tanggal {
+            margin-bottom: 4px;
+        }
+
+        .ttd .jabatan {
+            margin-bottom: 60px;
+        }
+
+        .ttd .nama-ttd {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 2px;
+        }
+
+        .ttd .nip-ttd {
+            font-size: 10.5px;
+        }
 
         @media print {
-            body { padding: 20px 30px; }
-            thead tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            tbody tr:nth-child(even) { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body {
+                padding: 20px 30px;
+            }
+
+            thead tr {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            tbody tr:nth-child(even) {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -164,7 +234,8 @@
             <div class="instansi">SMP PGRI Sumber</div>
             <div class="alamat">
                 Jl. Sunan Drajat No.20 B, Sumber, Kec. Sumber, Kabupaten Cirebon, Jawa Barat 45611<br>
-                Telp. (0231) 000000 | Email: smpgrisumber@gmail.com
+                Telp. (0231) 000000 | Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+                    data-cfemail="b7c4dac7d0c5dec4c2dad5d2c5f7d0dad6dedb99d4d8da">[email&#160;protected]</a>
             </div>
         </div>
         <img src="{{ asset('assets/landing/img/logo.png') }}" alt="Logo" style="visibility:hidden;">
@@ -258,25 +329,55 @@
             <tbody>
                 @forelse($data as $index => $k)
                     @php
-                        $tanggal     = \Carbon\Carbon::parse($k->tanggal)->toDateString();
-                        $jamPulang   = \Carbon\Carbon::parse($k->jam_pulang);
-                        $batasNormal = \Carbon\Carbon::parse($tanggal . ' 15:00');
-                        $pulangCepat = $jamPulang->lt($batasNormal);
-                        $selisih     = $pulangCepat ? $jamPulang->diffInMinutes($batasNormal) : 0;
+                        $tanggal = \Carbon\Carbon::parse($k->tanggal)->toDateString();
+                        $key = $k->guru_id . '_' . $tanggal;
+
+                        $absensi = $k->absensi;
+                        $dataIzin = $izins[$key] ?? null;
                     @endphp
+
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td class="td-left"><strong>{{ $k->guru->nama_guru }}</strong></td>
+
+                        <td class="td-left">
+                            <strong>{{ $k->guru->nama_guru }}</strong>
+                        </td>
+
                         <td>{{ $k->guru->mapel->nama_mapel ?? '-' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($k->tanggal)->locale('id')->isoFormat('dddd, D MMM Y') }}</td>
-                        <td>{{ $jamPulang->format('H:i') }}</td>
+
                         <td>
-                            @if($pulangCepat)
-                                <span class="status status-cepat">&#9888; Pulang Cepat ({{ $selisih }} mnt)</span>
-                            @elseif($k->lembur_menit > 0)
-                                <span class="status status-lembur">&#9200; Lembur {{ $k->lembur_menit }} mnt</span>
+                            {{ \Carbon\Carbon::parse($k->tanggal)->locale('id')->isoFormat('dddd, D MMM Y') }}
+                        </td>
+
+                        <td>
+                            {{ $k->jam_pulang
+                    ? \Carbon\Carbon::parse($k->jam_pulang)->format('H:i')
+                    : '-' }}
+                        </td>
+
+                        <td>
+                            @if($dataIzin)
+                                <span class="status status-izin">
+                                    &#9432; {{ ucfirst($dataIzin->jenis_izin) }}
+                                </span>
+
+                            @elseif($absensi?->status_pulang === 'pulang_cepat')
+                                <span class="status status-cepat">
+                                    &#9888; Pulang Cepat ({{ (int) ($absensi->selisih_pulang_cepat ?? 0) }} mnt)
+                                </span>
+
+                            @elseif($absensi?->status_pulang === 'lembur')
+                                <span class="status status-lembur">
+                                    &#9200; Lembur {{ (int) ($absensi->lembur_menit ?? 0) }} mnt
+                                </span>
+
+                            @elseif($absensi?->status_pulang === 'tepat_waktu')
+                                <span class="status status-tepat">
+                                    &#10003; Tepat Waktu
+                                </span>
+
                             @else
-                                <span class="status status-tepat">&#10003; Tepat Waktu</span>
+                                <span class="status">-</span>
                             @endif
                         </td>
                     </tr>
@@ -294,14 +395,4 @@
             <p class="kota-tanggal">Sumber, {{ now()->locale('id')->isoFormat('D MMMM Y') }}</p>
             <p class="jabatan">Kepala Sekolah</p>
             <p class="nama-ttd">( ................................. )</p>
-            <p class="nip-ttd">NIP. ................................</p>
-        </div>
-    </div>
-
-    <script>
-        window.onload = () => window.print();
-    </script>
-
-</body>
-
-</html>
+            <p class="nip-ttd">NIP. ..............................
