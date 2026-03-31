@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->updateOrInsert(
-            ['username' => 'superadmin'], // kunci unik
+            ['username' => 'superadmin'],
             [
                 'uuid' => Str::uuid(),
                 'name' => 'superadmin',
