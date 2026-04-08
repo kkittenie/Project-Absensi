@@ -56,7 +56,7 @@
                                     </td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->username }}</td>
-                                    <td><span class="badge bg-secondary">{{ $user->role }}</span></td>
+                                    <td><span class="badge bg-secondary">{{ $user->getRoleNames()->first() }}</span></td>
                                     <td>
                                         @if ($user->is_active)
                                             <span class="badge bg-success">Aktif</span>

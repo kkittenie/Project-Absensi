@@ -37,7 +37,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:superadmin,admin,user',
+            'role' => 'required|in:superadmin,admin',
             'is_active' => 'required|boolean',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
@@ -72,15 +72,13 @@ class UserController extends Controller
 
         if ($request->role === 'guru') {
             $user->guru()->create([
-                'nip' => $request->nip ?? null, // field lain sesuai tabel guru
-                // user_id otomatis diisi karena relasi
+                'nip' => $request->nip ?? null,
             ]);
         }
-        if ($user->hasRole('superadmin') || $user->hasRole('admin')) {
-            return redirect()->route('admin.dashboard');
-        }
+        return redirect()
+            ->route('admin.users.index')
+            ->withSuccess('Admin berhasil ditambahkan.');
 
-        return redirect()->route('landing.index');
     }
 
     public function edit(string $uuid)
@@ -98,7 +96,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'password' => 'nullable|string|min:6|confirmed',
-            'role' => 'required|in:superadmin,admin,user',
+            'role' => 'required|in:superadmin,admin',
             'is_active' => 'required|boolean',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [

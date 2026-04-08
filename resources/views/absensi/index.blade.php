@@ -71,8 +71,8 @@
                                 @endphp
 
                                 <div class="alert 
-                                            {{ $pulangCepat ? 'alert-warning' : ($lembur ? 'alert-info' : 'alert-success') }} 
-                                            py-2">
+                                                        {{ $pulangCepat ? 'alert-warning' : ($lembur ? 'alert-info' : 'alert-success') }} 
+                                                        py-2">
 
                                     🏠 Absen Pulang: <strong>{{ $jamPulang->format('H:i') }}</strong>
 
@@ -135,6 +135,11 @@
                             </button>
                         @endif
 
+                    </div>
+                    <div class="back-link mt-3">
+                        <a href="{{ route('landing.index') }}" style="color: #fff;">
+                            <i class="bi bi-arrow-left"></i> Kembali ke Beranda
+                        </a>
                     </div>
 
                     <form id="absenForm" method="POST" action="{{ route('guru.absensi.store') }}">

@@ -121,6 +121,11 @@
                             </form>
                         </div>
                     @endif
+                    <div class="back-link mt-3">
+                        <a href="{{ route('landing.index') }}" style="color: #fff;">
+                            <i class="bi bi-arrow-left"></i> Kembali ke Beranda
+                        </a>
+                    </div>
 
                 </div>
             </div>

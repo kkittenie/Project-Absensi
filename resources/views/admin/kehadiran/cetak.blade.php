@@ -234,8 +234,7 @@
             <div class="instansi">SMP PGRI Sumber</div>
             <div class="alamat">
                 Jl. Sunan Drajat No.20 B, Sumber, Kec. Sumber, Kabupaten Cirebon, Jawa Barat 45611<br>
-                Telp. (0231) 000000 | Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                    data-cfemail="b7c4dac7d0c5dec4c2dad5d2c5f7d0dad6dedb99d4d8da">[email&#160;protected]</a>
+                Telp. +62 813 9574 4204 | Email: smppgrisumber@gmail.com
             </div>
         </div>
         <img src="{{ asset('assets/landing/img/logo.png') }}" alt="Logo" style="visibility:hidden;">
